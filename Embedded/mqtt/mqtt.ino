@@ -31,7 +31,7 @@ EatTime* pill_schedule = new EatTime[schedule_maxSize];
 bool is_configurated = false;
 bool is_box_open = false;
 bool has_taken_pills = false;
-bool 
+bool eat_pills = false;
 
 long previous_time = 0;
 const long publish_interval = 1000;
@@ -74,7 +74,9 @@ void loop() {
     reconnect();
   }
   if (is_configurated) {
-    if()
+    if(eat_pills){
+      if
+    }
   }
   mqttClient.loop();
 

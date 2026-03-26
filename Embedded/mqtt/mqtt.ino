@@ -100,7 +100,7 @@ void loop() {
             Serial2.write(pill_schedule[curr_eatTime].day);
             Serial2.write(pill_schedule[curr_eatTime].hour);
             Serial2.write(pill_schedule[curr_eatTime].minute);
-            Serial2.write(pill_schedule[curr_eatTime].box);            
+            Serial2.write(pill_schedule[curr_eatTime].boxes);            
           }
         }
       }

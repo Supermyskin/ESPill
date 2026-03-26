@@ -4,6 +4,7 @@
 #include <PubSubClient.h>
 #include <ArduinoJson.h>
 
+
 // Wi-Fi credentials
 const char* ssid = "donottouchthis";
 const char* password = "1735fc12";
@@ -17,12 +18,17 @@ const char* mqtt_password = "1Qazxsw23edcvfr4";
 // Fixed MQTT client ID
 const char* clientId = "ESP32_Pill";
 
-// MQTT topic 
-const char* topic_publish = "esp32/has_taken_pill";
+// MQTT topic
+const char* topic_has_taken_pill = "esp32/has_taken_pill";
+const char* topic_hasnt_taken_pill = "esp32/hasnt_taken_pill";
 
 // Create instances
 WiFiClientSecure wifiClient;
 PubSubClient mqttClient(wifiClient);
+
+bool is_configurated = false;
+bool is_box_open = false;
+bool has_taken_pills = false;
 
 long previous_time = 0;
 const long publish_interval = 1000;
@@ -61,20 +67,34 @@ void loop() {
   if (!mqttClient.connected()) {
     reconnect();
   }
-  mqttClient.loop();
-
-  long now = millis();
-  if (now - previous_time >= publish_interval) {
-    previous_time = now;
-    StaticJsonDocument<200> jsonDoc;
-    jsonDoc["pill_taken"] = true;
-
-    char buffer[256];
-    serializeJson(jsonDoc, buffer);
-
-    Serial.print("Publishing JSON: ");
-    Serial.println(buffer);
-
-    mqttClient.publish(topic_publish, buffer);
+  if (is_configurated) {
+    if (is_box_open) {
+      if (!has_taken_pills) {
+        int detect_taking_pills = CheckDistance();
+        if (detect_taking_pills <= 5) {
+          has_taken_pills = true;
+          //close box
+          mqttClient.publish(topic_has_taken_pill, buffer);
+        } else {
+          if (has_time_passed) {
+            if (!has_sent_message) {
+              //sends message hasn't taken pills
+            }
+          }
+        }
+      }
+    }
   }
+  mqttClient.loop();
+      previous_time = now;
+      StaticJsonDocument<200> jsonDoc;
+      jsonDoc["pill_taken"] = true;
+
+      char buffer[256];
+      serializeJson(jsonDoc, buffer);
+
+      Serial.print("Publishing JSON: ");
+      Serial.println(buffer);
+
+      mqttClient.publish(topic_has_taken_pill, buffer);
 }

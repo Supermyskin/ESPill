@@ -14,25 +14,13 @@ body {
 }
 
 #status {
-    font-weight: 500;
+    font-weight: 600;
     font-size: 40px;
-}
-
-.cursor-glow {
-    width: 2rem;
-    height: 2rem;
-    border-radius: 90%;
-    background: rgba(254, 177, 255, 0.8);
-    box-shadow: 0px 0px 20px rgba(254, 177, 255, 0.6);
-    background: radial-gradient(circle, rgba(254, 177, 255, 0.4) 0%, rgba(254, 177, 255, 0.2) 100%);
-    background-repeat: no-repeat;
-    background-position: center;
-    position: absolute;
-    pointer-events: none;
 }
 
 .header {
     border-bottom: 2px solid rgba(254, 177, 255, 0.8);
+    box-shadow: 0px 4px 15px rgba(254, 177, 255, 0.5);
     position: absolute;
     top: 0;
     left: 0;
@@ -42,7 +30,7 @@ body {
 }
 
 .header a {
-    float: left;
+    float: right;
     color: #f2f2f2;
     text-align: center;
     padding: 14px 16px;
@@ -50,7 +38,12 @@ body {
     font-size: 17px;
 }
 
+.header .header-logo {
+    float: left;
+}
+
 .header a:hover {
-    background-color: #ddd;
+    background-color: rgba(254, 177, 255, 0.8);
     color: black;
+    box-shadow: 0 15px 25px rgba(145, 92, 182, .4);
 }

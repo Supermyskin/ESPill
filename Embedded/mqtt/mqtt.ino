@@ -31,6 +31,7 @@ EatTime* pill_schedule = new EatTime[schedule_maxSize];
 bool is_configurated = false;
 bool is_box_open = false;
 bool has_taken_pills = false;
+bool 
 
 long previous_time = 0;
 const long publish_interval = 1000;
@@ -72,24 +73,9 @@ void loop() {
   if (!mqttClient.connected()) {
     reconnect();
   }
-  // if (is_configurated) {
-  //   if (is_box_open) {
-  //     if (!has_taken_pills) {
-  //       int detect_taking_pills = CheckDistance();
-  //       if (detect_taking_pills <= 5) {
-  //         has_taken_pills = true;
-  //         //close box
-  //         mqttClient.publish(topic_has_taken_pill, buffer);
-  //       } else {
-  //         if (has_time_passed) {
-  //           if (!has_sent_message) {
-  //             //sends message hasn't taken pills
-  //           }
-  //         }
-  //       }
-  //     }
-  //   }
-  // }
+  if (is_configurated) {
+    if()
+  }
   mqttClient.loop();
 
 

@@ -1,10 +1,20 @@
 #include "HeaderFile.h"
 #include "RTClib.h"
 #include "Servo.h"
+#include "Types.h"
+
+
 class Box {
+
   public:
-    uint8_t SERVO = A1;
+    uint8_t SERVO;
     uint8_t LED;
+
+    Box(uint8_t servoPin, uint8_t ledPin){
+      SERVO = servoPin;
+      LED = ledPin;
+    };
+
     Servo myServo;
     void init(){
       myServo.attach(SERVO);
@@ -19,12 +29,15 @@ class Box {
       digitalWrite(LED, LOW);
       myServo.write(90);
     }
+};
+
+
+
 
 DS1302 rtc(CLOCK_RST, CLOCK_CLK, CLOCK_DATA);
-Box BoxArray[6] = {Box1, Box2, Box3, Box4, Box5, Box6};
-
+Box BoxArray[] = {Box(A1, A2)};
+bool data_received = false;
 void setup(){
-  box.LED = A2;
   Serial.begin(9600);
   pinMode(ECHO, INPUT);
   pinMode(TRIG, OUTPUT);
@@ -33,29 +46,39 @@ void setup(){
     rtc.begin();
   }
   rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
-  for(int i = 0; i < 6; i++){
-    BoxArray[i].init()
+  for(int i = 0; i < 1; i++){
+    BoxArray[i].init();
   }
 }
 
 
 void loop(){
+  DateTime now = rtc.now();
+  uint8_t dow = dayOfWeek(now.year(), now.month(), now.day());
   if(Serial.available() >= 6){
-    a = Serial.read();
-    if(a == 'y'{
-      b = Serial.read();
+    uint8_t a = Serial.read();
+    if(a == 'y'){
+      uint8_t b = Serial.read();
       if(b == 'b'){
-        Serial.readBytesUntill('\0', EatTime.year, 1);
-        Serial.readBytesUntill('\0', EatTime.day, 1);
-        Serial.readBytesUntill('\0', EatTime.minute, 1);
-        Serial.readBytesUntill('\0', EatTime.box, 1);
+        Serial.read();
+        Serial.read();
+        Serial.read();
+        data_received = true;
       }
-    })
-  }
-  for(int i = 0; i < 8, i++){
-    if(EatTime.box & (1 << i)){
-      
     }
   }
+  if(data_received){
+    if(eatTime.day == dow && eatTime.minute == now.minute())
+      for(int i = 0; i < 1; i++){
+        if(eatTime.box & (1 << i)){
+          BoxArray[i].open();
+          waitTakePills();
+          BoxArray[i].close();
+        }
+      }  
+  }
+
+    
 }
+
 

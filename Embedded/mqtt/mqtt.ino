@@ -3,6 +3,7 @@
 #include <WiFiClientSecure.h>
 #include <PubSubClient.h>
 #include <ArduinoJson.h>
+
 const int schedule_maxSize = 1000;
 
 // Wi-Fi credentials
@@ -28,15 +29,15 @@ WiFiClientSecure wifiClient;
 PubSubClient mqttClient(wifiClient);
 
 EatTime* pill_schedule = new EatTime[schedule_maxSize];
+unsigned int sc_len = 0;
 bool is_configurated = false;
 bool is_box_open = false;
 bool has_taken_pills = false;
-bool 
 
 long previous_time = 0;
 const long publish_interval = 1000;
 void callback(char* topic, byte* payload, unsigned int length) {
-  fillSchedule(pill_schedule, schedule_maxSize, )
+  fillSchedule(pill_schedule, schedule_maxSize, sc_len, payload, length);
 }
 void reconnect() {
   Serial.println("Connecting to MQTT Broker...");
@@ -55,7 +56,6 @@ void reconnect() {
 
 void setup() {
   Serial.begin(115200);
-
   WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
@@ -68,15 +68,13 @@ void setup() {
   mqttClient.setServer(mqtt_broker, mqtt_port);
   mqttClient.setCallback(callback);
 }
-
+byte* temp = nullptr;
 void loop() {
   if (!mqttClient.connected()) {
     reconnect();
   }
-  if (is_configurated) {
-    if()
-  }
+  // if (is_configurated) {
+  // }
+callback("woow", "{\"schedule\": [{ \"d\": 1, \"h\": 8, \"m\": 30, \"b\": 1 },{ \"d\": 1, \"h\": 12, \"m\": 0, \"b\": 3 },{ \"d\": 2, \"h\": 18, \"m\": 45, \"b\": 2 }]}", 118);
   mqttClient.loop();
-
-
 }

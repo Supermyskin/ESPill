@@ -9,7 +9,7 @@ void fillSchedule(EatTime* schedule, unsigned int maxSize, unsigned int& sc_len,
   }
 
   JsonArray arr = scheduleJson["schedule"];
-  sc_len = 0;  
+  sc_len = 0;
 
   for (JsonObject obj : arr) {
     if (sc_len >= maxSize) break;

@@ -3,6 +3,7 @@
 #include <WiFiClientSecure.h>
 #include <PubSubClient.h>
 #include <ArduinoJson.h>
+#include "HeaderFile.h"
 
 const int schedule_maxSize = 1000;
 
@@ -23,6 +24,7 @@ const char* clientId = "ESP32_Pill";
 const char* topic_has_taken_pill = "esp32/has_taken_pill";
 const char* topic_hasnt_taken_pill = "esp32/hasnt_taken_pill";
 const char* topic_esp32 = "esp32/receive";
+const char* code = "!qaz@wsx#$%^Y&U*";
 
 // Create instances
 WiFiClientSecure wifiClient;
@@ -30,12 +32,8 @@ PubSubClient mqttClient(wifiClient);
 
 EatTime* pill_schedule = new EatTime[schedule_maxSize];
 unsigned int sc_len = 0;
-bool is_configurated = false;
-bool is_box_open = false;
-bool has_taken_pills = false;
-
+unsigned int curr_eatTime = 0;
 long previous_time = 0;
-const long publish_interval = 1000;
 void callback(char* topic, byte* payload, unsigned int length) {
   fillSchedule(pill_schedule, schedule_maxSize, sc_len, payload, length);
 }
@@ -56,6 +54,7 @@ void reconnect() {
 
 void setup() {
   Serial.begin(115200);
+  Serial2.begin(115200, SERIAL_8N1, RX, TX);
   WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
@@ -68,13 +67,43 @@ void setup() {
   mqttClient.setServer(mqtt_broker, mqtt_port);
   mqttClient.setCallback(callback);
 }
-byte* temp = nullptr;
+
 void loop() {
   if (!mqttClient.connected()) {
     reconnect();
   }
-  // if (is_configurated) {
-  // }
-callback("woow", "{\"schedule\": [{ \"d\": 1, \"h\": 8, \"m\": 30, \"b\": 1 },{ \"d\": 1, \"h\": 12, \"m\": 0, \"b\": 3 },{ \"d\": 2, \"h\": 18, \"m\": 45, \"b\": 2 }]}", 118);
   mqttClient.loop();
+  if(Serial2.available() >= 2){
+    char c = Serial2.read();
+    if(c == 'Y'){
+      c = Serial2.read();
+      if(c == 'B'){
+        long timeout = millis();
+        while(Serial2.available() < 2){
+          if(millis() - timeout > 10){
+            return;
+          }
+        }
+        char buffer[2];
+        Serial2.readBytes(buffer, 2);
+        if(buffer[1] == '1'){
+          if(buffer[0] == '+'){
+            mqttClient.publish(topic_has_taken_pill, code);
+          }
+          else if(buffer[0] == '-'){
+            mqttClient.publish(topic_hasnt_taken_pill, code);
+          }
+          else if(buffer[0] == '0'){
+            curr_eatTime++;
+            if(curr_eatTime >= schedule_maxSize) curr_eatTime = 0;
+            Serial2.print("YB");
+            Serial2.write(pill_schedule[curr_eatTime].day);
+            Serial2.write(pill_schedule[curr_eatTime].hour);
+            Serial2.write(pill_schedule[curr_eatTime].minute);
+            Serial2.write(pill_schedule[curr_eatTime].box);            
+          }
+        }
+      }
+    }
+  }
 }

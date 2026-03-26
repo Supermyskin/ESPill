@@ -1,0 +1,128 @@
+body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    background-color: black;
+    background-image: radial-gradient(ellipse at bottom, rgba(254, 177, 255, 0.4) 0%, transparent 50%);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Space Grotesk', sans-serif;
+    color: white;
+    flex-direction: column;
+    gap: 30px;
+}
+
+h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    color: white;
+    font-size: 5rem;
+}
+
+h2 {
+    font-family: 'Space Grotesk', sans-serif;
+    color: rgb(254, 177, 255);
+    font-size: 1.75rem;
+}
+
+.goal-to-help {
+    font-family: 'Space Grotesk', sans-serif;
+    color: white;
+    font-weight: 900;
+    text-align: center;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.goal-to-help li {
+    margin-bottom: 15px;
+    font-size: 1.2rem;
+}
+
+.goal-to-help i {
+    color: rgb(254, 177, 255);
+    margin-right: 10px;
+}
+
+.header {
+    border-bottom: 2px solid rgba(254, 177, 255, 0.8);
+    box-shadow: 0px 4px 15px rgba(254, 177, 255, 0.5);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    overflow: hidden;
+    background-color: #ffffff00;
+}
+
+.header a {
+    float: right;
+    color: #f2f2f2;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 17px;
+}
+
+.header .header-logo {
+    float: left;
+}
+
+.header a:hover {
+    background-color: rgba(254, 177, 255, 0.8);
+    color: black;
+    box-shadow: 0 15px 25px rgba(145, 92, 182, .4);
+}
+
+.solution {
+    text-align: center;
+    max-width: 60%;
+}
+
+.solution p {
+    font-weight: 700;
+    font-size: 1.2rem;
+}
+
+/* Styling for the new highlighted words */
+.highlight {
+    color: rgb(254, 177, 255);
+    font-weight: 900;
+}
+
+/* Original solution rules */
+.solution {
+    text-align: center;
+    max-width: 60%;
+}
+
+.solution p {
+    font-weight: 700;
+    font-size: 1.2rem;
+    line-height: 1.6;
+    /* Added a little line height for better readability */
+}
+
+/* Cleaning up the tech stack list */
+.techstack {
+    text-align: center;
+}
+
+.techstack-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+
+.techstack-list li {
+    margin-bottom: 15px;
+}
+
+.techstack-list i {
+    color: rgb(254, 177, 255);
+    margin-right: 10px;
+}

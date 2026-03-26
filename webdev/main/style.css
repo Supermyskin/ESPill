@@ -1,20 +1,32 @@
 body {
-  margin: 0;
-  height: 100vh;
-  display: flex;
-  background-color: black;
-  background-image: radial-gradient(ellipse at bottom, rgba(254, 177, 255, 0.8) 0%, transparent 50%);
-  background-repeat: no-repeat;
-  justify-content: center;
-  align-items: center;
-  font-family: sans-serif;
-  color: white;
-  flex-direction: column;
-  gap: 30px;
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    background-color: black;
+    background-image: radial-gradient(ellipse at bottom, rgba(254, 177, 255, 0.4) 0%, transparent 50%);
+    background-repeat: no-repeat;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Space Grotesk', sans-serif;
+    color: white;
+    flex-direction: column;
+    gap: 30px;
 }
 
 #status {
-  font-family: sans-serif;
-  font-weight: 500;
-  font-size: 40px;
+    font-weight: 500;
+    font-size: 40px;
+}
+
+.cursor-glow {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 90%;
+    background: rgba(254, 177, 255, 0.8);
+    box-shadow: 0px 0px 20px rgba(254, 177, 255, 0.6);
+    background: radial-gradient(circle, rgba(254, 177, 255, 0.4) 0%, rgba(254, 177, 255, 0.2) 100%);
+    background-repeat: no-repeat;
+    background-position: center;
+    position: absolute;
+    pointer-events: none;
 }

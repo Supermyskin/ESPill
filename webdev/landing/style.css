@@ -7,14 +7,14 @@ body {
   background-repeat: no-repeat;
   justify-content: center;
   align-items: center;
-  font-family: sans-serif;
+  font-family: 'Space Grotesk', sans-serif;
   color: white;
   flex-direction: column;
   gap: 30px;
 }
 
 h1 {
-  font-family: sans-serif;
+  font-family: 'Space Grotesk', sans-serif;
   color: white;
 }
 
@@ -24,7 +24,7 @@ h1 span {
   font-weight: 600;
 }
 
-.txt-rotate > .wrap {
+.txt-rotate>.wrap {
   border-right: 0.08em solid rgb(253, 117, 255);
 }
 
@@ -42,4 +42,17 @@ h1 span {
 .fake_glow_btn:hover {
   color: rgba(255, 255, 255, 1);
   box-shadow: 0 5px 15px rgba(145, 92, 182, .4);
+}
+
+.cursor-glow {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 90%;
+  background: rgba(254, 177, 255, 0.8);
+  box-shadow: 0px 0px 20px rgba(254, 177, 255, 0.6);
+  background: radial-gradient(circle, rgba(254, 177, 255, 0.4) 0%, rgba(254, 177, 255, 0.2) 100%);
+  background-repeat: no-repeat;
+  background-position: center;
+  position: absolute;
+  pointer-events: none;
 }

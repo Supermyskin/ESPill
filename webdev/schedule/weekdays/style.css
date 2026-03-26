@@ -1,0 +1,203 @@
+body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    background-color: black;
+    background-image: radial-gradient(ellipse at bottom, rgba(254, 177, 255, 0.4) 0%, transparent 50%);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Space Grotesk', sans-serif;
+    color: white;
+    flex-direction: column;
+    gap: 30px;
+}
+
+#status {
+    font-weight: 600;
+    font-size: 40px;
+}
+
+.header {
+    border-bottom: 2px solid rgba(254, 177, 255, 0.8);
+    box-shadow: 0px 4px 15px rgba(254, 177, 255, 0.5);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    overflow: hidden;
+    background-color: #ffffff00;
+}
+
+.header a {
+    float: right;
+    color: #f2f2f2;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 17px;
+}
+
+.header .header-logo {
+    float: left;
+}
+
+.header a:hover {
+    background-color: rgba(254, 177, 255, 0.8);
+    color: black;
+    box-shadow: 0 15px 25px rgba(145, 92, 182, .4);
+}
+
+.schedule-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 800px;
+    gap: 15px;
+    margin: 40px auto;
+}
+
+#schedule-list {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.input-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 25px;
+    background-color: rgba(255, 255, 255, 0);
+    padding: 25px;
+    border-radius: 12px;
+    border: 1px solid rgba(254, 177, 255, 0.3);
+    width: 100%;
+    box-sizing: border-box;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    margin-bottom: 20px;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.input-group label {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.input-group input {
+    background: transparent;
+    border: 1px solid rgba(254, 177, 255, 0.5);
+    color: white;
+    padding: 10px;
+    border-radius: 6px;
+    width: 60px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.2rem;
+    text-align: center;
+    outline: none;
+}
+
+.input-group input:focus {
+    border-color: rgb(254, 177, 255);
+    box-shadow: 0 0 8px rgba(254, 177, 255, 0.4);
+}
+
+.box-selector {
+    display: flex;
+}
+
+.box-btn {
+    background-color: transparent;
+    border: 1px solid rgba(254, 177, 255, 0.5);
+    color: white;
+    padding: 10px 15px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.box-btn:first-child {
+    border-radius: 6px 0 0 6px;
+}
+
+.box-btn:last-child {
+    border-radius: 0 6px 6px 0;
+}
+
+.box-btn:not(:last-child) {
+    border-right: none;
+}
+
+.box-btn.selected {
+    background-color: rgba(254, 177, 255, 0.8);
+    color: black;
+    font-weight: 700;
+}
+
+.add-btn {
+    background-color: transparent;
+    border: 1px solid rgba(254, 177, 255, 0.8);
+    color: white;
+    padding: 10px 25px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.1rem;
+    margin-left: auto;
+    transition: all 0.3s ease;
+}
+
+.add-btn:hover {
+    background-color: rgba(254, 177, 255, 0.2);
+}
+
+.schedule-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0);
+    border: 1px solid rgba(254, 177, 255, 0.3);
+    border-radius: 12px;
+    width: 100%;
+    padding: 20px 30px;
+    box-sizing: border-box;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+.time-info .time {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-right: 15px;
+}
+
+.time-info .day {
+    font-size: 1.2rem;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.selected-boxes {
+    display: flex;
+    gap: 10px;
+}
+
+.box-badge {
+    background-color: black;
+    border: 1px solid rgba(254, 177, 255, 0.8);
+    color: white;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 6px;
+    font-weight: 700;
+}

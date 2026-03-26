@@ -3,7 +3,7 @@
 #include <WiFiClientSecure.h>
 #include <PubSubClient.h>
 #include <ArduinoJson.h>
-
+const int schedule_maxSize = 1000;
 
 // Wi-Fi credentials
 const char* ssid = "donottouchthis";
@@ -21,18 +21,22 @@ const char* clientId = "ESP32_Pill";
 // MQTT topic
 const char* topic_has_taken_pill = "esp32/has_taken_pill";
 const char* topic_hasnt_taken_pill = "esp32/hasnt_taken_pill";
+const char* topic_esp32 = "esp32/receive";
 
 // Create instances
 WiFiClientSecure wifiClient;
 PubSubClient mqttClient(wifiClient);
 
+EatTime* pill_schedule = new EatTime[schedule_maxSize];
 bool is_configurated = false;
 bool is_box_open = false;
 bool has_taken_pills = false;
 
 long previous_time = 0;
 const long publish_interval = 1000;
-
+void callback(char* topic, byte* payload, unsigned int length) {
+  fillSchedule(pill_schedule, schedule_maxSize, )
+}
 void reconnect() {
   Serial.println("Connecting to MQTT Broker...");
   while (!mqttClient.connected()) {
@@ -61,40 +65,32 @@ void setup() {
 
   wifiClient.setInsecure();
   mqttClient.setServer(mqtt_broker, mqtt_port);
+  mqttClient.setCallback(callback);
 }
 
 void loop() {
   if (!mqttClient.connected()) {
     reconnect();
   }
-  if (is_configurated) {
-    if (is_box_open) {
-      if (!has_taken_pills) {
-        int detect_taking_pills = CheckDistance();
-        if (detect_taking_pills <= 5) {
-          has_taken_pills = true;
-          //close box
-          mqttClient.publish(topic_has_taken_pill, buffer);
-        } else {
-          if (has_time_passed) {
-            if (!has_sent_message) {
-              //sends message hasn't taken pills
-            }
-          }
-        }
-      }
-    }
-  }
+  // if (is_configurated) {
+  //   if (is_box_open) {
+  //     if (!has_taken_pills) {
+  //       int detect_taking_pills = CheckDistance();
+  //       if (detect_taking_pills <= 5) {
+  //         has_taken_pills = true;
+  //         //close box
+  //         mqttClient.publish(topic_has_taken_pill, buffer);
+  //       } else {
+  //         if (has_time_passed) {
+  //           if (!has_sent_message) {
+  //             //sends message hasn't taken pills
+  //           }
+  //         }
+  //       }
+  //     }
+  //   }
+  // }
   mqttClient.loop();
-      previous_time = now;
-      StaticJsonDocument<200> jsonDoc;
-      jsonDoc["pill_taken"] = true;
 
-      char buffer[256];
-      serializeJson(jsonDoc, buffer);
 
-      Serial.print("Publishing JSON: ");
-      Serial.println(buffer);
-
-      mqttClient.publish(topic_has_taken_pill, buffer);
 }

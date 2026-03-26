@@ -20,9 +20,10 @@ void fillSchedule(EatTime* schedule, unsigned int maxSize, unsigned int& sc_len,
   for (JsonObject obj : arr) {
     if (sc_len >= maxSize) break;
 
-    schedule[sc_len].day = obj["d"];
-    schedule[sc_len].hour = obj["h"];
-    schedule[sc_len].minute = obj["m"];
+    schedule[sc_len].day = obj["d"];      // day
+    schedule[sc_len].hour = obj["h"];     // hour
+    schedule[sc_len].minute = obj["m"];   // minute
+    schedule[sc_len].boxes = obj["b"]; // boxes bitmask
 
     sc_len++;
   }

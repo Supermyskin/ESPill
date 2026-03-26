@@ -76,6 +76,9 @@ void loop(){
           BoxArray[i].close();
         }
       }  
+      Serial.write("yb");
+      Serial.write('0');
+      Serial.write('1');
   }
 
     

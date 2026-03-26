@@ -24,13 +24,16 @@ void waitTakePills(){
     unsigned long currTime = millis();
     if(currTime - lastTime >= 20000){
       Serial.write("yb");
-      Serial.write(-1);
-      Serial.write('\0');
+      Serial.write('-');
+      Serial.write('1');
     }
     for(int i = 0; i < 4; i++){
       Distance[i] = CheckDistance();
     }
     avg_distance = (Distance[0] + Distance[1] + Distance[2] + Distance[3]) / 4;
+    Serial.write("yb");
+    Serial.write('+');
+    Serial.write('1');
   }
 
 

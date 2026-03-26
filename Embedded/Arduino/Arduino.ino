@@ -56,7 +56,7 @@ void setup(){
 void loop(){
   DateTime now = rtc.now();
   uint8_t dow = dayOfWeek(now.year(), now.month(), now.day());
-  if(Serial.available() >= 5){
+  if(Serial.available() >= 6){
     uint8_t a = Serial.read();
     if(a == 'y'){
       uint8_t b = Serial.read();

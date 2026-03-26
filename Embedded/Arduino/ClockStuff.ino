@@ -19,10 +19,9 @@ void waitTakePills(){
   }
   uint8_t avg_distance = (Distance[0] + Distance[1] + Distance[2] + Distance[3]) / 4;
   unsigned long lastTime = 0;
-
+  bool sent = false;
   while(avg_distance > 6){
     unsigned long currTime = millis();
-    bool sent = false;
     if(currTime - lastTime >= 20000 && !sent){
       Serial.write("yb");
       Serial.write('-');

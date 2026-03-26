@@ -4,7 +4,6 @@
 #include <PubSubClient.h>
 #include <ArduinoJson.h>
 #include "HeaderFile.h"
-
 const int schedule_maxSize = 1000;
 
 // Wi-Fi credentials

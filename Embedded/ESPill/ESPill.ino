@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #include "HeaderFile.h"
 #include "RTClib.h"
 #include "Servo.h"
@@ -19,9 +20,15 @@ class Box {
       digitalWrite(LED, LOW);
       myServo.write(90);
     }
+=======
+// #include "HeaderFile.h"
+// #include "Servo.h"
+// #include "RTClib.h"
+>>>>>>> 796dd211a3da40998904e7d9ab903d4362863217
 
 };
 
+<<<<<<< HEAD
 DS1302 rtc(CLOCK_RST, CLOCK_CLK, CLOCK_DATA);
 Box box;
 
@@ -42,3 +49,25 @@ void setup(){
 void loop(){
 
 }
+=======
+
+// Servo Servo1;
+// char buf[20];
+// DS1302 rtc(CLOCK_RST, CLOCK_CLK, CLOCK_DATA);
+// void setup(){
+//   Serial.begin(9600);
+//   pinMode(ECHO, INPUT);
+//   pinMode(TRIG, OUTPUT);
+//   pinMode(BUZZ, OUTPUT);
+//   Servo1.attach(8);
+//   if(!rtc.isrunning()){
+//     rtc.begin();
+//   }
+//   rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
+// }
+
+
+// void loop(){
+//   delay(1000);
+// }
+>>>>>>> 796dd211a3da40998904e7d9ab903d4362863217

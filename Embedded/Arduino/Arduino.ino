@@ -17,6 +17,7 @@ class Box {
 
     Servo myServo;
     void init(){
+      pinMode(LED, OUTPUT);
       myServo.attach(SERVO);
     }
     void open(){
@@ -55,20 +56,21 @@ void setup(){
 void loop(){
   DateTime now = rtc.now();
   uint8_t dow = dayOfWeek(now.year(), now.month(), now.day());
-  if(Serial.available() >= 6){
+  if(Serial.available() >= 5){
     uint8_t a = Serial.read();
     if(a == 'y'){
       uint8_t b = Serial.read();
       if(b == 'b'){
-        Serial.read();
-        Serial.read();
-        Serial.read();
+        eatTime.day = Serial.read();
+        eatTime.hour = Serial.read();
+        eatTime.minute = Serial.read();
+        eatTime.box = Serial.read();
         data_received = true;
       }
     }
   }
   if(data_received){
-    if(eatTime.day == dow && eatTime.minute == now.minute())
+    if(eatTime.day == dow && eatTime.hour == now.hour() && eatTime.minute == now.minute())
       for(int i = 0; i < 1; i++){
         if(eatTime.box & (1 << i)){
           BoxArray[i].open();

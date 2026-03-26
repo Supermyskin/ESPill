@@ -22,10 +22,13 @@ void waitTakePills(){
 
   while(avg_distance > 6){
     unsigned long currTime = millis();
-    if(currTime - lastTime >= 20000){
+    bool sent = false;
+    if(currTime - lastTime >= 20000 && !sent){
       Serial.write("yb");
       Serial.write('-');
       Serial.write('1');
+      sent = true;
+
     }
     for(int i = 0; i < 4; i++){
       Distance[i] = CheckDistance();
@@ -34,6 +37,7 @@ void waitTakePills(){
     Serial.write("yb");
     Serial.write('+');
     Serial.write('1');
+    delay(60);
   }
 
 

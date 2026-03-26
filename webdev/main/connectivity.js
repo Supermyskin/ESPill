@@ -11,7 +11,6 @@ client.on('connect', () => {
     document.getElementById('status').innerText = "Connected! Ready for data.";
     document.getElementById('status').style.color = "green";
 
-    client.subscribe('esp32/subscribed');
     console.log("Subscribed to esp32/subscribed");
 });
 

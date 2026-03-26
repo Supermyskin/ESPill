@@ -1,15 +1,17 @@
+#include "HeaderFile.h"
 
-
-
-
-
-
-void setup() {
-  
-
+void setup(){
+  Serial.begin(9600);
+  pinMode(ECHO, INPUT);
+  pinMode(TRIG, OUTPUT);
 }
 
-void loop() {
-  // put your main code here, to run repeatedly:
 
+
+
+void loop(){
+  Serial.println("Distance: ");
+  Serial.print(CheckDistance());
+
+  delay(100);
 }

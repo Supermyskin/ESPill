@@ -38,6 +38,16 @@ void waitTakePills(){
     Serial.write('1');
     delay(60);
   }
-
-
+  delay(1000);
+  for(int i = 0; i < 4; i++){
+    Distance[i] = CheckDistance();
+  }
+  avg_distance = (Distance[0] + Distance[1] + Distance[2] + Distance[3]) / 4;
+  while(!avg_distance > 6){
+    for(int i = 0; i < 4; i++){
+      Distance[i] = CheckDistance();
+    }
+    avg_distance = (Distance[0] + Distance[1] + Distance[2] + Distance[3]) / 4;
+    delay(50);
+  }
 }

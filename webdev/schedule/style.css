@@ -11,7 +11,7 @@ body {
     font-family: 'Space Grotesk', sans-serif;
     color: white;
     flex-direction: column;
-    gap: 30px;
+    gap: 1.875rem;
 }
 
 h1 {
@@ -19,8 +19,8 @@ h1 {
 }
 
 .header {
-    border-bottom: 2px solid rgba(254, 177, 255, 0.8);
-    box-shadow: 0px 4px 15px rgba(254, 177, 255, 0.5);
+    border-bottom: 0.125rem solid rgba(254, 177, 255, 0.8);
+    box-shadow: 0 0.25rem 0.9375rem rgba(254, 177, 255, 0.5);
     position: absolute;
     top: 0;
     left: 0;
@@ -33,9 +33,9 @@ h1 {
     float: right;
     color: #f2f2f2;
     text-align: center;
-    padding: 14px 16px;
+    padding: 0.875rem 1rem;
     text-decoration: none;
-    font-size: 17px;
+    font-size: 1.0625rem;
 }
 
 .header .header-logo {
@@ -45,34 +45,34 @@ h1 {
 .header a:hover {
     background-color: rgba(254, 177, 255, 0.8);
     color: black;
-    box-shadow: 0 15px 25px rgba(145, 92, 182, .4);
+    box-shadow: 0 0.9375rem 1.5625rem rgba(145, 92, 182, .4);
 }
 
 .container {
     display: flex;
     flex-direction: row;
     justify-content: center;
-    gap: 15px;
-    padding: 40px 20px;
+    gap: 0.9375rem;
+    padding: 2.5rem 1.25rem;
 
     width: 100%;
-    max-width: 1400px;
+    max-width: 87.5rem;
     height: 60vh;
 }
 
 .container div {
     flex: 1;
     background-color: rgba(0, 0, 0, 0);
-    border: 1px solid rgba(254, 177, 255, 0.3);
-    border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    border: 0.0625rem solid rgba(254, 177, 255, 0.3);
+    border-radius: 0.75rem;
+    box-shadow: 0 0.25rem 0.625rem rgba(0, 0, 0, 0.5);
     transition: all 0.3s ease;
 }
 
 .container div:hover {
-    transform: translateY(-8px);
+    transform: translateY(-0.5rem);
     border-color: rgba(254, 177, 255, 0.8);
-    box-shadow: 0 8px 20px rgba(254, 177, 255, 0.4);
+    box-shadow: 0 0.5rem 1.25rem rgba(254, 177, 255, 0.4);
 }
 
 .container div a {
@@ -85,22 +85,22 @@ h1 {
     text-decoration: none;
     font-size: 1.2rem;
     font-weight: 600;
-    letter-spacing: 1px;
+    letter-spacing: 0.0625rem;
 }
 
 .send-btn {
-    margin-top: 20px;
+    margin-top: 1.25rem;
     margin-bottom: 5rem;
-    padding: 15px 30px;
+    padding: 0.9375rem 1.875rem;
     font-size: 1.1rem;
     font-weight: bold;
     color: white;
     background-color: transparent;
-    border: 2px solid rgba(254, 177, 255, 0.5);
-    border-radius: 30px;
+    border: 0.125rem solid rgba(254, 177, 255, 0.5);
+    border-radius: 1.875rem;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0.25rem 0.625rem rgba(0, 0, 0, 0.5);
     font-family: 'Space Grotesk', sans-serif;
 }
 
@@ -108,7 +108,7 @@ h1 {
     transform: scale(1.05);
     background-color: rgba(254, 177, 255, 0.2);
     border-color: rgba(254, 177, 255, 0.8);
-    box-shadow: 0 8px 20px rgba(254, 177, 255, 0.4);
+    box-shadow: 0 0.5rem 1.25rem rgba(254, 177, 255, 0.4);
 }
 
 .send-btn:active {

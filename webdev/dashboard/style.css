@@ -11,7 +11,7 @@ body {
     font-family: sans-serif;
     color: white;
     flex-direction: column;
-    gap: 30px;
+    gap: 1.875rem;
     transition: background-image 0.5s ease-in-out;
 }
 
@@ -35,8 +35,8 @@ body.alert {
 }
 
 .header {
-    border-bottom: 2px solid rgba(254, 177, 255, 0.8);
-    box-shadow: 0px 4px 15px rgba(254, 177, 255, 0.5);
+    border-bottom: 0.125rem solid rgba(254, 177, 255, 0.8);
+    box-shadow: 0 0.25rem 0.9375rem rgba(254, 177, 255, 0.5);
     position: absolute;
     top: 0;
     left: 0;
@@ -48,16 +48,16 @@ body.alert {
 
 body.alert .header {
     border-bottom-color: red;
-    box-shadow: 0px 4px 25px rgba(255, 0, 0, 0.8);
+    box-shadow: 0 0.25rem 1.5625rem rgba(255, 0, 0, 0.8);
 }
 
 .header a {
     float: right;
     color: #f2f2f2;
     text-align: center;
-    padding: 14px 16px;
+    padding: 0.875rem 1rem;
     text-decoration: none;
-    font-size: 17px;
+    font-size: 1.0625rem;
 }
 
 .header .header-logo {
@@ -67,7 +67,7 @@ body.alert .header {
 .header a:hover {
     background-color: rgba(254, 177, 255, 0.8);
     color: black;
-    box-shadow: 0 15px 25px rgba(145, 92, 182, .4);
+    box-shadow: 0 0.9375rem 1.5625rem rgba(145, 92, 182, .4);
 }
 
 .container {
@@ -76,26 +76,26 @@ body.alert .header {
 }
 
 #status-title {
-    font-size: 48px;
-    margin-bottom: 10px;
+    font-size: 3rem;
+    margin-bottom: 0.625rem;
 }
 
 #status-text {
-    font-size: 24px;
+    font-size: 1.5rem;
     color: rgba(255, 255, 255, 0.7);
-    margin-bottom: 30px;
+    margin-bottom: 1.875rem;
 }
 
 .glass-card {
     background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 20px;
-    padding: 20px 40px;
-    margin: 20px auto;
-    max-width: 400px;
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    backdrop-filter: blur(0.625rem);
+    -webkit-backdrop-filter: blur(0.625rem);
+    border: 0.0625rem solid rgba(255, 255, 255, 0.1);
+    border-radius: 1.25rem;
+    padding: 1.25rem 2.5rem;
+    margin: 1.25rem auto;
+    max-width: 25rem;
+    box-shadow: 0 0.5rem 2rem 0 rgba(0, 0, 0, 0.37);
     transition: all 0.3s ease;
 }
 
@@ -103,32 +103,32 @@ body.alert .header {
     margin-top: 0;
     font-weight: 300;
     text-transform: uppercase;
-    letter-spacing: 2px;
+    letter-spacing: 0.125rem;
     color: rgba(254, 177, 255, 0.9);
 }
 
 #next-pill-time {
-    font-size: 32px;
+    font-size: 2rem;
     font-weight: 600;
-    margin: 10px 0;
+    margin: 0.625rem 0;
 }
 
 #next-pill-info {
-    font-size: 18px;
+    font-size: 1.125rem;
     color: rgba(255, 255, 255, 0.6);
 }
 
 #alert-message {
-    margin-top: 30px;
-    font-size: 42px;
+    margin-top: 1.875rem;
+    font-size: 2.625rem;
     font-weight: 900;
     color: yellow;
-    text-shadow: 0 0 10px rgba(255, 255, 0, 0.5);
+    text-shadow: 0 0 0.625rem rgba(255, 255, 0, 0.5);
 }
 
 body.alert #alert-message {
     color: red;
-    text-shadow: 0 0 20px rgba(255, 0, 0, 1);
+    text-shadow: 0 0 1.25rem rgba(255, 0, 0, 1);
     animation: text-flash 0.2s infinite alternate;
 }
 
@@ -142,6 +142,6 @@ body.alert #alert-message {
 }
 
 #timer-container {
-    margin-top: 20px;
-    font-size: 20px;
+    margin-top: 1.25rem;
+    font-size: 1.25rem;
 }

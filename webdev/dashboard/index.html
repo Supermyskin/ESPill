@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESPill - Dashboard</title>
+    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://kit.fontawesome.com/1424a6b21b.js" crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="icon" href="icon.png">
+</head>
+
+<body>
+    <div class="header">
+        <a href="../dashboard/index.html"><i class="fa-solid fa-gauge"></i> Dashboard</a>
+        <a href="../about/index.html"><i class="fa-solid fa-circle-info"></i> About</a>
+        <a href="../schedule/index.html"><i class="fa-solid fa-calendar"></i> Schedule</a>
+        <a href="../landing/index.html" class="header-logo"><i class="fa-solid fa-capsules"></i> ESPill</a>
+    </div>
+
+    <div class="container">
+        <div class="glass-card">
+            <h1 id="status-title">System Status</h1>
+            <p id="status-text">Connecting to HiveMQ...</p>
+        </div>
+
+        <div id="next-pill-container" class="glass-card">
+            <h3><i class="fa-solid fa-clock-rotate-left"></i> Next Pill</h3>
+            <div id="next-pill-details">
+                <p id="next-pill-time">Loading schedule...</p>
+                <p id="next-pill-info"></p>
+            </div>
+        </div>
+
+        <div id="alert-message" class="hidden">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            <span>PLEASE TAKE YOUR PILL!</span>
+        </div>
+        <div id="timer-container" class="hidden">
+            <p>Time remaining: <span id="timer">05:00</span></p>
+        </div>
+    </div>
+
+    <script src="index.js"></script>
+</body>
+
+</html>

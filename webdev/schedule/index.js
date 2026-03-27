@@ -12,7 +12,7 @@ function uploadToESP() {
         .then(response => response.json())
         .then(data => {
             console.log("Publishing data:", data);
-            client.publish('esp32/recieve', JSON.stringify(data), { qos: 1 }, (error) => {
+            client.publish('esp32/receive', JSON.stringify(data), { qos: 0 }, (error) => {
                 if (error) {
                     alert("Error sending schedule to ESP32.");
                 } else {

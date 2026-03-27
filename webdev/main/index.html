@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>ESPill</title>
     <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
@@ -7,18 +8,22 @@
     <link rel="stylesheet" href="style.css">
     <script src="https://kit.fontawesome.com/1424a6b21b.js" crossorigin="anonymous"></script>
 </head>
+
 <body>
 
     <div class="header">
         <a href="../dashboard/index.html"><i class="fa-solid fa-gauge"></i> Dashboard</a>
         <a href="../about/index.html"><i class="fa-solid fa-circle-info"></i> About</a>
         <a href="../schedule/index.html"><i class="fa-solid fa-calendar"></i> Schedule</a>
-        <a href="../landing/landing.html" class="header-logo"><i class="fa-solid fa-capsules"></i> ESPill</a>
+        <a href="../landing/index.html" class="header-logo"><i class="fa-solid fa-capsules"></i> ESPill</a>
     </div>
-    
+
     <p id="status" style="color: white;">Connecting to HiveMQ...</p>
-    
+
+    <p id="instructions" style="font-weight: 50;"></p>
+
     <script src="connectivity.js"></script>
     <script src="index.js"></script>
 </body>
+
 </html>

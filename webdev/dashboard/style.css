@@ -1,0 +1,147 @@
+body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    background-color: black;
+    background-image: radial-gradient(ellipse at bottom, rgba(254, 177, 255, 0.4) 0%, transparent 50%);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    justify-content: center;
+    align-items: center;
+    font-family: sans-serif;
+    color: white;
+    flex-direction: column;
+    gap: 30px;
+    transition: background-image 0.5s ease-in-out;
+}
+
+body.warning {
+    background-image: radial-gradient(ellipse at bottom, rgba(255, 255, 0, 0.4) 0%, transparent 50%);
+}
+
+body.alert {
+    animation: flash-red 0.5s infinite alternate;
+}
+
+@keyframes flash-red {
+    0% {
+        background-image: radial-gradient(ellipse at bottom, rgba(255, 0, 0, 0.4) 0%, transparent 50%);
+        background-color: black;
+    }
+    100% {
+        background-image: radial-gradient(ellipse at bottom, rgba(255, 0, 0, 1) 0%, transparent 70%);
+        background-color: rgba(255, 0, 0, 0.1);
+    }
+}
+
+.header {
+    border-bottom: 2px solid rgba(254, 177, 255, 0.8);
+    box-shadow: 0px 4px 15px rgba(254, 177, 255, 0.5);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    overflow: hidden;
+    background-color: #ffffff00;
+    transition: all 0.5s ease;
+}
+
+body.alert .header {
+    border-bottom-color: red;
+    box-shadow: 0px 4px 25px rgba(255, 0, 0, 0.8);
+}
+
+.header a {
+    float: right;
+    color: #f2f2f2;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 17px;
+}
+
+.header .header-logo {
+    float: left;
+}
+
+.header a:hover {
+    background-color: rgba(254, 177, 255, 0.8);
+    color: black;
+    box-shadow: 0 15px 25px rgba(145, 92, 182, .4);
+}
+
+.container {
+    text-align: center;
+    z-index: 1;
+}
+
+#status-title {
+    font-size: 48px;
+    margin-bottom: 10px;
+}
+
+#status-text {
+    font-size: 24px;
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 30px;
+}
+
+.glass-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 20px 40px;
+    margin: 20px auto;
+    max-width: 400px;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    transition: all 0.3s ease;
+}
+
+.glass-card h3 {
+    margin-top: 0;
+    font-weight: 300;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: rgba(254, 177, 255, 0.9);
+}
+
+#next-pill-time {
+    font-size: 32px;
+    font-weight: 600;
+    margin: 10px 0;
+}
+
+#next-pill-info {
+    font-size: 18px;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+#alert-message {
+    margin-top: 30px;
+    font-size: 42px;
+    font-weight: 900;
+    color: yellow;
+    text-shadow: 0 0 10px rgba(255, 255, 0, 0.5);
+}
+
+body.alert #alert-message {
+    color: red;
+    text-shadow: 0 0 20px rgba(255, 0, 0, 1);
+    animation: text-flash 0.2s infinite alternate;
+}
+
+@keyframes text-flash {
+    from { opacity: 1; transform: scale(1); }
+    to { opacity: 0.5; transform: scale(1.3); }
+}
+
+.hidden {
+    display: none !important;
+}
+
+#timer-container {
+    margin-top: 20px;
+    font-size: 20px;
+}

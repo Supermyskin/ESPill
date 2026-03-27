@@ -37,6 +37,11 @@ function addToJSON(i) {
         return;
     }
 
+    if (hourNumber > 23 || hourNumber < 0 || minuteNumber > 59 || minuteNumber < 0) {
+        alert("Please enter a valid time");
+        return;
+    }
+
     let newEntry = {
         "d": i,
         "h": hourNumber,
@@ -97,14 +102,59 @@ document.addEventListener('DOMContentLoaded', function () {
                             <div class="selected-boxes">
                                 ${boxesHtml}
                             </div>
+                            <button class="delete-btn" data-day="${item.d}" data-hour="${item.h}" data-minute="${item.m}" data-boxes="${item.b}">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
                         </div>
                     `;
                 }
             }
 
             scheduleListDiv.innerHTML = scheduleItem;
+
+            document.querySelectorAll('.delete-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const day = this.getAttribute('data-day');
+                    const hour = this.getAttribute('data-hour');
+                    const minute = this.getAttribute('data-minute');
+                    const boxes = this.getAttribute('data-boxes');
+                    deleteScheduleItem(day, hour, minute, boxes);
+                });
+            });
         })
         .catch(error => {
             console.log("problem:", error);
         });
 });
+
+function deleteScheduleItem(day, hour, minute, boxes) {
+    const itemToDelete = {
+        d: parseInt(day, 10),
+        h: parseInt(hour, 10),
+        m: parseInt(minute, 10),
+        b: parseInt(boxes, 10)
+    };
+
+    fetch('http://127.0.0.1:3000/izbrishi-schedule', {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(itemToDelete)
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Item deleted:', data);
+        // Reload the schedule list after successful deletion
+        location.reload(); 
+    })
+    .catch(error => {
+        console.error('Error deleting schedule item:', error);
+        alert('Failed to delete schedule item.');
+    });
+}

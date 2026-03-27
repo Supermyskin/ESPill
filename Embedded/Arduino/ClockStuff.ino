@@ -19,18 +19,10 @@ void waitTakePills(){
   }
   uint8_t avg_distance = (Distance[0] + Distance[1] + Distance[2] + Distance[3]) / 4;
   unsigned long lastTime = millis();
-  bool sent = false;
   Serial.println("Take the pill!");
   while(avg_distance > 6){
-    unsigned long currTime = millis();
-    if(currTime - lastTime >= 20000 && !sent){
-      Serial.print("Say pill not taken");
-      Serial.write("yb");
-      Serial.write('-');
-      Serial.write('1');
-      sent = true;
-
-    }
+    Serial.println("Avg:");
+    Serial.print(avg_distance);
     for(int i = 0; i < 4; i++){
       Distance[i] = CheckDistance();
     }
@@ -38,11 +30,9 @@ void waitTakePills(){
     delay(60);
   }
   Serial.print("Pill Taken");
-  Serial.write("yb");
-  Serial.write('+');
-  Serial.write('1');
+  Serial.write("yb+1");
   delay(1000);
-  Serial.print("Put your hand away");
+  // Serial.print("Put your hand away");
   for(int i = 0; i < 4; i++){
     Distance[i] = CheckDistance();
   }

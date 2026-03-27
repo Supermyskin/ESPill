@@ -2,7 +2,7 @@
 #include "RTClib.h"
 #include "Servo.h"
 #include "Types.h"
-
+bool boo = false;
 
 class Box {
 
@@ -39,7 +39,7 @@ DS1302 rtc(CLOCK_RST, CLOCK_CLK, CLOCK_DATA);
 Box BoxArray[] = {Box(A1, A2)};
 bool data_received = false;
 void setup(){
-  Serial.begin(9600);
+  Serial.begin(115200);
   pinMode(ECHO, INPUT);
   pinMode(TRIG, OUTPUT);
   pinMode(BUZZ, OUTPUT);
@@ -54,6 +54,7 @@ void setup(){
 
 
 void loop(){
+  Serial.println("Waiting for input");
   DateTime now = rtc.now();
   uint8_t dow = dayOfWeek(now.year(), now.month(), now.day());
   if(Serial.available() >= 6){
@@ -61,6 +62,7 @@ void loop(){
     if(a == 'y'){
       uint8_t b = Serial.read();
       if(b == 'b'){
+        Serial.println("Received Input");
         eatTime.day = Serial.read();
         eatTime.hour = Serial.read();
         eatTime.minute = Serial.read();
@@ -73,20 +75,29 @@ void loop(){
     if(eatTime.day == dow && eatTime.hour == now.hour() && eatTime.minute == now.minute())
       for(int i = 0; i < 1; i++){
         if(eatTime.box & (1 << i)){
+          Serial.println("Open The box");
           BoxArray[i].open();
           waitTakePills();
           BoxArray[i].close();
+          Serial.println("Close the box");
         }
-
+        Serial.print("Say you're done");
         Serial.write("yb");
         Serial.write('0');
         Serial.write('1');
 
       }  
-      
+
+  }
+  if(!boo){
+    Serial.println("Sent Request");
+    Serial.write("yb");
+    Serial.write('0');
+    Serial.write('1');
+    boo = true;
   }
 
-    
+  delay(200);    
 }
 
 

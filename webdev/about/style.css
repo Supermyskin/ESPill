@@ -11,7 +11,7 @@ body {
     font-family: 'Space Grotesk', sans-serif;
     color: white;
     flex-direction: column;
-    gap: 30px;
+    gap: 1.875rem;
 }
 
 h1 {
@@ -38,18 +38,18 @@ h2 {
 }
 
 .goal-to-help li {
-    margin-bottom: 15px;
+    margin-bottom: 0.9375rem;
     font-size: 1.2rem;
 }
 
 .goal-to-help i {
     color: rgb(254, 177, 255);
-    margin-right: 10px;
+    margin-right: 0.625rem;
 }
 
 .header {
-    border-bottom: 2px solid rgba(254, 177, 255, 0.8);
-    box-shadow: 0px 4px 15px rgba(254, 177, 255, 0.5);
+    border-bottom: 0.125rem solid rgba(254, 177, 255, 0.8);
+    box-shadow: 0 0.25rem 0.9375rem rgba(254, 177, 255, 0.5);
     position: absolute;
     top: 0;
     left: 0;
@@ -62,9 +62,9 @@ h2 {
     float: right;
     color: #f2f2f2;
     text-align: center;
-    padding: 14px 16px;
+    padding: 0.875rem 1rem;
     text-decoration: none;
-    font-size: 17px;
+    font-size: 1.0625rem;
 }
 
 .header .header-logo {
@@ -74,7 +74,7 @@ h2 {
 .header a:hover {
     background-color: rgba(254, 177, 255, 0.8);
     color: black;
-    box-shadow: 0 15px 25px rgba(145, 92, 182, .4);
+    box-shadow: 0 0.9375rem 1.5625rem rgba(145, 92, 182, .4);
 }
 
 .solution {
@@ -120,10 +120,10 @@ h2 {
 }
 
 .techstack-list li {
-    margin-bottom: 15px;
+    margin-bottom: 0.9375rem;
 }
 
 .techstack-list i {
     color: rgb(254, 177, 255);
-    margin-right: 10px;
+    margin-right: 0.625rem;
 }

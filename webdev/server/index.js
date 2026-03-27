@@ -1,15 +1,18 @@
 const express = require('express');
 const cors = require('cors');
 const fs = require('fs');
+const path = require('path');
 
 const app = express();
+
+const scheduleFilePath = path.join(__dirname, 'schedule.json');
 
 app.use(cors());
 app.use(express.json());
 
 app.get('/vzemi-schedule', function (req, res) {
 
-    let existingData = fs.readFileSync('./schedule.json', 'utf8');
+    let existingData = fs.readFileSync(scheduleFilePath, 'utf8');
 
     if (existingData !== "") {
         res.json(JSON.parse(existingData));
@@ -25,7 +28,7 @@ app.post('/dobavi-schedule', function (req, res) {
     let newEntry = req.body;
     let scheduleList = [];
 
-    let existingData = fs.readFileSync('./schedule.json', 'utf8');
+    let existingData = fs.readFileSync(scheduleFilePath, 'utf8');
 
     if (existingData !== "") {
         scheduleList = JSON.parse(existingData);
@@ -34,16 +37,16 @@ app.post('/dobavi-schedule', function (req, res) {
     scheduleList.push(newEntry);
 
     let finalJsonString = JSON.stringify(scheduleList, null, 2);
-    fs.writeFileSync('./schedule.json', finalJsonString);
+    fs.writeFileSync(scheduleFilePath, finalJsonString);
 
-    res.send("placeholder");
+    res.json({ message: "Item added successfully", newEntry: newEntry });
 });
 
 app.delete('/izbrishi-schedule', function (req, res) {
 
     let itemToDelete = req.body;
 
-    let existingData = fs.readFileSync('./schedule.json', 'utf8');
+    let existingData = fs.readFileSync(scheduleFilePath, 'utf8');
     let scheduleList = [];
 
     if (existingData !== "") {
@@ -61,7 +64,7 @@ app.delete('/izbrishi-schedule', function (req, res) {
 
     if (scheduleList.length < initialLength) {
         let finalJsonString = JSON.stringify(scheduleList, null, 2);
-        fs.writeFileSync('./schedule.json', finalJsonString);
+        fs.writeFileSync(scheduleFilePath, finalJsonString);
         res.json({ message: "Item deleted successfully", deletedItem: itemToDelete });
     } else {
         res.status(404).json({ message: "Item not found or no changes made" });

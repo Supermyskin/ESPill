@@ -11,13 +11,13 @@ const body = document.body;
 const nextPillTime = document.getElementById('next-pill-time');
 const nextPillInfo = document.getElementById('next-pill-info');
 
-const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+const daysOfWeek = [null, "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
 async function updateNextPill() {
     try {
         const response = await fetch('http://localhost:3000/vzemi-schedule');
         const schedule = await response.json();
-        
+
         if (!schedule || schedule.length === 0) {
             nextPillTime.textContent = "No pills scheduled";
             nextPillInfo.textContent = "";
@@ -25,11 +25,13 @@ async function updateNextPill() {
         }
 
         const now = new Date();
-        const currentDay = now.getDay(); // 0-6
+        let currentDay = now.getDay(); // 0-6 (Sun-Sat)
+        if (currentDay === 0) currentDay = 7; // Convert Sun from 0 to 7
+        
         const currentHour = now.getHours();
         const currentMinute = now.getMinutes();
 
-        // Convert everything to "minutes from start of week" for comparison
+        // Convert everything to "minutes from start of week (Mon 00:00)" for comparison
         const nowMinutes = currentDay * 1440 + currentHour * 60 + currentMinute;
 
         let nextPill = null;

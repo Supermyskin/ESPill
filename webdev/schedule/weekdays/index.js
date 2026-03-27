@@ -56,7 +56,13 @@ function addToJSON(i) {
         },
         body: JSON.stringify(newEntry)
     })
-        .then(response => response.json())
+        .then(response => {
+            if (response.ok) {
+                location.reload();
+            } else {
+                alert("Failed to add schedule item.");
+            }
+        })
         .catch(error => {
             console.log("problem:", error);
         });
@@ -113,7 +119,7 @@ document.addEventListener('DOMContentLoaded', function () {
             scheduleListDiv.innerHTML = scheduleItem;
 
             document.querySelectorAll('.delete-btn').forEach(button => {
-                button.addEventListener('click', function() {
+                button.addEventListener('click', function () {
                     const day = this.getAttribute('data-day');
                     const hour = this.getAttribute('data-hour');
                     const minute = this.getAttribute('data-minute');
@@ -142,19 +148,19 @@ function deleteScheduleItem(day, hour, minute, boxes) {
         },
         body: JSON.stringify(itemToDelete)
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return response.json();
-    })
-    .then(data => {
-        console.log('Item deleted:', data);
-        // Reload the schedule list after successful deletion
-        location.reload(); 
-    })
-    .catch(error => {
-        console.error('Error deleting schedule item:', error);
-        alert('Failed to delete schedule item.');
-    });
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Item deleted:', data);
+            // Reload the schedule list after successful deletion
+            location.reload();
+        })
+        .catch(error => {
+            console.error('Error deleting schedule item:', error);
+            alert('Failed to delete schedule item.');
+        });
 }

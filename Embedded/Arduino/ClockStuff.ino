@@ -18,7 +18,7 @@ void waitTakePills(){
     Distance[i] = CheckDistance();
   }
   uint8_t avg_distance = (Distance[0] + Distance[1] + Distance[2] + Distance[3]) / 4;
-  unsigned long lastTime = 0;
+  unsigned long lastTime = millis();
   bool sent = false;
   while(avg_distance > 6){
     unsigned long currTime = millis();
@@ -33,17 +33,17 @@ void waitTakePills(){
       Distance[i] = CheckDistance();
     }
     avg_distance = (Distance[0] + Distance[1] + Distance[2] + Distance[3]) / 4;
-    Serial.write("yb");
-    Serial.write('+');
-    Serial.write('1');
     delay(60);
   }
+  Serial.write("yb");
+  Serial.write('+');
+  Serial.write('1');
   delay(1000);
   for(int i = 0; i < 4; i++){
     Distance[i] = CheckDistance();
   }
   avg_distance = (Distance[0] + Distance[1] + Distance[2] + Distance[3]) / 4;
-  while(!avg_distance > 6){
+  while(avg_distance <= 6){
     for(int i = 0; i < 4; i++){
       Distance[i] = CheckDistance();
     }

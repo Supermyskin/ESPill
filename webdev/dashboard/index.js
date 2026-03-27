@@ -17,7 +17,7 @@ async function updateNextPill() {
     try {
         const response = await fetch('http://localhost:3000/vzemi-schedule');
         const schedule = await response.json();
-        
+
         if (!schedule || schedule.length === 0) {
             nextPillTime.textContent = "No pills scheduled";
             nextPillInfo.textContent = "";

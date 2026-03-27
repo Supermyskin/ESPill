@@ -30,17 +30,23 @@ h1 span {
 }
 
 .fake_btn {
+  padding: 15px 30px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: white;
+  background-color: transparent;
+  border: 2px solid rgba(254, 177, 255, 0.5);
+  border-radius: 30px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+  font-family: 'Space Grotesk', sans-serif;
   text-decoration: none;
-  color: rgba(255, 255, 255, 0.8);
-  background: rgb(145, 92, 182);
-  padding: 15px 40px;
-  border-radius: 4px;
-  font-weight: normal;
-  text-transform: uppercase;
-  transition: all 0.2s ease-in-out;
 }
 
 .fake_glow_btn:hover {
-  color: rgba(255, 255, 255, 1);
-  box-shadow: 0 5px 15px rgba(145, 92, 182, .4);
+  transform: scale(1.05);
+  background-color: rgba(254, 177, 255, 0.2);
+  border-color: rgba(254, 177, 255, 0.8);
+  box-shadow: 0 8px 20px rgba(254, 177, 255, 0.4);
 }

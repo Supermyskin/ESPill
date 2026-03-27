@@ -3,6 +3,7 @@
 
 <head>
     <title>ESPill</title>
+    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
     <link href="./icon.png" rel="icon">
     <link rel="stylesheet" href="style.css">
     <script src="https://kit.fontawesome.com/1424a6b21b.js" crossorigin="anonymous"></script>
@@ -29,7 +30,9 @@
         <div><a href="./weekdays/sunday.HTML">Sunday</a></div>
     </div>
 
+    <button id="send-schedule-btn" class="send-btn" onclick="uploadToESP()">Send Schedule to ESP32</button>
 
+    <script src="index.js"></script>
 
 </body>
 

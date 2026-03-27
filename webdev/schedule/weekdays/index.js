@@ -37,6 +37,11 @@ function addToJSON(i) {
         return;
     }
 
+    if (hourNumber > 23 || hourNumber < 0 || minuteNumber > 59 || minuteNumber < 0) {
+        alert("Please enter a valid time");
+        return;
+    }
+
     let newEntry = {
         "d": i,
         "h": hourNumber,

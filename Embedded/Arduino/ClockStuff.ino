@@ -1,4 +1,3 @@
-
 EatTime eatTime;
 
 uint8_t dayOfWeek(int year, uint8_t month, uint8_t day) {

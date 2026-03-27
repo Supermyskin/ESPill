@@ -10,8 +10,7 @@ int CheckDistance(){
   delayMicroseconds(10);
   digitalWrite(TRIG, LOW);
 
-  duration = pulseIn(ECHO, HIGH);  
+  duration = pulseIn(ECHO, HIGH);
   distance = duration * 0.034 / 2;
   return distance;
 }
-

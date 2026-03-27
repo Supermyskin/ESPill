@@ -25,13 +25,12 @@ async function updateNextPill() {
         }
 
         const now = new Date();
-        let currentDay = now.getDay(); // 0-6 (Sun-Sat)
-        if (currentDay === 0) currentDay = 7; // Convert Sun from 0 to 7
+        let currentDay = now.getDay();
+        if (currentDay === 0) currentDay = 7;
         
         const currentHour = now.getHours();
         const currentMinute = now.getMinutes();
 
-        // Convert everything to "minutes from start of week (Mon 00:00)" for comparison
         const nowMinutes = currentDay * 1440 + currentHour * 60 + currentMinute;
 
         let nextPill = null;
@@ -41,7 +40,6 @@ async function updateNextPill() {
             let pillMinutes = pill.d * 1440 + pill.h * 60 + pill.m;
             let diff = pillMinutes - nowMinutes;
 
-            // If it's earlier in the week, it's for next week
             if (diff <= 0) {
                 diff += 7 * 1440;
             }
@@ -62,7 +60,6 @@ async function updateNextPill() {
     }
 }
 
-// Initial fetch and refresh every minute
 updateNextPill();
 setInterval(updateNextPill, 60000);
 

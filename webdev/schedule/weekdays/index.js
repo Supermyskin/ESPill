@@ -4,7 +4,7 @@ document.querySelectorAll('.box-btn').forEach(button => {
     });
 });
 
-const daysWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+const daysWeek = ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 
 function addToJSON(i) {
 
@@ -97,7 +97,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     let hourString = item.h.toString().padStart(2, '0');
                     let minuteString = item.m.toString().padStart(2, '0');
 
-                    let dayWord = daysWeek[item.d - 1];
+                    let dayWord = daysWeek[item.d];
 
                     scheduleItem += `
                         <div class="schedule-item">

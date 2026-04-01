@@ -11,7 +11,7 @@ const body = document.body;
 const nextPillTime = document.getElementById('next-pill-time');
 const nextPillInfo = document.getElementById('next-pill-info');
 
-const daysOfWeek = [null, "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+const daysOfWeek = ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 
 async function updateNextPill() {
     try {
@@ -25,8 +25,7 @@ async function updateNextPill() {
         }
 
         const now = new Date();
-        let currentDay = now.getDay();
-        if (currentDay === 0) currentDay = 7;
+        let currentDay = (now.getDay() + 1) % 7;
         
         const currentHour = now.getHours();
         const currentMinute = now.getMinutes();
@@ -51,8 +50,16 @@ async function updateNextPill() {
         });
 
         if (nextPill) {
+            const boxes = [];
+            for (let i = 0; i < 6; i++) {
+                if ((nextPill.b & (1 << i)) > 0) {
+                    boxes.push(i + 1);
+                }
+            }
+            const boxesText = boxes.length > 1 ? `Boxes ${boxes.join(', ')}` : `Box ${boxes[0]}`;
+
             nextPillTime.textContent = `${nextPill.h.toString().padStart(2, '0')}:${nextPill.m.toString().padStart(2, '0')}`;
-            nextPillInfo.textContent = `${daysOfWeek[nextPill.d]} - Box ${nextPill.b}`;
+            nextPillInfo.textContent = `${daysOfWeek[nextPill.d]} - ${boxesText}`;
         }
     } catch (err) {
         console.error("Failed to fetch schedule:", err);

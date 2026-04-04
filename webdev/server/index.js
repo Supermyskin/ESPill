@@ -55,11 +55,11 @@ app.delete('/izbrishi-schedule', function (req, res) {
 
     const initialLength = scheduleList.length;
 
-    scheduleList = scheduleList.filter(item => 
-        !(item.d === itemToDelete.d && 
-          item.h === itemToDelete.h && 
-          item.m === itemToDelete.m && 
-          item.b === itemToDelete.b)
+    scheduleList = scheduleList.filter(item =>
+        !(item.d === itemToDelete.d &&
+            item.h === itemToDelete.h &&
+            item.m === itemToDelete.m &&
+            item.b === itemToDelete.b)
     );
 
     if (scheduleList.length < initialLength) {

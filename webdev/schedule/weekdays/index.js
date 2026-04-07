@@ -42,7 +42,9 @@ function addToJSON(i) {
         return;
     }
 
+    const userID = localStorage.getItem('userID');
     let newEntry = {
+        "userID": userID,
         "d": i,
         "h": hourNumber,
         "m": minuteNumber,
@@ -70,9 +72,15 @@ function addToJSON(i) {
 };
 
 document.addEventListener('DOMContentLoaded', function () {
+    const userID = localStorage.getItem('userID');
+    if (!userID) {
+        window.location.href = "../../login/index.html";
+        return;
+    }
+
     let pageWeekday = document.getElementById('weekday')
 
-    fetch('http://127.0.0.1:3000/vzemi-schedule')
+    fetch(`http://127.0.0.1:3000/vzemi-schedule?userID=${userID}`)
         .then(response => response.json())
         .then(data => {
 
@@ -134,7 +142,9 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 function deleteScheduleItem(day, hour, minute, boxes) {
+    const userID = localStorage.getItem('userID');
     const itemToDelete = {
+        userID: userID,
         d: parseInt(day, 10),
         h: parseInt(hour, 10),
         m: parseInt(minute, 10),

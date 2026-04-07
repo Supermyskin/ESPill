@@ -8,7 +8,14 @@ client.on('connect', () => {
 });
 
 function uploadToESP() {
-    fetch('http://127.0.0.1:3000/vzemi-schedule')
+    const userID = localStorage.getItem('userID');
+    if (!userID) {
+        alert("Please login first.");
+        window.location.href = "../login/index.html";
+        return;
+    }
+
+    fetch(`http://127.0.0.1:3000/vzemi-schedule?userID=${userID}`)
         .then(response => response.json())
         .then(data => {
             console.log("Publishing data:", data);

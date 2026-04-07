@@ -1,3 +1,8 @@
+const userID = localStorage.getItem('userID');
+if (!userID) {
+    window.location.href = "../login/index.html";
+}
+
 const client = mqtt.connect('wss://507f68c94c1b48c6b9a345e8a073e5cd.s1.eu.hivemq.cloud:8884/mqtt', {
     username: 'ESPill',
     password: '1Qazxsw23edcvfr4'
@@ -16,7 +21,7 @@ let lastTriggeredPill = null;
 
 async function updateNextPill() {
     try {
-        const response = await fetch('http://localhost:3000/vzemi-schedule');
+        const response = await fetch(`http://127.0.0.1:3000/vzemi-schedule?userID=${userID}`);
         const schedule = await response.json();
 
         if (!schedule || schedule.length === 0) {

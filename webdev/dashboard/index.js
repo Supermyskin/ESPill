@@ -12,6 +12,7 @@ const nextPillTime = document.getElementById('next-pill-time');
 const nextPillInfo = document.getElementById('next-pill-info');
 
 const daysOfWeek = ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+let lastTriggeredPill = null;
 
 async function updateNextPill() {
     try {
@@ -29,6 +30,18 @@ async function updateNextPill() {
         
         const currentHour = now.getHours();
         const currentMinute = now.getMinutes();
+
+        // Check if any pill is scheduled for the current minute
+        schedule.forEach(pill => {
+            if (pill.d === currentDay && pill.h === currentHour && pill.m === currentMinute) {
+                const pillId = `${pill.d}-${pill.h}-${pill.m}-${pill.b}`;
+                if (lastTriggeredPill !== pillId) {
+                    console.log(`Time for pill! Triggering warning state for pill ID: ${pillId}`);
+                    enterWarningState();
+                    lastTriggeredPill = pillId;
+                }
+            }
+        });
 
         const nowMinutes = currentDay * 1440 + currentHour * 60 + currentMinute;
 
@@ -68,7 +81,7 @@ async function updateNextPill() {
 }
 
 updateNextPill();
-setInterval(updateNextPill, 60000);
+setInterval(updateNextPill, 10000);
 
 let pillTimer = null;
 let secondsRemaining = 300;
@@ -121,7 +134,6 @@ function resetState() {
 client.on('connect', () => {
     console.log('Connected to MQTT');
     client.subscribe('esp32/has_taken_pill');
-    client.subscribe('esp32/hasnt_taken_pill');
     statusText.textContent = 'Connected! Nothing for now.';
     statusText.style.color = "rgb(253, 117, 255)";
 });
@@ -129,9 +141,7 @@ client.on('connect', () => {
 client.on('message', (topic, message) => {
     console.log(`Received message on ${topic}: ${message.toString()}`);
 
-    if (topic === 'esp32/hasnt_taken_pill') {
-        enterWarningState();
-    } else if (topic === 'esp32/has_taken_pill') {
+    if (topic === 'esp32/has_taken_pill') {
         resetState();
     }
 });

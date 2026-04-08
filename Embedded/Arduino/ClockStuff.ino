@@ -25,12 +25,7 @@ uint8_t dayOfWeek(int year, uint8_t month, uint8_t day) {
 
 // =======================
 // DISTANCE HELPERS
-// =======================
-int getDistance(){
-    int d1 = CheckDistance();
-    int d2 = CheckDistance2();
-    return (d1 < d2) ? d1 : d2;
-}
+
 
 // =======================
 // WAIT FOR USER ACTION
@@ -39,21 +34,20 @@ void waitTakePills(){
     uint8_t Distance[4];
 
     for(int i = 0; i < 4; i++){
-        Distance[i] = getDistance();
+        Distance[i] = CheckDistance();
     }
 
     uint8_t avg_distance =
         (Distance[0] + Distance[1] + Distance[2] + Distance[3]) / 4;
 
     Serial.println("Take the pill!");
-
     // WAIT FOR HAND TO APPROACH
     while(avg_distance > 6){
         Serial.print("Avg: ");
         Serial.println(avg_distance);
 
         for(int i = 0; i < 4; i++){
-            Distance[i] = getDistance();
+            Distance[i] = CheckDistance();
         }
 
         avg_distance =
@@ -69,7 +63,7 @@ void waitTakePills(){
 
     // WAIT FOR HAND TO LEAVE
     for(int i = 0; i < 4; i++){
-        Distance[i] = getDistance();
+        Distance[i] = CheckDistance();
     }
 
     avg_distance =
@@ -77,7 +71,7 @@ void waitTakePills(){
 
     while(avg_distance <= 6){
         for(int i = 0; i < 4; i++){
-            Distance[i] = getDistance();
+            Distance[i] = CheckDistance();
         }
 
         avg_distance =

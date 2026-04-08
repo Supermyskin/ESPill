@@ -40,9 +40,9 @@ DS1302 rtc(CLOCK_RST, CLOCK_CLK, CLOCK_DATA);
 
 // ⚠️ если это не специально — поменяй LED пины
 Box BoxArray[] = {
-  Box(A3, A2),
-  Box(A4, A2),
-  Box(A5, A2)
+  Box(A3, A6),
+  Box(A2, A6),
+  Box(A1, A6)
 };
 
 bool data_received = false;
@@ -66,12 +66,13 @@ void setup(){
 void loop(){
   DateTime now = rtc.now();
   uint8_t dow = dayOfWeek(now.year(), now.month(), now.day());
+  Serial.println("TIME: ");
+  Serial.println(dow);
+  Serial.println(now.hour());
 
-  Serial.print(now.hour());
   Serial.print(":");
   Serial.print(now.minute());
-  Serial.print(" | DOW: ");
-  Serial.println(dow);
+
 
   // =========================
   // 📥 ПРИЕМ ДАННЫХ
@@ -94,7 +95,10 @@ void loop(){
         eatTime.hour = hour;
         eatTime.minute = minute;
         eatTime.box = boxes;
-
+        Serial.println("EatTime:");
+        Serial.println(day);
+        Serial.println(hour);
+        Serial.println(minute);
         data_received = true;
 
         Serial.println("[SERIAL] OK");
@@ -110,7 +114,7 @@ void loop(){
   // ⏰ ЛОГИКА ТРИГГЕРА
   // =========================
   if(data_received){
-    if(eatTime.day == dow &&
+    if(/*eatTime.day == dow &&*/
        eatTime.hour == now.hour() &&
        eatTime.minute == now.minute() &&
        now.minute() != lastMinute)

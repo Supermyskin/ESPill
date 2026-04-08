@@ -13,4 +13,3 @@
 #define CLOCK_DATA 7
 
 #define CLOCK_RST 8
-

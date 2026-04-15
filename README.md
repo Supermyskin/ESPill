@@ -6,12 +6,19 @@ By combining reliable IoT hardware with a beautifully designed web platform, ESP
 
 ---
 
+## 🚀 Live Demo
+
+The web interface is live and can be accessed here:
+**[https://supermyskin.github.io/ESPill/](https://supermyskin.github.io/ESPill/)**
+
+---
+
 ## ✨ Features
 
 * **Sleek Web Dashboard:** A beautiful, responsive user interface featuring a custom dark-mode aesthetic with frosted glass elements.
 * **Dynamic Scheduling Algorithm:** Uses a custom bitmasking algorithm to efficiently save and decode complex schedules for 6 different pill compartments.
 * **Real-Time IoT Communication:** Beams schedules instantly to the physical hardware using the lightning-fast MQTT protocol (via HiveMQ).
-* **Local Data Storage:** Lightweight Node.js backend that dynamically reads and writes user schedules to a local JSON database.
+* **Local Data Storage:** Lightweight storage that dynamically reads and writes user schedules.
 
 ---
 
@@ -21,9 +28,20 @@ By combining reliable IoT hardware with a beautifully designed web platform, ESP
 * HTML5 / CSS3 (Flexbox, Glassmorphism UI)
 * Vanilla JavaScript (Fetch API, DOM Manipulation)
 * FontAwesome (Icons)
+* **GitHub Pages** for hosting the static web interface.
 
 **Backend & Hardware:**
-* Node.js / Express.js
-* Local JSON Storage (`schedule.json`)
+* Node.js / Express.js (for local development/testing)
 * MQTT Protocol (HiveMQ)
 * ESP32 Microcontroller 
+
+---
+
+## 📂 Project Structure
+
+- `index.html`: The main landing page.
+- `/dashboard`: Main control panel for monitoring status.
+- `/schedule`: Set and manage medication times for each weekday.
+- `/main`: Core logic for authentication and connectivity.
+- `/login` & `/register`: User account management.
+- `/about`: Project information and documentation.

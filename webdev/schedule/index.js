@@ -1,3 +1,5 @@
+const API_URL = 'http://127.0.0.1:3000';
+
 const client = mqtt.connect('wss://507f68c94c1b48c6b9a345e8a073e5cd.s1.eu.hivemq.cloud:8884/mqtt', {
     username: 'ESPill',
     password: '1Qazxsw23edcvfr4'
@@ -15,7 +17,7 @@ function uploadToESP() {
         return;
     }
 
-    fetch(`http://127.0.0.1:3000/vzemi-schedule?userID=${userID}`)
+    fetch(`${API_URL}/vzemi-schedule?userID=${userID}`)
         .then(response => response.json())
         .then(data => {
             console.log("Publishing data:", data);

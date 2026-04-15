@@ -1,3 +1,5 @@
+const API_URL = 'http://127.0.0.1:3000';
+
 document.querySelectorAll('.box-btn').forEach(button => {
     button.addEventListener('click', function () {
         this.classList.toggle('selected');
@@ -51,7 +53,7 @@ function addToJSON(i) {
         "b": boxBitmask
     };
 
-    fetch('http://127.0.0.1:3000/dobavi-schedule', {
+    fetch(`${API_URL}/dobavi-schedule`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -80,7 +82,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     let pageWeekday = document.getElementById('weekday')
 
-    fetch(`http://127.0.0.1:3000/vzemi-schedule?userID=${userID}`)
+    fetch(`${API_URL}/vzemi-schedule?userID=${userID}`)
         .then(response => response.json())
         .then(data => {
 
@@ -151,7 +153,7 @@ function deleteScheduleItem(day, hour, minute, boxes) {
         b: parseInt(boxes, 10)
     };
 
-    fetch('http://127.0.0.1:3000/izbrishi-schedule', {
+    fetch(`${API_URL}/izbrishi-schedule`, {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json'

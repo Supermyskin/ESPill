@@ -1,3 +1,5 @@
+const API_URL = 'http://127.0.0.1:3000';
+
 document.addEventListener('DOMContentLoaded', function () {
     const registerForm = document.getElementById('registerForm');
 
@@ -15,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 return;
             }
 
-            fetch('http://127.0.0.1:3000/register', {
+            fetch(`${API_URL}/register`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

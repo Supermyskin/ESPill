@@ -19,9 +19,11 @@ const nextPillInfo = document.getElementById('next-pill-info');
 const daysOfWeek = ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 let lastTriggeredPill = null;
 
+const API_URL = 'http://127.0.0.1:3000';
+
 async function updateNextPill() {
     try {
-        const response = await fetch(`http://127.0.0.1:3000/vzemi-schedule?userID=${userID}`);
+        const response = await fetch(`${API_URL}/vzemi-schedule?userID=${userID}`);
         const schedule = await response.json();
 
         if (!schedule || schedule.length === 0) {

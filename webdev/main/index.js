@@ -1,3 +1,5 @@
+const API_URL = 'http://127.0.0.1:3000';
+
 document.addEventListener('DOMContentLoaded', function () {
 
     const userID = localStorage.getItem('userID');
@@ -7,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function () {
         return;
     }
 
-    fetch(`http://127.0.0.1:3000/vzemi-schedule?userID=${userID}`)
+    fetch(`${API_URL}/vzemi-schedule?userID=${userID}`)
         .then(response => response.json())
         .then(data => {
 

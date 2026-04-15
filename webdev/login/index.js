@@ -1,3 +1,5 @@
+const API_URL = 'http://127.0.0.1:3000';
+
 document.addEventListener('DOMContentLoaded', function () {
     const loginForm = document.querySelector('.login-form');
 
@@ -8,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const email = document.getElementById('email_input').value;
             const password = document.getElementById('password').value;
 
-            fetch('http://127.0.0.1:3000/login', {
+            fetch(`${API_URL}/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

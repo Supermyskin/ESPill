@@ -19,7 +19,7 @@ const nextPillInfo = document.getElementById('next-pill-info');
 const daysOfWeek = ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 let lastTriggeredPill = null;
 
-const API_URL = 'http://127.0.0.1:3000';
+const API_URL = 'https://appeals-ar44.onrender.com';
 
 async function updateNextPill() {
     try {

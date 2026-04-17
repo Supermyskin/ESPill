@@ -3,9 +3,14 @@
 #include <WiFiClientSecure.h>
 #include <PubSubClient.h>
 #include <ArduinoJson.h>
+#include <time.h>
 #include "HeaderFile.h"
+#include "Types.h"
+#include "RTClib.h"
+#include "Box.h"
 
-const int schedule_maxSize = 1000;
+uint8_t lastMinute = 255;
+const int schedule_maxSize = 500;
 
 const char* ssid = "donottouchthis";
 const char* password = "1735fc12";
@@ -17,7 +22,6 @@ const char* mqtt_password = "1Qazxsw23edcvfr4";
 
 const char* clientId = "ESP32Pill";
 
-const char* topic_has_taken_pill = "esp32/has_taken_pill";
 const char* topic_hasnt_taken_pill = "esp32/hasnt_taken_pill";
 const char* topic_esp32 = "esp32/receive";
 
@@ -29,6 +33,18 @@ PubSubClient mqttClient(wifiClient);
 EatTime* pill_schedule = new EatTime[schedule_maxSize];
 unsigned int sc_len = 0;
 unsigned int curr_eatTime = 0;
+
+Box BoxArray[] = {
+  Box(S1_PIN, A6),
+  Box(S2_PIN, A6),
+  Box(S3_PIN, A6),
+  Box(S4_PIN, A6),
+  Box(S5_PIN, A6),
+  Box(S6_PIN, A6)
+};
+
+DS1302 rtc(CLOCK_RST, CLOCK_CLK, CLOCK_DATA);
+
 
 void callback(char* topic, byte* payload, unsigned int length) {
 
@@ -42,9 +58,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
     Serial.print((char)payload[i]);
   }
   Serial.println();
-
   fillSchedule(pill_schedule, schedule_maxSize, sc_len, payload, length);
-
   Serial.print("[DEBUG MQTT] sc_len = ");
   Serial.println(sc_len);
 }
@@ -76,9 +90,34 @@ void reconnect() {
 
 void setup() {
 
+  rtc.begin();
 
+  configTime(0, 0, "pool.ntp.org", "time.nist.gov");
+
+  struct tm timeinfo;
+
+  while (!getLocalTime(&timeinfo)) {
+    delay(500);
+  }
+
+  rtc.adjust(DateTime(
+    timeinfo.tm_year + 1900,
+    timeinfo.tm_mon + 1,
+    timeinfo.tm_mday,
+    timeinfo.tm_hour,
+    timeinfo.tm_min,
+    timeinfo.tm_sec));
+
+  pinMode(IR_R, INPUT);
+  pinMode(IR_T1, OUTPUT);
+  pinMode(IR_T2, OUTPUT);
+  pinMode(BUZZ, OUTPUT);
+
+  for (int i = 0; i < BOX_COUNT; i++) {
+    BoxArray[i].init();
+    delay(100);
+  }
   Serial.begin(115200);
-  Serial2.begin(115200, SERIAL_8N1, RX, TX);
 
   Serial.println("[DEBUG] Booting ESP32...");
   Serial.println("[DEBUG] Connecting WiFi...");
@@ -106,91 +145,33 @@ void loop() {
 
   mqttClient.loop();
 
-  if (Serial2.available() >= 2) {
+  DateTime now = rtc.now();
+  uint8_t dow = dayOfWeek(now.year(), now.month(), now.day());
 
-    char c = Serial2.read();
+  if (pill_schedule[curr_eatTime].day == dow && pill_schedule[curr_eatTime].hour == now.hour() && pill_schedule[curr_eatTime].minute == now.minute() && now.minute() != lastMinute) {
+    Serial.println("[LOGIC] !!! TRIGGERED !!!");
 
-    Serial.print("[DEBUG SERIAL] First byte: ");
-    Serial.println(c);
+    lastMinute = now.minute();
 
-    if (c == 'y') {
+    for (int i = 0; i < BOX_COUNT; i++) {
+      if (pill_schedule[curr_eatTime].boxes & (1 << i)) {
+        Serial.print("[BOX] OPEN ");
+        Serial.println(i);
 
-      c = Serial2.read();
+        BoxArray[i].open();
+        delay(20);
 
-      Serial.print("[DEBUG SERIAL] Second byte: ");
-      Serial.println(c);
+        waitTakePills();
+        BoxArray[i].close();
 
-      if (c == 'b') {
-
-        long timeout = millis();
-
-        while (Serial2.available() < 2) {
-          if (millis() - timeout > 10) {
-            Serial.println("[DEBUG SERIAL] Timeout waiting for data!");
-            return;
-          }
-        }
-
-        char buffer[2];
-        Serial2.readBytes(buffer, 2);
-
-        Serial.print("[DEBUG SERIAL] Buffer received: ");
-        Serial.print(buffer[0]);
-        Serial.println(buffer[1]);
-
-        if (buffer[1] == '1') {
-
-          if (buffer[0] == '+') {
-
-            Serial.println("[DEBUG SERIAL] Pill TAKEN -> MQTT publish");
-
-            mqttClient.publish(topic_has_taken_pill, code);
-
-          } else if (buffer[0] == '-') {
-
-            Serial.println("[DEBUG SERIAL] Pill NOT TAKEN -> MQTT publish");
-
-            mqttClient.publish(topic_hasnt_taken_pill, code);
-          }
-
-          else if (buffer[0] == '0') {
-
-            Serial.println("[DEBUG SERIAL] Arduino requested schedule");
-
-            if (sc_len == 0) {
-              Serial.println("[DEBUG ERROR] sc_len = 0 (no schedule)");
-              return;
-            }
-
-            curr_eatTime++;
-
-            if (curr_eatTime >= sc_len) {
-              curr_eatTime = 0;
-              Serial.println("[DEBUG SERIAL] Reset curr_eatTime to 0");
-            }
-
-            Serial.print("[DEBUG SERIAL] Sending schedule index: ");
-            Serial.println(curr_eatTime);
-
-            Serial2.print("yb");
-            Serial2.write(pill_schedule[curr_eatTime].day);
-            Serial2.write(pill_schedule[curr_eatTime].hour);
-            Serial2.write(pill_schedule[curr_eatTime].minute);
-            Serial2.write(pill_schedule[curr_eatTime].boxes);
-
-            uint8_t checksum =
-              pill_schedule[curr_eatTime].day ^
-              pill_schedule[curr_eatTime].hour ^
-              pill_schedule[curr_eatTime].minute ^
-              pill_schedule[curr_eatTime].boxes;
-
-            Serial.print("[DEBUG SERIAL] Checksum: ");
-            Serial.println(checksum);
-
-            Serial2.write(checksum);
-          }
-        }
+        Serial.print("[BOX] CLOSE ");
+        Serial.println(i);
       }
+    }
+    mqttClient.publish(topic_has_taken_pill, code);
+    curr_eatTime++;
+    if (curr_eatTime > sc_len) {
+      curr_eatTime = 0;
     }
   }
 

@@ -1,16 +1,7 @@
 #include "HeaderFile.h"
 #include "RTClib.h"
-#include "Servo.h"
 #include "Types.h"
 
-// =======================
-// GLOBAL STATE (DO NOT REMOVE)
-// =======================
-EatTime eatTime;
-
-// =======================
-// DAY OF WEEK
-// =======================
 uint8_t dayOfWeek(int year, uint8_t month, uint8_t day) {
     if (month < 3) {
         month += 12;
@@ -23,13 +14,6 @@ uint8_t dayOfWeek(int year, uint8_t month, uint8_t day) {
     return (day + 13 * (month + 1) / 5 + K + K / 4 + J / 4 + 5 * J) % 7;
 }
 
-// =======================
-// DISTANCE HELPERS
-
-
-// =======================
-// WAIT FOR USER ACTION
-// =======================
 void waitTakePills(){
     uint8_t Distance[4];
 
@@ -41,7 +25,7 @@ void waitTakePills(){
         (Distance[0] + Distance[1] + Distance[2] + Distance[3]) / 4;
 
     Serial.println("Take the pill!");
-    // WAIT FOR HAND TO APPROACH
+
     while(avg_distance > 6){
         Serial.print("Avg: ");
         Serial.println(avg_distance);
@@ -61,7 +45,6 @@ void waitTakePills(){
 
     delay(1000);
 
-    // WAIT FOR HAND TO LEAVE
     for(int i = 0; i < 4; i++){
         Distance[i] = CheckDistance();
     }

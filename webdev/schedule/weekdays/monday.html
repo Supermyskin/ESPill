@@ -10,12 +10,13 @@
 
 <body>
 
-    <p hidden id="weekday" weekday-num="1"></p>
+    <p hidden id="weekday" weekday-num="2"></p>
 
     <div class="header">
         <a href="../../dashboard/index.html"><i class="fa-solid fa-gauge"></i> Dashboard</a>
         <a href="../../about/index.html"><i class="fa-solid fa-circle-info"></i> About</a>
         <a href="../index.html"><i class="fa-solid fa-calendar"></i> Schedule</a>
+        <a href="../../login/index.html"><i class="fa-solid fa-right-to-bracket"></i> Login</a>
         <a href="../../landing/index.html" class="header-logo"><i class="fa-solid fa-capsules"></i> ESPill</a>
     </div>
 
@@ -43,7 +44,7 @@
                 </div>
             </div>
 
-            <button class="add-btn" onclick="addToJSON(1)">Add</button>
+            <button class="add-btn" onclick="addToJSON(2)">Add</button>
         </div>
 
         <div id="schedule-list">
@@ -52,6 +53,7 @@
 
     </div>
 
+    <script src="../../main/auth.js"></script>
     <script src="index.js"></script>
 </body>
 

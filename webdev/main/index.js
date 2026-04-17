@@ -1,6 +1,15 @@
+const API_URL = 'https://appeals-ar44.onrender.com';
+
 document.addEventListener('DOMContentLoaded', function () {
 
-    fetch('http://127.0.0.1:3000/vzemi-schedule')
+    const userID = localStorage.getItem('userID');
+    if (!userID) {
+        let instructions = document.getElementById('instructions');
+        instructions.innerHTML = `Please <a href="../login/index.html" style="color: rgb(254, 177, 255);">Login</a> to view your schedule.`;
+        return;
+    }
+
+    fetch(`${API_URL}/vzemi-schedule?userID=${userID}`)
         .then(response => response.json())
         .then(data => {
 

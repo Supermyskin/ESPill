@@ -1,3 +1,8 @@
+const userID = localStorage.getItem('userID');
+if (!userID) {
+    window.location.href = "../login/index.html";
+}
+
 const client = mqtt.connect('wss://507f68c94c1b48c6b9a345e8a073e5cd.s1.eu.hivemq.cloud:8884/mqtt', {
     username: 'ESPill',
     password: '1Qazxsw23edcvfr4'
@@ -11,11 +16,14 @@ const body = document.body;
 const nextPillTime = document.getElementById('next-pill-time');
 const nextPillInfo = document.getElementById('next-pill-info');
 
-const daysOfWeek = [null, "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+const daysOfWeek = ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+let lastTriggeredPill = null;
+
+const API_URL = 'https://appeals-ar44.onrender.com';
 
 async function updateNextPill() {
     try {
-        const response = await fetch('http://localhost:3000/vzemi-schedule');
+        const response = await fetch(`${API_URL}/vzemi-schedule?userID=${userID}`);
         const schedule = await response.json();
 
         if (!schedule || schedule.length === 0) {
@@ -25,11 +33,22 @@ async function updateNextPill() {
         }
 
         const now = new Date();
-        let currentDay = now.getDay();
-        if (currentDay === 0) currentDay = 7;
+        let currentDay = (now.getDay() + 1) % 7;
         
         const currentHour = now.getHours();
         const currentMinute = now.getMinutes();
+
+        // Check if any pill is scheduled for the current minute
+        schedule.forEach(pill => {
+            if (pill.d === currentDay && pill.h === currentHour && pill.m === currentMinute) {
+                const pillId = `${pill.d}-${pill.h}-${pill.m}-${pill.b}`;
+                if (lastTriggeredPill !== pillId) {
+                    console.log(`Time for pill! Triggering warning state for pill ID: ${pillId}`);
+                    enterWarningState();
+                    lastTriggeredPill = pillId;
+                }
+            }
+        });
 
         const nowMinutes = currentDay * 1440 + currentHour * 60 + currentMinute;
 
@@ -51,8 +70,16 @@ async function updateNextPill() {
         });
 
         if (nextPill) {
+            const boxes = [];
+            for (let i = 0; i < 6; i++) {
+                if ((nextPill.b & (1 << i)) > 0) {
+                    boxes.push(i + 1);
+                }
+            }
+            const boxesText = boxes.length > 1 ? `Boxes ${boxes.join(', ')}` : `Box ${boxes[0]}`;
+
             nextPillTime.textContent = `${nextPill.h.toString().padStart(2, '0')}:${nextPill.m.toString().padStart(2, '0')}`;
-            nextPillInfo.textContent = `${daysOfWeek[nextPill.d]} - Box ${nextPill.b}`;
+            nextPillInfo.textContent = `${daysOfWeek[nextPill.d]} - ${boxesText}`;
         }
     } catch (err) {
         console.error("Failed to fetch schedule:", err);
@@ -61,7 +88,7 @@ async function updateNextPill() {
 }
 
 updateNextPill();
-setInterval(updateNextPill, 60000);
+setInterval(updateNextPill, 10000);
 
 let pillTimer = null;
 let secondsRemaining = 300;
@@ -114,7 +141,6 @@ function resetState() {
 client.on('connect', () => {
     console.log('Connected to MQTT');
     client.subscribe('esp32/has_taken_pill');
-    client.subscribe('esp32/hasnt_taken_pill');
     statusText.textContent = 'Connected! Nothing for now.';
     statusText.style.color = "rgb(253, 117, 255)";
 });
@@ -122,9 +148,7 @@ client.on('connect', () => {
 client.on('message', (topic, message) => {
     console.log(`Received message on ${topic}: ${message.toString()}`);
 
-    if (topic === 'esp32/hasnt_taken_pill') {
-        enterWarningState();
-    } else if (topic === 'esp32/has_taken_pill') {
+    if (topic === 'esp32/has_taken_pill') {
         resetState();
     }
 });

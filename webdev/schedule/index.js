@@ -1,3 +1,5 @@
+const API_URL = 'https://appeals-ar44.onrender.com';
+
 const client = mqtt.connect('wss://507f68c94c1b48c6b9a345e8a073e5cd.s1.eu.hivemq.cloud:8884/mqtt', {
     username: 'ESPill',
     password: '1Qazxsw23edcvfr4'
@@ -8,7 +10,14 @@ client.on('connect', () => {
 });
 
 function uploadToESP() {
-    fetch('http://127.0.0.1:3000/vzemi-schedule')
+    const userID = localStorage.getItem('userID');
+    if (!userID) {
+        alert("Please login first.");
+        window.location.href = "../login/index.html";
+        return;
+    }
+
+    fetch(`${API_URL}/vzemi-schedule?userID=${userID}`)
         .then(response => response.json())
         .then(data => {
             console.log("Publishing data:", data);

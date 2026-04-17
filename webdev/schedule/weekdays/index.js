@@ -1,10 +1,12 @@
+const API_URL = 'https://appeals-ar44.onrender.com';
+
 document.querySelectorAll('.box-btn').forEach(button => {
     button.addEventListener('click', function () {
         this.classList.toggle('selected');
     });
 });
 
-const daysWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+const daysWeek = ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 
 function addToJSON(i) {
 
@@ -42,14 +44,16 @@ function addToJSON(i) {
         return;
     }
 
+    const userID = localStorage.getItem('userID');
     let newEntry = {
+        "userID": userID,
         "d": i,
         "h": hourNumber,
         "m": minuteNumber,
         "b": boxBitmask
     };
 
-    fetch('http://127.0.0.1:3000/dobavi-schedule', {
+    fetch(`${API_URL}/dobavi-schedule`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -70,9 +74,15 @@ function addToJSON(i) {
 };
 
 document.addEventListener('DOMContentLoaded', function () {
+    const userID = localStorage.getItem('userID');
+    if (!userID) {
+        window.location.href = "../../login/index.html";
+        return;
+    }
+
     let pageWeekday = document.getElementById('weekday')
 
-    fetch('http://127.0.0.1:3000/vzemi-schedule')
+    fetch(`${API_URL}/vzemi-schedule?userID=${userID}`)
         .then(response => response.json())
         .then(data => {
 
@@ -97,7 +107,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     let hourString = item.h.toString().padStart(2, '0');
                     let minuteString = item.m.toString().padStart(2, '0');
 
-                    let dayWord = daysWeek[item.d - 1];
+                    let dayWord = daysWeek[item.d];
 
                     scheduleItem += `
                         <div class="schedule-item">
@@ -134,14 +144,16 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 function deleteScheduleItem(day, hour, minute, boxes) {
+    const userID = localStorage.getItem('userID');
     const itemToDelete = {
+        userID: userID,
         d: parseInt(day, 10),
         h: parseInt(hour, 10),
         m: parseInt(minute, 10),
         b: parseInt(boxes, 10)
     };
 
-    fetch('http://127.0.0.1:3000/izbrishi-schedule', {
+    fetch(`${API_URL}/izbrishi-schedule`, {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json'

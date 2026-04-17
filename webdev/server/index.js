@@ -1,74 +1,166 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const fs = require('fs');
-const path = require('path');
+const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
+const { v4: uuidv4 } = require('uuid');
 
 const app = express();
+const PORT = process.env.PORT || 3000;
+const MONGODB_URI = process.env.MONGODB_URI;
 
-const scheduleFilePath = path.join(__dirname, 'schedule.json');
+if (MONGODB_URI) {
+    mongoose.connect(MONGODB_URI)
+        .then(() => console.log('Connected to MongoDB Atlas'))
+        .catch(err => console.error('MongoDB connection error:', err));
+} else {
+    console.warn('Warning: MONGODB_URI not found in environment variables. Database features will not work.');
+}
+
+// Schemas
+const userSchema = new mongoose.Schema({
+    userId: { type: String, unique: true, required: true },
+    name: { type: String, required: true },
+    email: { type: String, unique: true, required: true },
+    password: { type: String, required: true }
+});
+
+const scheduleSchema = new mongoose.Schema({
+    userID: { type: String, required: true },
+    d: { type: Number, required: true },
+    h: { type: Number, required: true },
+    m: { type: Number, required: true },
+    b: { type: Number, required: true }
+});
+
+const User = mongoose.model('User', userSchema);
+const Schedule = mongoose.model('Schedule', scheduleSchema);
 
 app.use(cors());
 app.use(express.json());
 
-app.get('/vzemi-schedule', function (req, res) {
+app.post('/register', async (req, res) => {
+    try {
+        const { name, email, password } = req.body;
 
-    let existingData = fs.readFileSync(scheduleFilePath, 'utf8');
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+            return res.status(400).json({ message: "User already exists" });
+        }
 
-    if (existingData !== "") {
-        res.json(JSON.parse(existingData));
-        return;
-    }
-    else {
-        res.json([])
-    }
-});
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const userId = uuidv4();
 
-app.post('/dobavi-schedule', function (req, res) {
+        const newUser = new User({
+            userId,
+            name,
+            email,
+            password: hashedPassword
+        });
 
-    let newEntry = req.body;
-    let scheduleList = [];
+        await newUser.save();
 
-    let existingData = fs.readFileSync(scheduleFilePath, 'utf8');
-
-    if (existingData !== "") {
-        scheduleList = JSON.parse(existingData);
-    }
-
-    scheduleList.push(newEntry);
-
-    let finalJsonString = JSON.stringify(scheduleList, null, 2);
-    fs.writeFileSync(scheduleFilePath, finalJsonString);
-
-    res.json({ message: "Item added successfully", newEntry: newEntry });
-});
-
-app.delete('/izbrishi-schedule', function (req, res) {
-
-    let itemToDelete = req.body;
-
-    let existingData = fs.readFileSync(scheduleFilePath, 'utf8');
-    let scheduleList = [];
-
-    if (existingData !== "") {
-        scheduleList = JSON.parse(existingData);
-    }
-
-    const initialLength = scheduleList.length;
-
-    scheduleList = scheduleList.filter(item => 
-        !(item.d === itemToDelete.d && 
-          item.h === itemToDelete.h && 
-          item.m === itemToDelete.m && 
-          item.b === itemToDelete.b)
-    );
-
-    if (scheduleList.length < initialLength) {
-        let finalJsonString = JSON.stringify(scheduleList, null, 2);
-        fs.writeFileSync(scheduleFilePath, finalJsonString);
-        res.json({ message: "Item deleted successfully", deletedItem: itemToDelete });
-    } else {
-        res.status(404).json({ message: "Item not found or no changes made" });
+        res.json({ message: "Registration successful", userId, name });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Internal server error" });
     }
 });
 
-app.listen(3000);
+app.post('/login', async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        const user = await User.findOne({ email });
+
+        if (!user) {
+            return res.status(400).json({ message: "User not found" });
+        }
+
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            return res.status(400).json({ message: "Invalid credentials" });
+        }
+
+        res.json({ message: "Login successful", userId: user.userId, name: user.name });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Internal server error" });
+    }
+});
+
+app.get('/vzemi-schedule', async (req, res) => {
+    try {
+        const userId = req.query.userID;
+        if (!userId) {
+            return res.status(400).json({ message: "UserID is required" });
+        }
+
+        const userSchedule = await Schedule.find({ userID: userId });
+
+        // Map to return clean objects without MongoDB metadata if needed
+        const formattedSchedule = userSchedule.map(item => ({
+            d: item.d,
+            h: item.h,
+            m: item.m,
+            b: item.b
+        }));
+
+        res.json(formattedSchedule);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Internal server error" });
+    }
+});
+
+app.post('/dobavi-schedule', async (req, res) => {
+    try {
+        const { userID, ...newEntry } = req.body;
+
+        if (!userID) {
+            return res.status(400).json({ message: "UserID is required" });
+        }
+
+        const scheduleEntry = new Schedule({
+            userID,
+            ...newEntry
+        });
+
+        await scheduleEntry.save();
+
+        res.json({ message: "Item added successfully", newEntry });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Internal server error" });
+    }
+});
+
+app.delete('/izbrishi-schedule', async (req, res) => {
+    try {
+        const { userID, ...itemToDelete } = req.body;
+
+        if (!userID) {
+            return res.status(400).json({ message: "UserID is required" });
+        }
+
+        const result = await Schedule.findOneAndDelete({
+            userID,
+            d: itemToDelete.d,
+            h: itemToDelete.h,
+            m: itemToDelete.m,
+            b: itemToDelete.b
+        });
+
+        if (result) {
+            res.json({ message: "Item deleted successfully", deletedItem: itemToDelete });
+        } else {
+            res.status(404).json({ message: "Item not found or no changes made" });
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Internal server error" });
+    }
+});
+
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});

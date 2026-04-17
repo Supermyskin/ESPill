@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register | ESPill</title>
+    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+    <link href="../main/icon.png" rel="icon">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://kit.fontawesome.com/1424a6b21b.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+
+    <div class="header">
+        <a href="../dashboard/index.html"><i class="fa-solid fa-gauge"></i> Dashboard</a>
+        <a href="../about/index.html"><i class="fa-solid fa-circle-info"></i> About</a>
+        <a href="../schedule/index.html"><i class="fa-solid fa-calendar"></i> Schedule</a>
+        <a href="../login/index.html"><i class="fa-solid fa-right-to-bracket"></i> Login</a>
+        <a href="../landing/index.html" class="header-logo"><i class="fa-solid fa-capsules"></i> ESPill</a>
+    </div>
+
+
+    <div class="window_border glass-card">
+
+        <h1 class="register-title">Register</h1>
+
+        <form class="register-form" id="registerForm">
+            <input id="name_input" type="text" placeholder="Full Name" class="login-input" required>
+            <input id="email_input" type="email" placeholder="Email Address" class="login-input" required>
+            <input id="password" type="password" placeholder="Password" class="login-input" required minlength="8">
+            <input id="confirm_password" type="password" placeholder="Confirm Password" class="login-input" required>
+
+            <button type="submit" class="login-btn">Create Account</button>
+        </form>
+
+        <p class="login-text">Already have an account? <a href="../login/index.html" class="register-link">Login</a></p>
+
+    </div>
+
+    <script src="../main/auth.js"></script>
+    <script src="index.js"></script>
+
+</body>
+
+</html>

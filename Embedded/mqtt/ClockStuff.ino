@@ -15,51 +15,10 @@ uint8_t dayOfWeek(int year, uint8_t month, uint8_t day) {
 }
 
 void waitTakePills(){
-    uint8_t Distance[4];
-
-    for(int i = 0; i < 4; i++){
-        Distance[i] = CheckDistance();
-    }
-
-    uint8_t avg_distance =
-        (Distance[0] + Distance[1] + Distance[2] + Distance[3]) / 4;
-
-    Serial.println("Take the pill!");
-
-    while(avg_distance > 6){
-        Serial.print("Avg: ");
-        Serial.println(avg_distance);
-
-        for(int i = 0; i < 4; i++){
-            Distance[i] = CheckDistance();
-        }
-
-        avg_distance =
-            (Distance[0] + Distance[1] + Distance[2] + Distance[3]) / 4;
-
-        delay(60);
-    }
+    delay(1000);
 
     Serial.println("Pill Taken");
-    Serial.write("yb+1");
 
     delay(1000);
 
-    for(int i = 0; i < 4; i++){
-        Distance[i] = CheckDistance();
-    }
-
-    avg_distance =
-        (Distance[0] + Distance[1] + Distance[2] + Distance[3]) / 4;
-
-    while(avg_distance <= 6){
-        for(int i = 0; i < 4; i++){
-            Distance[i] = CheckDistance();
-        }
-
-        avg_distance =
-            (Distance[0] + Distance[1] + Distance[2] + Distance[3]) / 4;
-
-        delay(50);
-    }
 }

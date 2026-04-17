@@ -7,11 +7,10 @@
 class Box {
 public:
   uint8_t SERVO;
-  uint8_t LED;
 
   Servo myServo;
 
-  Box(uint8_t servoPin, uint8_t ledPin);
+  Box(uint8_t servoPin);
 
   void init();
   void open();

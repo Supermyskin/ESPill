@@ -1,0 +1,173 @@
+body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    background-color: black;
+    background-image: radial-gradient(ellipse at bottom, rgba(254, 177, 255, 0.2) 0%, transparent 50%),
+                      radial-gradient(ellipse at top left, rgba(145, 92, 182, 0.15) 0%, transparent 40%);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    justify-content: center;
+    align-items: center;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    color: white;
+    flex-direction: column;
+}
+
+.header {
+    border: 1px solid rgba(254, 177, 255, 0.2);
+    backdrop-filter: blur(15px);
+    position: fixed;
+    top: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 75rem;
+    z-index: 1000;
+    background-color: rgba(255, 255, 255, 0.03);
+    border-radius: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 1.5rem;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    box-sizing: border-box;
+    transition: max-height 0.4s ease-in-out, background-color 0.3s ease, transform 0.3s ease;
+}
+
+.header-links {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.header a {
+    color: #f2f2f2;
+    text-align: center;
+    padding: 0.75rem 1.25rem;
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border-radius: 0.75rem;
+}
+
+.header .header-logo {
+    font-weight: 700;
+    font-size: 1.3rem;
+    color: rgb(254, 177, 255);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.header a:hover {
+    background-color: rgba(254, 177, 255, 0.1);
+    color: rgb(254, 177, 255);
+}
+
+.header-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0.5rem;
+}
+
+.glass-card {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(254, 177, 255, 0.15);
+    border-radius: 2rem;
+    padding: 3rem;
+    width: 100%;
+    max-width: 28rem;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    margin-top: 5rem;
+}
+
+.register-title {
+    font-size: 2.5rem;
+    margin-top: 0;
+    margin-bottom: 2rem;
+    color: white;
+    font-weight: 800;
+    text-align: center;
+}
+
+.register-form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 1.2rem;
+}
+
+.login-input {
+    padding: 1rem 1.5rem;
+    font-size: 1rem;
+    color: white;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(254, 177, 255, 0.2);
+    border-radius: 1rem;
+    transition: all 0.3s ease;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+.login-input:focus {
+    background: rgba(254, 177, 255, 0.05);
+    border-color: rgba(254, 177, 255, 0.8);
+    box-shadow: 0 0 15px rgba(254, 177, 255, 0.2);
+    outline: none;
+}
+
+.login-btn {
+    margin-top: 1rem;
+    padding: 1rem;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: white;
+    background: rgba(254, 177, 255, 0.05);
+    border: 1px solid rgba(254, 177, 255, 0.4);
+    border-radius: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    backdrop-filter: blur(5px);
+}
+
+.login-btn:hover {
+    background: rgba(254, 177, 255, 0.15);
+    border-color: rgba(254, 177, 255, 0.8);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(254, 177, 255, 0.3);
+}
+
+.login-btn:active {
+    transform: translateY(0);
+}
+
+.login-text {
+    margin-top: 2rem;
+    text-align: center;
+    font-size: 0.95rem;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.register-link {
+    color: rgba(254, 177, 255, 0.8);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-weight: 600;
+}
+
+.register-link:hover {
+    color: white;
+    text-shadow: 0 0 10px rgba(254, 177, 255, 0.5);
+}
+
+@media (max-width: 768px) {
+    .register-title {
+        font-size: 2rem !important;
+    }
+}

@@ -1,0 +1,174 @@
+body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    background-color: black;
+    background-image: radial-gradient(ellipse at bottom, rgba(254, 177, 255, 0.2) 0%, transparent 50%),
+        radial-gradient(ellipse at top left, rgba(145, 92, 182, 0.15) 0%, transparent 40%);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    justify-content: center;
+    align-items: center;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    color: white;
+    flex-direction: column;
+    gap: 3rem;
+}
+
+.header {
+    border: 1px solid rgba(254, 177, 255, 0.2);
+    backdrop-filter: blur(15px);
+    position: fixed;
+    top: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 75rem;
+    z-index: 1000;
+    background-color: rgba(255, 255, 255, 0.03);
+    border-radius: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 1.5rem;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    box-sizing: border-box;
+    transition: max-height 0.4s ease-in-out, background-color 0.3s ease, transform 0.3s ease;
+}
+
+.header-links {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.header a {
+    color: #f2f2f2;
+    text-align: center;
+    padding: 0.75rem 1.25rem;
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border-radius: 0.75rem;
+}
+
+.header .header-logo {
+    font-weight: 700;
+    font-size: 1.3rem;
+    color: rgb(254, 177, 255);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.header a:hover {
+    background-color: rgba(254, 177, 255, 0.1);
+    color: rgb(254, 177, 255);
+}
+
+.header-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0.5rem;
+}
+
+h1 {
+    font-size: 3.5rem;
+    font-weight: 900;
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+h2 {
+    color: rgb(254, 177, 255);
+    font-size: 2rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 1rem;
+}
+
+.glass-card {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(254, 177, 255, 0.15);
+    border-radius: 2rem;
+    padding: 3rem;
+    width: 90%;
+    max-width: 40rem;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    text-align: center;
+    margin-top: 8.5rem;
+}
+
+.goal-to-help {
+    list-style: none;
+    padding: 0;
+    margin: 2rem 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.goal-to-help li {
+    font-size: 1.2rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.goal-to-help i {
+    color: rgb(254, 177, 255);
+    font-size: 1.5rem;
+}
+
+.solution p {
+    font-weight: 600;
+    font-size: 1.2rem;
+    line-height: 1.8;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.highlight {
+    color: rgb(254, 177, 255);
+    font-weight: 800;
+    text-shadow: 0 0 10px rgba(254, 177, 255, 0.3);
+}
+
+.techstack-list {
+    list-style: none;
+    padding: 0;
+    margin: 2rem 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1.5rem;
+}
+
+.techstack-list li {
+    background: rgba(0, 0, 0, 0.2);
+    padding: 1rem;
+    border-radius: 1rem;
+    border: 1px solid rgba(254, 177, 255, 0.1);
+    font-weight: 700;
+    transition: all 0.3s ease;
+}
+
+.techstack-list li:hover {
+    transform: translateY(-5px);
+    border-color: rgba(254, 177, 255, 0.4);
+    background: rgba(254, 177, 255, 0.05);
+}
+
+.techstack-list i {
+    color: rgb(254, 177, 255);
+    margin-bottom: 0.5rem;
+    display: block;
+    font-size: 1.5rem;
+}

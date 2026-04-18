@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tuesday | ESPill</title>
+    <link href="../icon.png" rel="icon">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../../main/responsive.css">
+    <link rel="stylesheet" href="../../main/responsive.css">
+    <script src="https://kit.fontawesome.com/1424a6b21b.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+
+    <p hidden id="weekday" weekday-num="3"></p>
+
+    <div class="header">
+        <a href="../../landing/index.html" class="header-logo"><i class="fa-solid fa-capsules"></i> ESPill</a>
+        <div class="header-links">
+            <a href="../../dashboard/index.html"><i class="fa-solid fa-gauge"></i> Dashboard</a>
+            <a href="../../about/index.html"><i class="fa-solid fa-circle-info"></i> About</a>
+            <a href="../../schedule/index.html"><i class="fa-solid fa-calendar"></i> Schedule</a>
+        </div>
+        <div class="header-account">
+            <a href="../../login/index.html" id="header-account-link"><i class="fa-solid fa-user"></i> Account</a>
+        </div>
+        <button class="header-toggle" id="header-toggle"><i class="fa-solid fa-bars"></i></button>
+    </div>
+
+    <div class="schedule-container">
+
+        <div class="input-row">
+            <div class="input-group">
+                <label>Hour</label>
+                <input type="number" id="hour-input" min="0" max="23" placeholder="12">
+            </div>
+            <div class="input-group">
+                <label>Minutes</label>
+                <input type="number" id="minute-input" min="0" max="59" placeholder="30">
+            </div>
+
+            <div class="input-group">
+                <label>Pills per Box</label>
+                <div class="pill-count-selector">
+                    <div class="pill-input-group">
+                        <label>1</label>
+                        <input type="number" id="pill-input-1" min="0" max="255" placeholder="0" class="pill-input">
+                    </div>
+                    <div class="pill-input-group">
+                        <label>2</label>
+                        <input type="number" id="pill-input-2" min="0" max="255" placeholder="0" class="pill-input">
+                    </div>
+                    <div class="pill-input-group">
+                        <label>3</label>
+                        <input type="number" id="pill-input-3" min="0" max="255" placeholder="0" class="pill-input">
+                    </div>
+                    <div class="pill-input-group">
+                        <label>4</label>
+                        <input type="number" id="pill-input-4" min="0" max="255" placeholder="0" class="pill-input">
+                    </div>
+                    <div class="pill-input-group">
+                        <label>5</label>
+                        <input type="number" id="pill-input-5" min="0" max="255" placeholder="0" class="pill-input">
+                    </div>
+                    <div class="pill-input-group">
+                        <label>6</label>
+                        <input type="number" id="pill-input-6" min="0" max="255" placeholder="0" class="pill-input">
+                    </div>
+                </div>
+            </div>
+
+            <button class="add-btn" onclick="addToJSON(3)">Add</button>
+        </div>
+
+        <div id="schedule-list"></div>
+
+    </div>
+
+    <script src="../../main/auth.js"></script>
+    <script src="index.js"></script>
+</body>
+
+</html>

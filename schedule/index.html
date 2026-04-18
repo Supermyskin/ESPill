@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schedule | ESPill</title>
+    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+    <link href="./icon.png" rel="icon">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../main/responsive.css">
+    <script src="https://kit.fontawesome.com/1424a6b21b.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+
+    <div class="header">
+        <a href="../landing/index.html" class="header-logo"><i class="fa-solid fa-capsules"></i> ESPill</a>
+        <div class="header-links">
+            <a href="../dashboard/index.html"><i class="fa-solid fa-gauge"></i> Dashboard</a>
+            <a href="../about/index.html"><i class="fa-solid fa-circle-info"></i> About</a>
+            <a href="../schedule/index.html"><i class="fa-solid fa-calendar"></i> Schedule</a>
+        </div>
+        <div class="header-account">
+            <a href="../login/index.html" id="header-account-link"><i class="fa-solid fa-user"></i> Account</a>
+        </div>
+        <button class="header-toggle" id="header-toggle"><i class="fa-solid fa-bars"></i></button>
+    </div>
+
+    <h1>Schedule your <span style="color: rgb(254, 177, 255);">pills.</span></h1>
+
+    <div class="container">
+        <div><a href="./weekdays/monday.html">Monday</a></div>
+        <div><a href="./weekdays/tuesday.html">Tuesday</a></div>
+        <div><a href="./weekdays/wednesday.html">Wednesday</a></div>
+        <div><a href="./weekdays/thursday.html">Thursday</a></div>
+        <div><a href="./weekdays/friday.html">Friday</a></div>
+        <div><a href="./weekdays/saturday.html">Saturday</a></div>
+        <div><a href="./weekdays/sunday.html">Sunday</a></div>
+    </div>
+
+    <div class="button-group">
+        <button id="send-schedule-btn" class="send-btn" onclick="uploadToESP()">Send Schedule to ESP32</button>
+        <button id="clear-schedule-btn" class="clear-btn" onclick="clearSchedule()">Clear Schedule</button>
+    </div>
+
+    <script src="../main/auth.js"></script>
+    <script src="index.js"></script>
+
+</body>
+
+</html>

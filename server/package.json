@@ -1,0 +1,30 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "the nodejs server for espill",
+  "homepage": "https://github.com/Supermyskin/ESPill#readme",
+  "bugs": {
+    "url": "https://github.com/Supermyskin/ESPill/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Supermyskin/ESPill.git"
+  },
+  "license": "ISC",
+  "author": "Supermyskin",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
+    "dotenv": "^16.4.7",
+    "express": "^5.2.1",
+    "mongodb": "^7.1.1",
+    "mongoose": "^8.8.0",
+    "uuid": "^13.0.0"
+  }
+}

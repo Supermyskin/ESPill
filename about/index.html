@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About | ESPill</title>
+    <link href="./icon.png" rel="icon">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../main/responsive.css">
+    <script src="https://kit.fontawesome.com/1424a6b21b.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+
+    <div class="header">
+        <a href="../landing/index.html" class="header-logo"><i class="fa-solid fa-capsules"></i> ESPill</a>
+        <div class="header-links">
+            <a href="../dashboard/index.html"><i class="fa-solid fa-gauge"></i> Dashboard</a>
+            <a href="../about/index.html"><i class="fa-solid fa-circle-info"></i> About</a>
+            <a href="../schedule/index.html"><i class="fa-solid fa-calendar"></i> Schedule</a>
+        </div>
+        <div class="header-account">
+            <a href="../login/index.html" id="header-account-link"><i class="fa-solid fa-user"></i> Account</a>
+        </div>
+        <button class="header-toggle" id="header-toggle"><i class="fa-solid fa-bars"></i></button>
+    </div>
+
+    <div class="glass-card">
+        <h1><i class="fa-solid fa-capsules"></i> About <span style="color: rgb(254, 177, 255);">ESPill</span> <i
+                class="fa-solid fa-capsules"></i></h1>
+
+        <h2>ESPill's goal is to help: </h2>
+
+        <ul class="goal-to-help">
+            <li><i class="fa-solid fa-person-cane"></i> The elderly</li>
+            <li><i class="fa-solid fa-brain"></i> People with Alzheimer's/Dementia</li>
+            <li><i class="fa-solid fa-users"></i> And everyone in between</li>
+        </ul>
+
+        <div class="solution">
+            <h2>Our solution is:</h2>
+            <p>
+                We have developed a <span class="highlight">smart pill box</span> that actively follows a customized,
+                user-defined schedule. The hardware device consists of <span class="highlight">six separate
+                    compartments</span>, each holding a different medication, which open automatically at their
+                designated
+                times. A crucial feature of this system is that if a user forgets to take their pill on time, the
+                companion
+                website instantly <span class="highlight">warns the user</span>.
+            </p>
+        </div>
+
+        <div class="techstack">
+            <h2>For this project we used: </h2>
+            <ul class="techstack-list">
+                <li><i class="fa-solid fa-microchip"></i> ESP32</li>
+                <li><i class="fa-solid fa-bolt"></i> Arduino</li>
+                <li><i class="fa-solid fa-wave-square"></i> A lot of sensors</li>
+                <li><i class="fa-solid fa-laptop-code"></i> HTML/CSS</li>
+                <li><i class="fa-solid fa-file-code"></i> JavaScript</li>
+                <li><i class="fa-solid fa-globe"></i> MQTT</li>
+            </ul>
+        </div>
+    </div>
+
+    <script src="../main/auth.js"></script>
+</body>
+
+</html>

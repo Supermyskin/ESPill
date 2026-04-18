@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Account | ESPill</title>
+    <link href="./icon.png" rel="icon">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://kit.fontawesome.com/1424a6b21b.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+    <div class="header">
+        <a href="../landing/index.html" class="header-logo"><i class="fa-solid fa-capsules"></i> ESPill</a>
+        <div class="header-links">
+            <a href="../dashboard/index.html"><i class="fa-solid fa-gauge"></i> Dashboard</a>
+            <a href="../about/index.html"><i class="fa-solid fa-circle-info"></i> About</a>
+            <a href="../schedule/index.html"><i class="fa-solid fa-calendar"></i> Schedule</a>
+        </div>
+        <div class="header-account">
+            <a href="../login/index.html" id="header-account-link"><i class="fa-solid fa-user"></i> Account</a>
+        </div>
+        <button class="header-toggle" id="header-toggle"><i class="fa-solid fa-bars"></i></button>
+    </div>
+
+    <div class="container">
+        <div class="glass-card profile-section">
+            <h1 id="user-greeting">Hello, User!</h1>
+            <div class="profile-details">
+                <p id="user-id-display"></p>
+                <div id="streak-badge" class="streak-badge">
+                    <i class="fa-solid fa-fire"></i>
+                    <span id="streak-count">0</span> Pills On Time
+                </div>
+            </div>
+        </div>
+
+        <div class="account-grid">
+            <div class="glass-card pills-list-card">
+                <h3><i class="fa-solid fa-pills"></i> Your Scheduled Pills</h3>
+                <div id="pills-container" class="scrollable-content">
+                    <p>Loading your schedule...</p>
+                </div>
+            </div>
+
+            <div class="glass-card graph-card">
+                <h3><i class="fa-solid fa-chart-line"></i> Adherence Overview</h3>
+                <canvas id="adherenceChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script src="../main/auth.js"></script>
+    <script src="index.js"></script>
+</body>
+
+</html>

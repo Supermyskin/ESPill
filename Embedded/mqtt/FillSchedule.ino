@@ -10,15 +10,16 @@ void fillSchedule(EatTime* schedule, unsigned int maxSize, unsigned int& sc_len,
 
   JsonArray arr = scheduleJson.as<JsonArray>();
   sc_len = 0;
-
   for (JsonObject obj : arr) {
     if (sc_len >= maxSize) break;
-
-    schedule[sc_len].day = obj["d"];
-    schedule[sc_len].hour = obj["h"];
-    schedule[sc_len].minute = obj["m"];
-    schedule[sc_len].boxes = obj["b"];
-
+    schedule[sc_len].day = obj["d"] | 0;
+    schedule[sc_len].hour = obj["h"] | 0;
+    schedule[sc_len].minute = obj["m"] | 0;
+    schedule[sc_len].boxes = obj["b"] | 0;
+    JsonArray pills = obj["a"] | JsonArray();
+    for(int i = 0;i < 6;i++){
+      schedule[sc_len].pills[i] = pills[i];
+    }
     sc_len++;
   }
 }

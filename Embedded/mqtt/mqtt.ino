@@ -4,6 +4,8 @@
 #include <PubSubClient.h>
 #include <ArduinoJson.h>
 #include <time.h>
+#include <LiquidCrystal_I2C.h>
+#include <Wire.h>
 #include "HeaderFile.h"
 #include "Types.h"
 #include "RTClib.h"
@@ -46,6 +48,7 @@ Box BoxArray[] = {
 };
 
 DS1302 rtc(CLOCK_RST, CLOCK_CLK, CLOCK_DATA);
+LiquidCrystal_I2C lcd(0x27, 16, 2);
 
 void callback(char* topic, byte* payload, unsigned int length) {
 
@@ -132,6 +135,10 @@ void setup() {
   }
 
   Serial.println("[DEBUG] Booting ESP32...");
+  Wire.begin(32, 33);
+  lcd.init();
+  lcd.backlight();
+  lcd.setCursor(0, 0);
   Serial.println("[DEBUG] Connecting WiFi...");
 
   WiFi.begin(ssid, password);
@@ -221,7 +228,13 @@ void loop() {
         BoxArray[i].open();
         delay(20);
 
+        lcd.print("Take your pills:");
+        lcd.setCursor(0,1);      
+        lcd.print(pill_schedule[curr_eatTime].pills[i]);
+        
         waitTakePills();
+
+        lcd.clear();
 
         BoxArray[i].close();
 

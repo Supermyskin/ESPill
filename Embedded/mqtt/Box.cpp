@@ -5,19 +5,26 @@ Box::Box(uint8_t servoPin) {
 }
 
 void Box::init() {
-
   myServo.setPeriodHertz(50);
   myServo.attach(SERVO, 500, 2500);
-
-  myServo.write(0);
+  for (int pos = 90; pos >= 0; pos--) {
+    myServo.write(pos);
+    delay(20);
+  }
 }
 
 void Box::open() {
   digitalWrite(BUZZ, HIGH);
-  myServo.write(90);
+  for (int pos = 0; pos <= 90; pos++) {
+    myServo.write(pos);
+    delay(20);
+  }
 }
 
 void Box::close() {
   digitalWrite(BUZZ, LOW);
-  myServo.write(0);
+  for (int pos = 90; pos >= 0; pos--) {
+    myServo.write(pos);
+    delay(20);
+  }
 }

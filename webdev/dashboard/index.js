@@ -52,7 +52,7 @@ async function updateNextPill() {
         // Check if any pill is scheduled for the current minute
         schedule.forEach(pill => {
             if (pill.d === currentDay && pill.h === currentHour && pill.m === currentMinute) {
-                const pillId = `${pill.d}-${pill.h}-${pill.m}-${pill.b}`;
+                const pillId = `${pill.d}-${pill.h}-${pill.m}-${JSON.stringify(pill.a)}`;
                 if (lastTriggeredPill !== pillId) {
                     console.log(`Time for pill! Triggering warning state for pill ID: ${pillId}`);
                     enterWarningState();
@@ -82,12 +82,14 @@ async function updateNextPill() {
 
         if (nextPill) {
             const boxes = [];
-            for (let i = 0; i < 6; i++) {
-                if ((nextPill.b & (1 << i)) > 0) {
-                    boxes.push(i + 1);
-                }
+            if (nextPill.a && Array.isArray(nextPill.a)) {
+                nextPill.a.forEach((amt, index) => {
+                    if (amt > 0) {
+                        boxes.push(index + 1);
+                    }
+                });
             }
-            const boxesText = boxes.length > 1 ? `Boxes ${boxes.join(', ')}` : `Box ${boxes[0]}`;
+            const boxesText = boxes.length > 1 ? `Boxes ${boxes.join(', ')}` : (boxes.length === 1 ? `Box ${boxes[0]}` : 'No boxes');
 
             nextPillTime.textContent = `${nextPill.h.toString().padStart(2, '0')}:${nextPill.m.toString().padStart(2, '0')}`;
             nextPillInfo.textContent = `${daysOfWeek[nextPill.d]} - ${boxesText}`;

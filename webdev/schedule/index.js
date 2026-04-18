@@ -1,3 +1,7 @@
+if (typeof checkLogin === 'function') {
+    checkLogin();
+}
+
 const API_URL = 'https://appeals-ar44.onrender.com';
 
 const client = mqtt.connect('wss://507f68c94c1b48c6b9a345e8a073e5cd.s1.eu.hivemq.cloud:8884/mqtt', {

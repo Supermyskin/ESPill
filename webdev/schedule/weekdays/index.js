@@ -10,11 +10,11 @@ function addToJSON(i) {
     let hourNumber = parseInt(hourText, 10);
     let minuteNumber = parseInt(minuteText, 10);
 
-    let amounts = [];
+    let a = [];
     let hasPills = false;
     for (let b = 1; b <= 6; b++) {
         let val = parseInt(document.getElementById(`pill-input-${b}`).value, 10) || 0;
-        amounts.push(val);
+        a.push(val);
         if (val > 0) hasPills = true;
     }
 
@@ -29,12 +29,18 @@ function addToJSON(i) {
     }
 
     const userID = localStorage.getItem('userID');
+    if (!userID) {
+        alert("Please login to add schedule items.");
+        window.location.href = "../../login/index.html";
+        return;
+    }
+
     let newEntry = {
         "userID": userID,
         "d": i,
         "h": hourNumber,
         "m": minuteNumber,
-        "amounts": amounts
+        "a": a
     };
 
     fetch(`${API_URL}/dobavi-schedule`, {
@@ -58,12 +64,17 @@ function addToJSON(i) {
 };
 
 document.addEventListener('DOMContentLoaded', function () {
-    const userID = localStorage.getItem('userID');
-    if (!userID) {
-        window.location.href = "../../login/index.html";
-        return;
+    if (typeof checkLogin === 'function') {
+        checkLogin();
+    } else {
+        const tempUserID = localStorage.getItem('userID');
+        if (!tempUserID) {
+            window.location.href = "../../login/index.html";
+            return;
+        }
     }
 
+    const userID = localStorage.getItem('userID');
     let pageWeekday = document.getElementById('weekday')
 
     fetch(`${API_URL}/vzemi-schedule?userID=${userID}`)
@@ -79,8 +90,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (item.d === parseInt(pageWeekday.getAttribute('weekday-num'), 10)) {
 
                     let boxesHtml = "";
-                    if (item.amounts && Array.isArray(item.amounts)) {
-                        item.amounts.forEach((amt, index) => {
+                    if (item.a && Array.isArray(item.a)) {
+                        item.a.forEach((amt, index) => {
                             if (amt > 0) {
                                 boxesHtml += `
                                     <span class="box-badge">
@@ -110,7 +121,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                 data-day="${item.d}" 
                                 data-hour="${item.h}" 
                                 data-minute="${item.m}" 
-                                data-amounts='${JSON.stringify(item.amounts)}'>
+                                data-a='${JSON.stringify(item.a)}'>
                                 <i class="fa-solid fa-trash"></i>
                             </button>
                         </div>
@@ -125,8 +136,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     const day = this.getAttribute('data-day');
                     const hour = this.getAttribute('data-hour');
                     const minute = this.getAttribute('data-minute');
-                    const amounts = JSON.parse(this.getAttribute('data-amounts'));
-                    deleteScheduleItem(day, hour, minute, amounts);
+                    const a = JSON.parse(this.getAttribute('data-a'));
+                    deleteScheduleItem(day, hour, minute, a);
                 });
             });
         })
@@ -135,14 +146,14 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 });
 
-function deleteScheduleItem(day, hour, minute, amounts) {
+function deleteScheduleItem(day, hour, minute, a) {
     const userID = localStorage.getItem('userID');
     const itemToDelete = {
         userID: userID,
         d: parseInt(day, 10),
         h: parseInt(hour, 10),
         m: parseInt(minute, 10),
-        amounts: amounts
+        a: a
     };
 
     fetch(`${API_URL}/izbrishi-schedule`, {

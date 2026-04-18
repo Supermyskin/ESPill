@@ -32,12 +32,14 @@ async function fetchSchedule() {
 
         schedule.forEach(pill => {
             const boxes = [];
-            for (let i = 0; i < 6; i++) {
-                if ((pill.b & (1 << i)) > 0) {
-                    boxes.push(i + 1);
-                }
+            if (pill.a && Array.isArray(pill.a)) {
+                pill.a.forEach((amt, index) => {
+                    if (amt > 0) {
+                        boxes.push(index + 1);
+                    }
+                });
             }
-            const boxesText = boxes.length > 1 ? `Boxes ${boxes.join(', ')}` : `Box ${boxes[0]}`;
+            const boxesText = boxes.length > 1 ? `Boxes ${boxes.join(', ')}` : (boxes.length === 1 ? `Box ${boxes[0]}` : 'No boxes');
 
             const item = document.createElement('div');
             item.className = 'pill-item';

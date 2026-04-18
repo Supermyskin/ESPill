@@ -30,7 +30,7 @@ const scheduleSchema = new mongoose.Schema({
     d: { type: Number, required: true },
     h: { type: Number, required: true },
     m: { type: Number, required: true },
-    amounts: { type: [Number], default: [0, 0, 0, 0, 0, 0] }
+    a: { type: [Number], default: [0, 0, 0, 0, 0, 0] }
 });
 
 const User = mongoose.model('User', userSchema);
@@ -101,7 +101,7 @@ app.get('/vzemi-schedule', async (req, res) => {
             d: item.d,
             h: item.h,
             m: item.m,
-            amounts: item.amounts
+            a: item.a
         }));
 
         res.json(formattedSchedule);
@@ -146,7 +146,7 @@ app.delete('/izbrishi-schedule', async (req, res) => {
             d: itemToDelete.d,
             h: itemToDelete.h,
             m: itemToDelete.m,
-            amounts: itemToDelete.amounts
+            a: itemToDelete.a
         });
 
         if (result) {

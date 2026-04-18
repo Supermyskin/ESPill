@@ -171,7 +171,7 @@ app.get('/vzemi-schedule', async (req, res) => {
             return res.status(400).json({ message: "UserID is required" });
         }
 
-        const userSchedule = await Schedule.find({ userID: userId });
+        const userSchedule = await Schedule.find({ userID: userId }).sort({ d: 1, h: 1, m: 1 });
 
         const formattedSchedule = userSchedule.map(item => ({
             d: item.d,

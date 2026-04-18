@@ -24,8 +24,31 @@ function uploadToESP() {
     fetch(`${API_URL}/vzemi-schedule?userID=${userID}`)
         .then(response => response.json())
         .then(data => {
-            console.log("Publishing data:", data);
-            client.publish('esp32/receive', JSON.stringify(data), { qos: 0 }, (error) => {
+            // Sort by day, hour, minute
+            const processedData = data.sort((a, b) => {
+                if (a.d !== b.d) return a.d - b.d;
+                if (a.h !== b.h) return a.h - b.h;
+                return a.m - b.m;
+            }).map(item => {
+                // Convert array 'a' to bitmask 'b' for the ESP32
+                let bitmask = 0;
+                if (item.a && Array.isArray(item.a)) {
+                    item.a.forEach((amt, index) => {
+                        if (amt > 0) {
+                            bitmask |= (1 << index);
+                        }
+                    });
+                }
+                return {
+                    d: item.d,
+                    h: item.h,
+                    m: item.m,
+                    b: bitmask
+                };
+            });
+
+            console.log("Publishing data:", processedData);
+            client.publish('esp32/receive', JSON.stringify(processedData), { qos: 0 }, (error) => {
                 if (error) {
                     alert("Error sending schedule to ESP32.");
                 } else {

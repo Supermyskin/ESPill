@@ -2,10 +2,13 @@
 <html lang="en">
 
 <head>
-    <title>ESPill</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | ESPill</title>
     <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
     <link href="./icon.png" rel="icon">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../main/responsive.css">
     <script src="https://kit.fontawesome.com/1424a6b21b.js" crossorigin="anonymous"></script>
 </head>
 
@@ -24,25 +27,48 @@
     </div>
 
     <div class="container">
-        <div class="glass-card">
-            <h1 id="status-title">System Status</h1>
-            <p id="status-text">Connecting to HiveMQ...</p>
-        </div>
-
-        <div id="next-pill-container" class="glass-card">
-            <h3><i class="fa-solid fa-clock-rotate-left"></i> Next Pill</h3>
-            <div id="next-pill-details">
-                <p id="next-pill-time">Loading schedule...</p>
-                <p id="next-pill-info"></p>
-            </div>
-        </div>
-
-        <div id="alert-message" class="hidden">
+        <!-- Alert Section (Top Priority) -->
+        <div id="alert-message" class="hidden alert-banner">
             <i class="fa-solid fa-triangle-exclamation"></i>
             <span>PLEASE TAKE YOUR PILL!</span>
         </div>
-        <div id="timer-container" class="hidden">
+        <div id="timer-container" class="hidden timer-banner">
             <p>Time remaining: <span id="timer">05:00</span></p>
+        </div>
+
+        <div class="dashboard-grid">
+            <!-- Card 1: Status -->
+            <div class="glass-card status-card">
+                <h3><i class="fa-solid fa-signal"></i> System Status</h3>
+                <h1 id="status-title">System Status</h1>
+                <p id="status-text">Connecting...</p>
+            </div>
+
+            <!-- Card 2: Next Pill -->
+            <div id="next-pill-container" class="glass-card pill-card">
+                <h3><i class="fa-solid fa-clock-rotate-left"></i> Next Pill</h3>
+                <div id="next-pill-details">
+                    <p id="next-pill-time">Loading...</p>
+                    <p id="next-pill-info"></p>
+                </div>
+            </div>
+
+            <!-- Card 3: Streak -->
+            <div class="glass-card streak-card">
+                <h3><i class="fa-solid fa-fire"></i> Adherence Streak</h3>
+                <div class="streak-display">
+                    <span id="streak-count">0</span>
+                    <p>Day Streak</p>
+                </div>
+            </div>
+
+            <!-- Card 4: Dose Log -->
+            <div class="glass-card log-card">
+                <h3><i class="fa-solid fa-list-check"></i> Recent Activity</h3>
+                <div id="dose-log" class="log-container">
+                    <p style="text-align: center; color: rgba(255,255,255,0.4);">Loading history...</p>
+                </div>
+            </div>
         </div>
     </div>
 

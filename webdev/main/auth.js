@@ -27,11 +27,11 @@ function updateHeader() {
 
     if (userName) {
         accountLink.innerHTML = `<i class="fa-solid fa-user"></i> ${userName}`;
-        accountLink.href = (window.location.pathname.includes('/schedule/weekdays/')) ? "../../../account/index.html" : "../account/index.html";
+        accountLink.href = (window.location.pathname.includes('/schedule/weekdays/')) ? "../../account/index.html" : "../account/index.html";
         
         // Handle paths correctly based on directory depth
         const isDeep = window.location.pathname.includes('/schedule/weekdays/');
-        const landingPath = isDeep ? "../../../landing/index.html" : "../landing/index.html";
+        const landingPath = isDeep ? "../../landing/index.html" : "../landing/index.html";
 
         if (!document.getElementById('logout-btn')) {
             const logoutBtn = document.createElement('a');
@@ -67,7 +67,56 @@ function getUserID() {
 function checkLogin() {
     if (!getUserID()) {
         const isDeep = window.location.pathname.includes('/schedule/weekdays/');
-        const loginPath = isDeep ? "../../../login/index.html" : "../login/index.html";
+        const loginPath = isDeep ? "../../login/index.html" : "../login/index.html";
         window.location.href = loginPath;
     }
+}
+
+// Notification logic
+const NOTIF_API_URL = 'https://appeals-ar44.onrender.com';
+
+async function checkPillSchedule() {
+    const userID = localStorage.getItem('userID');
+    if (!userID || !("Notification" in window) || Notification.permission !== "granted") return;
+
+    try {
+        const response = await fetch(`${NOTIF_API_URL}/vzemi-schedule?userID=${userID}`);
+        const schedule = await response.json();
+
+        if (!schedule || schedule.length === 0) return;
+
+        const now = new Date();
+        const currentDay = (now.getDay() + 1) % 7;
+        const currentHour = now.getHours();
+        const currentMinute = now.getMinutes();
+
+        schedule.forEach(pill => {
+            if (pill.d === currentDay && pill.h === currentHour && pill.m === currentMinute) {
+                const pillId = `notif-${pill.d}-${pill.h}-${pill.m}`;
+                if (localStorage.getItem('lastNotifiedPill') !== pillId) {
+                    new Notification("ESPill Reminder", { 
+                        body: "It's time to take your pill!",
+                        icon: window.location.pathname.includes('/weekdays/') ? "../../dashboard/icon.png" : (window.location.pathname.includes('/main/') || window.location.pathname.includes('/dashboard/') || window.location.pathname.includes('/account/') || window.location.pathname.includes('/schedule/') ? "../dashboard/icon.png" : "./dashboard/icon.png")
+                    });
+                    localStorage.setItem('lastNotifiedPill', pillId);
+                }
+            } else {
+                // Clear old notification ID if time passed
+                const oldPillId = `notif-${pill.d}-${pill.h}-${pill.m}`;
+                if (localStorage.getItem('lastNotifiedPill') === oldPillId && (pill.h !== currentHour || pill.m !== currentMinute)) {
+                    // We don't necessarily need to clear it, but let's keep it clean
+                }
+            }
+        });
+    } catch (err) {
+        console.error("Failed to check schedule for notifications:", err);
+    }
+}
+
+if (localStorage.getItem('userID')) {
+    if ("Notification" in window && Notification.permission === "default") {
+        Notification.requestPermission();
+    }
+    setInterval(checkPillSchedule, 60000);
+    checkPillSchedule();
 }

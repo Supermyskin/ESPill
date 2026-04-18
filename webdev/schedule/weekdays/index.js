@@ -12,10 +12,17 @@ function addToJSON(i) {
 
     let a = [];
     let hasPills = false;
+    let tooManyPills = false;
     for (let b = 1; b <= 6; b++) {
         let val = parseInt(document.getElementById(`pill-input-${b}`).value, 10) || 0;
+        if (val > 255) tooManyPills = true;
         a.push(val);
         if (val > 0) hasPills = true;
+    }
+
+    if (tooManyPills) {
+        alert("Maximum 255 pills allowed per box.");
+        return;
     }
 
     if (isNaN(hourNumber) || isNaN(minuteNumber) || !hasPills) {

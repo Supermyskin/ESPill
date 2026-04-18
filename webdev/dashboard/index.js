@@ -26,11 +26,69 @@ const timerDisplay = document.getElementById('timer');
 const body = document.body;
 const nextPillTime = document.getElementById('next-pill-time');
 const nextPillInfo = document.getElementById('next-pill-info');
+const streakCount = document.getElementById('streak-count');
+const doseLog = document.getElementById('dose-log');
 
 const daysOfWeek = ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 let lastTriggeredPill = null;
 
 const API_URL = 'https://appeals-ar44.onrender.com';
+
+async function fetchUserStreak() {
+    try {
+        const response = await fetch(`${API_URL}/vzemi-user?userID=${userID}`);
+        const user = await response.json();
+        if (user && user.streak !== undefined) {
+            streakCount.textContent = user.streak;
+        }
+    } catch (err) {
+        console.error("Error fetching streak:", err);
+    }
+}
+
+async function fetchDoseLog() {
+    try {
+        const response = await fetch(`${API_URL}/vzemi-stats?userID=${userID}`);
+        let stats = await response.json();
+        
+        if (!stats || stats.length === 0) {
+            doseLog.innerHTML = '<p style="text-align: center; color: rgba(255,255,255,0.4);">No activity yet.</p>';
+            return;
+        }
+
+        // Sort by date (newest first)
+        stats.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+        doseLog.innerHTML = '';
+        stats.slice(0, 20).forEach(stat => { // Show last 20 entries
+            const date = new Date(stat.timestamp);
+            const timeStr = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            const dateStr = date.toLocaleDateString([], { month: 'short', day: 'numeric', weekday: 'short' });
+            
+            const item = document.createElement('div');
+            item.className = `log-item ${stat.type}`;
+            
+            let statusText = stat.type;
+            if (stat.type === 'onTime') statusText = 'On Time';
+            
+            item.innerHTML = `
+                <div class="log-info">
+                    <span class="log-time">${timeStr}</span>
+                    <span class="log-date">${dateStr}</span>
+                </div>
+                <div class="log-status">${statusText}</div>
+            `;
+            doseLog.appendChild(item);
+        });
+    } catch (err) {
+        console.error("Error fetching dose log:", err);
+        doseLog.innerHTML = '<p style="text-align: center; color: rgba(255,255,255,0.4);">Error loading history.</p>';
+    }
+}
+
+// Initial fetch
+fetchUserStreak();
+fetchDoseLog();
 
 async function updateNextPill() {
     try {
@@ -146,6 +204,9 @@ async function updateStats(type) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ userID, type })
         });
+        // Refresh data after update
+        fetchUserStreak();
+        fetchDoseLog();
     } catch (err) {
         console.error("Failed to update stats:", err);
     }
@@ -163,9 +224,10 @@ function enterAlertState() {
 }
 
 function resetState() {
-    // Track on time if we were in warning state in MongoDB
     if (body.classList.contains('warning')) {
         updateStats('onTime');
+    } else if (body.classList.contains('alert')) {
+        updateStats('late');
     }
 
     clearInterval(pillTimer);

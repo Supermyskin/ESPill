@@ -32,6 +32,7 @@ body {
     padding: 0.5rem 1.5rem;
     box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
     box-sizing: border-box;
+    transition: max-height 0.4s ease-in-out, background-color 0.3s ease, transform 0.3s ease;
 }
 
 .header-links {
@@ -72,54 +73,6 @@ body {
     font-size: 1.5rem;
     cursor: pointer;
     padding: 0.5rem;
-}
-
-@media (max-width: 900px) {
-    .header {
-        flex-wrap: wrap;
-        padding: 1rem 1.5rem;
-    }
-
-    .header-toggle {
-        display: block;
-    }
-
-    .header-links,
-    .header-account {
-        display: none;
-        width: 100%;
-        flex-direction: column;
-        gap: 0.5rem;
-        padding-top: 1rem;
-        text-align: left;
-    }
-
-    .header-links {
-        position: static;
-        transform: none;
-        order: 3;
-    }
-
-    .header-account {
-        order: 4;
-        border-top: 1px solid rgba(254, 177, 255, 0.1);
-        padding-top: 0.5rem;
-    }
-
-    .header.active .header-links,
-    .header.active .header-account {
-        display: flex;
-    }
-
-    .header a {
-        text-align: left;
-        width: 100%;
-        box-sizing: border-box;
-    }
-
-    .login-title {
-        font-size: 2rem !important;
-    }
 }
 
 .glass-card {
@@ -209,9 +162,8 @@ body {
     text-shadow: 0 0 10px rgba(254, 177, 255, 0.5);
 }
 
-@media (max-width: 600px) {
-    .glass-card {
-        padding: 2rem;
-        max-width: 90%;
+@media (max-width: 768px) {
+    .login-title {
+        font-size: 2rem !important;
     }
 }

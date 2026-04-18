@@ -7,12 +7,26 @@ if (!userID) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('user-greeting').textContent = `Hello, ${userName || 'User'}!`;
     document.getElementById('user-id-display').textContent = `User ID: ${userID}`;
 
+    fetchUserData();
     fetchSchedule();
     renderChart();
 });
+
+async function fetchUserData() {
+    try {
+        const response = await fetch(`${API_URL}/vzemi-user?userID=${userID}`);
+        const user = await response.json();
+
+        if (user) {
+            document.getElementById('user-greeting').textContent = `Hello, ${user.name || 'User'}!`;
+            document.getElementById('streak-count').textContent = user.streak || 0;
+        }
+    } catch (err) {
+        console.error("Error fetching user data:", err);
+    }
+}
 
 async function fetchSchedule() {
     const container = document.getElementById('pills-container');
@@ -59,14 +73,45 @@ async function fetchSchedule() {
     }
 }
 
-function renderChart() {
+async function renderChart() {
     const ctx = document.getElementById('adherenceChart').getContext('2d');
 
-    // Mock for adherence over the last 7 days
-    const labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-    const onTimeData = [3, 2, 4, 3, 3, 2, 1];
-    const lateData = [0, 1, 0, 1, 0, 1, 2];
-    const missedData = [0, 0, 0, 0, 1, 0, 1];
+    let stats = [];
+    try {
+        const response = await fetch(`${API_URL}/vzemi-stats?userID=${userID}`);
+        stats = await response.json();
+    } catch (err) {
+        console.error("Error fetching stats:", err);
+    }
+
+    const labels = [];
+    const onTimeData = [];
+    const lateData = [];
+    const missedData = [];
+
+    // Initialize data for the last 7 days
+    for (let i = 6; i >= 0; i--) {
+        const d = new Date();
+        d.setDate(d.getDate() - i);
+        const dayLabel = d.toLocaleDateString('en-US', { weekday: 'short' });
+        labels.push(dayLabel);
+        onTimeData.push(0);
+        lateData.push(0);
+        missedData.push(0);
+    }
+
+    // Process stats into the daily buckets
+    stats.forEach(stat => {
+        const statDate = new Date(stat.timestamp);
+        const diffDays = Math.floor((new Date() - statDate) / (1000 * 60 * 60 * 24));
+        
+        if (diffDays >= 0 && diffDays < 7) {
+            const index = 6 - diffDays;
+            if (stat.type === 'onTime') onTimeData[index]++;
+            else if (stat.type === 'late') lateData[index]++;
+            else if (stat.type === 'missed') missedData[index]++;
+        }
+    });
 
     new Chart(ctx, {
         type: 'bar',

@@ -161,6 +161,22 @@ app.delete('/izbrishi-schedule', async (req, res) => {
     }
 });
 
+app.delete('/iztrii-vsichko-schedule', async (req, res) => {
+    try {
+        const userId = req.query.userID;
+        if (!userId) {
+            return res.status(400).json({ message: "UserID is required" });
+        }
+
+        const result = await Schedule.deleteMany({ userID: userId });
+
+        res.json({ message: "Schedule cleared successfully", deletedCount: result.deletedCount });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Internal server error" });
+    }
+});
+
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });

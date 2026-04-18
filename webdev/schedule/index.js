@@ -33,3 +33,28 @@ function uploadToESP() {
             alert("Error getting schedule from server.");
         });
 }
+
+function clearSchedule() {
+    const userID = localStorage.getItem('userID');
+    if (!userID) {
+        alert("Please login first.");
+        window.location.href = "../login/index.html";
+        return;
+    }
+
+    if (!confirm("Are you sure you want to clear your entire schedule? This cannot be undone.")) {
+        return;
+    }
+
+    fetch(`${API_URL}/iztrii-vsichko-schedule?userID=${userID}`, {
+        method: 'DELETE',
+    })
+        .then(response => response.json())
+        .then(data => {
+            alert("Schedule cleared successfully.");
+        })
+        .catch(error => {
+            console.error("Error clearing schedule:", error);
+            alert("Error clearing schedule from server.");
+        });
+}

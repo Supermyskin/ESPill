@@ -31,7 +31,10 @@
         <div><a href="./weekdays/sunday.HTML">Sunday</a></div>
     </div>
 
-    <button id="send-schedule-btn" class="send-btn" onclick="uploadToESP()">Send Schedule to ESP32</button>
+    <div class="button-group">
+        <button id="send-schedule-btn" class="send-btn" onclick="uploadToESP()">Send Schedule to ESP32</button>
+        <button id="clear-schedule-btn" class="clear-btn" onclick="clearSchedule()">Clear Schedule</button>
+    </div>
 
     <script src="../main/auth.js"></script>
     <script src="index.js"></script>

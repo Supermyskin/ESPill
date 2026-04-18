@@ -163,9 +163,10 @@ function enterAlertState() {
 }
 
 function resetState() {
-    // Track on time if we were in warning state in MongoDB
     if (body.classList.contains('warning')) {
         updateStats('onTime');
+    } else if (body.classList.contains('alert')) {
+        updateStats('late');
     }
 
     clearInterval(pillTimer);

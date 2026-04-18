@@ -33,11 +33,57 @@ const scheduleSchema = new mongoose.Schema({
     a: { type: [Number], default: [0, 0, 0, 0, 0, 0] }
 });
 
+const statSchema = new mongoose.Schema({
+    userID: { type: String, required: true },
+    type: { type: String, enum: ['onTime', 'late', 'missed'], required: true },
+    timestamp: { type: Date, default: Date.now }
+});
+
 const User = mongoose.model('User', userSchema);
 const Schedule = mongoose.model('Schedule', scheduleSchema);
+const Stat = mongoose.model('Stat', statSchema);
 
 app.use(cors());
 app.use(express.json());
+
+app.post('/update-stats', async (req, res) => {
+    try {
+        const { userID, type } = req.body;
+        if (!userID || !type) {
+            return res.status(400).json({ message: "UserID and type are required" });
+        }
+
+        const newStat = new Stat({ userID, type });
+        await newStat.save();
+        res.json({ message: "Stat updated successfully" });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Internal server error" });
+    }
+});
+
+app.get('/vzemi-stats', async (req, res) => {
+    try {
+        const userId = req.query.userID;
+        if (!userId) {
+            return res.status(400).json({ message: "UserID is required" });
+        }
+
+        // Get stats for the last 7 days
+        const sevenDaysAgo = new Date();
+        sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+        const stats = await Stat.find({
+            userID: userId,
+            timestamp: { $gte: sevenDaysAgo }
+        });
+
+        res.json(stats);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Internal server error" });
+    }
+});
 
 app.post('/register', async (req, res) => {
     try {

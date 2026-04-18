@@ -22,7 +22,8 @@ const userSchema = new mongoose.Schema({
     userId: { type: String, unique: true, required: true },
     name: { type: String, required: true },
     email: { type: String, unique: true, required: true },
-    password: { type: String, required: true }
+    password: { type: String, required: true },
+    streak: { type: Number, default: 0 }
 });
 
 const scheduleSchema = new mongoose.Schema({
@@ -55,7 +56,36 @@ app.post('/update-stats', async (req, res) => {
 
         const newStat = new Stat({ userID, type });
         await newStat.save();
+
+        // Update streak
+        if (type === 'onTime') {
+            await User.findOneAndUpdate({ userId: userID }, { $inc: { streak: 1 } });
+        } else if (type === 'missed') {
+            await User.findOneAndUpdate({ userId: userID }, { $set: { streak: 0 } });
+        }
+
         res.json({ message: "Stat updated successfully" });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Internal server error" });
+    }
+});
+
+app.get('/vzemi-user', async (req, res) => {
+    try {
+        const userId = req.query.userID;
+        if (!userId) {
+            return res.status(400).json({ message: "UserID is required" });
+        }
+        const user = await User.findOne({ userId });
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+        res.json({
+            name: user.name,
+            email: user.email,
+            streak: user.streak || 0
+        });
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: "Internal server error" });

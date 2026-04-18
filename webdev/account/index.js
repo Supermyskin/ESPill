@@ -7,12 +7,26 @@ if (!userID) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('user-greeting').textContent = `Hello, ${userName || 'User'}!`;
     document.getElementById('user-id-display').textContent = `User ID: ${userID}`;
 
+    fetchUserData();
     fetchSchedule();
     renderChart();
 });
+
+async function fetchUserData() {
+    try {
+        const response = await fetch(`${API_URL}/vzemi-user?userID=${userID}`);
+        const user = await response.json();
+
+        if (user) {
+            document.getElementById('user-greeting').textContent = `Hello, ${user.name || 'User'}!`;
+            document.getElementById('streak-count').textContent = user.streak || 0;
+        }
+    } catch (err) {
+        console.error("Error fetching user data:", err);
+    }
+}
 
 async function fetchSchedule() {
     const container = document.getElementById('pills-container');

@@ -3,76 +3,160 @@ body {
     min-height: 100vh;
     display: flex;
     background-color: black;
-    background-image: radial-gradient(ellipse at bottom, rgba(254, 177, 255, 0.4) 0%, transparent 50%);
+    background-image: radial-gradient(ellipse at bottom, rgba(254, 177, 255, 0.2) 0%, transparent 50%),
+        radial-gradient(ellipse at top left, rgba(145, 92, 182, 0.15) 0%, transparent 40%);
     background-repeat: no-repeat;
     background-attachment: fixed;
     justify-content: center;
     align-items: center;
-    font-family: 'Space Grotesk', sans-serif;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     color: white;
     flex-direction: column;
     gap: 1.875rem;
 }
 
 h1 {
-    margin-top: 6rem;
+    margin-top: 8rem;
+    font-size: 3rem;
+    font-weight: 800;
+    text-align: center;
 }
 
 .header {
-    border-bottom: 0.125rem solid rgba(254, 177, 255, 0.8);
-    box-shadow: 0 0.25rem 0.9375rem rgba(254, 177, 255, 0.5);
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    overflow: hidden;
-    background-color: #ffffff00;
+    border: 1px solid rgba(254, 177, 255, 0.2);
+    backdrop-filter: blur(15px);
+    position: fixed;
+    top: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 75rem;
+    z-index: 1000;
+    background-color: rgba(255, 255, 255, 0.03);
+    border-radius: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 1.5rem;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    box-sizing: border-box;
+}
+
+.header-links {
+    display: flex;
+    gap: 0.5rem;
 }
 
 .header a {
-    float: right;
     color: #f2f2f2;
     text-align: center;
-    padding: 0.875rem 1rem;
+    padding: 0.75rem 1.25rem;
     text-decoration: none;
-    font-size: 1.0625rem;
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border-radius: 0.75rem;
 }
 
 .header .header-logo {
-    float: left;
+    font-weight: 700;
+    font-size: 1.3rem;
+    color: rgb(254, 177, 255);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
 .header a:hover {
-    background-color: rgba(254, 177, 255, 0.8);
-    color: black;
-    box-shadow: 0 0.9375rem 1.5625rem rgba(145, 92, 182, .4);
+    background-color: rgba(254, 177, 255, 0.1);
+    color: rgb(254, 177, 255);
+}
+
+.header-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0.5rem;
+}
+
+@media (max-width: 900px) {
+    .header {
+        flex-wrap: wrap;
+        padding: 1rem 1.5rem;
+    }
+
+    .header-toggle {
+        display: block;
+    }
+
+    .header-links,
+    .header-account {
+        display: none;
+        width: 100%;
+        flex-direction: column;
+        gap: 0.5rem;
+        padding-top: 1rem;
+        text-align: left;
+    }
+
+    .header-links {
+        position: static;
+        transform: none;
+        order: 3;
+    }
+
+    .header-account {
+        order: 4;
+        border-top: 1px solid rgba(254, 177, 255, 0.1);
+        padding-top: 0.5rem;
+    }
+
+    .header.active .header-links,
+    .header.active .header-account {
+        display: flex;
+    }
+
+    .header a {
+        text-align: left;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    h1 {
+        font-size: 2.5rem !important;
+    }
 }
 
 .container {
     display: flex;
     flex-direction: row;
     justify-content: center;
-    gap: 0.9375rem;
+    gap: 1.5rem;
     padding: 2.5rem 1.25rem;
-
-    width: 100%;
-    max-width: 87.5rem;
-    height: 60vh;
+    width: 90%;
+    max-width: 85rem;
+    height: 50vh;
+    margin-top: 2rem;
 }
 
 .container div {
     flex: 1;
-    background-color: rgba(0, 0, 0, 0);
-    border: 0.0625rem solid rgba(254, 177, 255, 0.3);
-    border-radius: 0.75rem;
-    box-shadow: 0 0.25rem 0.625rem rgba(0, 0, 0, 0.5);
-    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.01);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(254, 177, 255, 0.15);
+    border-radius: 1.5rem;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .container div:hover {
-    transform: translateY(-0.5rem);
-    border-color: rgba(254, 177, 255, 0.8);
-    box-shadow: 0 0.5rem 1.25rem rgba(254, 177, 255, 0.4);
+    transform: translateY(-1rem);
+    background: rgba(255, 255, 255, 0.03);
+    border-color: rgba(254, 177, 255, 0.4);
+    box-shadow: 0 15px 45px rgba(254, 177, 255, 0.2);
 }
 
 .container div a {
@@ -83,64 +167,80 @@ h1 {
     height: 100%;
     color: white;
     text-decoration: none;
-    font-size: 1.2rem;
-    font-weight: 600;
-    letter-spacing: 0.0625rem;
+    font-size: 1.3rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
 }
 
 .button-group {
     display: flex;
-    gap: 1.25rem;
-    margin-top: 1.25rem;
+    gap: 1.5rem;
+    margin-top: 3rem;
     margin-bottom: 5rem;
 }
 
-.send-btn {
-    padding: 0.9375rem 1.875rem;
+.send-btn,
+.clear-btn {
+    padding: 1rem 2.5rem;
     font-size: 1.1rem;
-    font-weight: bold;
+    font-weight: 700;
     color: white;
-    background-color: transparent;
-    border: 0.125rem solid rgba(254, 177, 255, 0.5);
-    border-radius: 1.875rem;
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(5px);
+    border-radius: 1.25rem;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 0.25rem 0.625rem rgba(0, 0, 0, 0.5);
-    font-family: 'Space Grotesk', sans-serif;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.send-btn {
+    border: 1px solid rgba(254, 177, 255, 0.4);
 }
 
 .clear-btn {
-    padding: 0.9375rem 1.875rem;
-    font-size: 1.1rem;
-    font-weight: bold;
-    color: white;
-    background-color: transparent;
-    border: 0.125rem solid rgba(255, 100, 100, 0.5);
-    border-radius: 1.875rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 0.25rem 0.625rem rgba(0, 0, 0, 0.5);
-    font-family: 'Space Grotesk', sans-serif;
-}
-
-.clear-btn:hover {
-    transform: scale(1.05);
-    background-color: rgba(255, 100, 100, 0.2);
-    border-color: rgba(255, 100, 100, 0.8);
-    box-shadow: 0 0.5rem 1.25rem rgba(255, 100, 100, 0.4);
-}
-
-.clear-btn:active {
-    transform: scale(0.95);
+    border: 1px solid rgba(255, 100, 100, 0.4);
 }
 
 .send-btn:hover {
-    transform: scale(1.05);
-    background-color: rgba(254, 177, 255, 0.2);
+    transform: translateY(-3px);
+    background: rgba(254, 177, 255, 0.1);
     border-color: rgba(254, 177, 255, 0.8);
-    box-shadow: 0 0.5rem 1.25rem rgba(254, 177, 255, 0.4);
+    box-shadow: 0 8px 25px rgba(254, 177, 255, 0.2);
 }
 
-.send-btn:active {
-    transform: scale(0.95);
+.clear-btn:hover {
+    transform: translateY(-3px);
+    background: rgba(255, 100, 100, 0.1);
+    border-color: rgba(255, 100, 100, 0.8);
+    box-shadow: 0 8px 25px rgba(255, 100, 100, 0.2);
+}
+
+.send-btn:active,
+.clear-btn:active {
+    transform: translateY(0);
+}
+
+@media (max-width: 900px) {
+    .container {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .container div {
+        height: 4rem;
+    }
+
+    .button-group {
+        flex-direction: column;
+        width: 100%;
+        align-items: center;
+    }
+
+    .send-btn,
+    .clear-btn {
+        width: 100%;
+        max-width: 20rem;
+    }
 }

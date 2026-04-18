@@ -12,19 +12,23 @@
 <body>
 
     <div class="header">
-        <a href="../dashboard/index.html"><i class="fa-solid fa-gauge"></i> Dashboard</a>
-        <a href="../about/index.html"><i class="fa-solid fa-circle-info"></i> About</a>
-        <a href="../schedule/index.html"><i class="fa-solid fa-calendar"></i> Schedule</a>
-        <a href="../login/index.html"><i class="fa-solid fa-right-to-bracket"></i> Login</a>
         <a href="../landing/index.html" class="header-logo"><i class="fa-solid fa-capsules"></i> ESPill</a>
+        <div class="header-links">
+            <a href="../dashboard/index.html"><i class="fa-solid fa-gauge"></i> Dashboard</a>
+            <a href="../about/index.html"><i class="fa-solid fa-circle-info"></i> About</a>
+            <a href="../schedule/index.html"><i class="fa-solid fa-calendar"></i> Schedule</a>
+        </div>
+        <div class="header-account">
+            <a href="../login/index.html" id="header-account-link"><i class="fa-solid fa-user"></i> Account</a>
+        </div>
+        <button class="header-toggle" id="header-toggle">
+            <i class="fa-solid fa-bars"></i>
+        </button>
     </div>
 
     <div class="glass-card">
-
-        <p id="status" style="color: white;">Connecting to HiveMQ...</p>
-
-        <p id="instructions" style="font-weight: 50;">Instructions will appear here.</p>
-
+        <p id="status">Connecting to HiveMQ...</p>
+        <p id="instructions">Instructions will appear here.</p>
     </div>
 
     <script src="auth.js"></script>

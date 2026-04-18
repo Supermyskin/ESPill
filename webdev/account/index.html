@@ -1,15 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
-    <title>ESPill</title>
-    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+    <title>Account | ESPill</title>
     <link href="./icon.png" rel="icon">
     <link rel="stylesheet" href="style.css">
     <script src="https://kit.fontawesome.com/1424a6b21b.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
+
     <div class="header">
         <a href="../landing/index.html" class="header-logo"><i class="fa-solid fa-capsules"></i> ESPill</a>
         <div class="header-links">
@@ -24,25 +25,23 @@
     </div>
 
     <div class="container">
-        <div class="glass-card">
-            <h1 id="status-title">System Status</h1>
-            <p id="status-text">Connecting to HiveMQ...</p>
+        <div class="glass-card profile-section">
+            <h1 id="user-greeting">Hello, User!</h1>
+            <p id="user-id-display"></p>
         </div>
 
-        <div id="next-pill-container" class="glass-card">
-            <h3><i class="fa-solid fa-clock-rotate-left"></i> Next Pill</h3>
-            <div id="next-pill-details">
-                <p id="next-pill-time">Loading schedule...</p>
-                <p id="next-pill-info"></p>
+        <div class="account-grid">
+            <div class="glass-card pills-list-card">
+                <h3><i class="fa-solid fa-pills"></i> Your Scheduled Pills</h3>
+                <div id="pills-container" class="scrollable-content">
+                    <p>Loading your schedule...</p>
+                </div>
             </div>
-        </div>
 
-        <div id="alert-message" class="hidden">
-            <i class="fa-solid fa-triangle-exclamation"></i>
-            <span>PLEASE TAKE YOUR PILL!</span>
-        </div>
-        <div id="timer-container" class="hidden">
-            <p>Time remaining: <span id="timer">05:00</span></p>
+            <div class="glass-card graph-card">
+                <h3><i class="fa-solid fa-chart-line"></i> Adherence Overview</h3>
+                <canvas id="adherenceChart"></canvas>
+            </div>
         </div>
     </div>
 

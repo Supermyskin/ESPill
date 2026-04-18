@@ -1,6 +1,23 @@
 document.addEventListener('DOMContentLoaded', function () {
     updateHeader();
+    setupMobileMenu();
 });
+
+function setupMobileMenu() {
+    const toggle = document.getElementById('header-toggle');
+    const header = document.querySelector('.header');
+    if (toggle && header) {
+        toggle.addEventListener('click', () => {
+            header.classList.toggle('active');
+            const icon = toggle.querySelector('i');
+            if (header.classList.contains('active')) {
+                icon.className = 'fa-solid fa-xmark';
+            } else {
+                icon.className = 'fa-solid fa-bars';
+            }
+        });
+    }
+}
 
 function updateHeader() {
     const userName = localStorage.getItem('userName');
@@ -14,7 +31,7 @@ function updateHeader() {
     if (userName) {
         if (loginLink) {
             loginLink.innerHTML = `<i class="fa-solid fa-user"></i> ${userName}`;
-            loginLink.href = "#";
+            loginLink.href = "../account/index.html";
 
             if (!document.getElementById('logout-btn')) {
                 const logoutBtn = document.createElement('a');
@@ -27,7 +44,7 @@ function updateHeader() {
                     localStorage.removeItem('userName');
                     window.location.href = "../landing/index.html";
                 };
-                header.appendChild(logoutBtn);
+                loginLink.parentNode.appendChild(logoutBtn);
             }
         }
     } else {

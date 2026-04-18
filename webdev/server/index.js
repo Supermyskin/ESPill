@@ -30,7 +30,7 @@ const scheduleSchema = new mongoose.Schema({
     d: { type: Number, required: true },
     h: { type: Number, required: true },
     m: { type: Number, required: true },
-    b: { type: Number, required: true }
+    amounts: { type: [Number], default: [0, 0, 0, 0, 0, 0] }
 });
 
 const User = mongoose.model('User', userSchema);
@@ -97,12 +97,11 @@ app.get('/vzemi-schedule', async (req, res) => {
 
         const userSchedule = await Schedule.find({ userID: userId });
 
-        // Map to return clean objects without MongoDB metadata if needed
         const formattedSchedule = userSchedule.map(item => ({
             d: item.d,
             h: item.h,
             m: item.m,
-            b: item.b
+            amounts: item.amounts
         }));
 
         res.json(formattedSchedule);
@@ -147,7 +146,7 @@ app.delete('/izbrishi-schedule', async (req, res) => {
             d: itemToDelete.d,
             h: itemToDelete.h,
             m: itemToDelete.m,
-            b: itemToDelete.b
+            amounts: itemToDelete.amounts
         });
 
         if (result) {

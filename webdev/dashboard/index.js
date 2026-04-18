@@ -3,6 +3,17 @@ if (!userID) {
     window.location.href = "../login/index.html";
 }
 
+// Request notification permission
+if ("Notification" in window) {
+    Notification.requestPermission();
+}
+
+function sendNotification(title, body) {
+    if ("Notification" in window && Notification.permission === "granted") {
+        new Notification(title, { body, icon: "./icon.png" });
+    }
+}
+
 const client = mqtt.connect('wss://507f68c94c1b48c6b9a345e8a073e5cd.s1.eu.hivemq.cloud:8884/mqtt', {
     username: 'ESPill',
     password: '1Qazxsw23edcvfr4'
@@ -121,16 +132,40 @@ function enterWarningState() {
     alertMessage.classList.remove('hidden');
     timerContainer.classList.remove('hidden');
     statusText.textContent = 'Action Required: Take your pill';
+    
+    sendNotification("ESPill Reminder", "It's time to take your pill!");
     startTimer();
+}
+
+async function updateStats(type) {
+    try {
+        await fetch(`${API_URL}/update-stats`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ userID, type })
+        });
+    } catch (err) {
+        console.error("Failed to update stats:", err);
+    }
 }
 
 function enterAlertState() {
     body.classList.remove('warning');
     body.classList.add('alert');
     statusText.textContent = 'URGENT: PILL OVERDUE!';
+    
+    sendNotification("ESPill URGENT", "Your pill is OVERDUE! Please take it now.");
+    
+    // Track missed pill in MongoDB
+    updateStats('missed');
 }
 
 function resetState() {
+    // Track on time if we were in warning state in MongoDB
+    if (body.classList.contains('warning')) {
+        updateStats('onTime');
+    }
+
     clearInterval(pillTimer);
     body.classList.remove('warning', 'alert');
     alertMessage.classList.add('hidden');

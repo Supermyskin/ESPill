@@ -13,11 +13,16 @@
     <p hidden id="weekday" weekday-num="5"></p>
 
     <div class="header">
-        <a href="../../dashboard/index.html"><i class="fa-solid fa-gauge"></i> Dashboard</a>
-        <a href="../../about/index.html"><i class="fa-solid fa-circle-info"></i> About</a>
-        <a href="../index.html"><i class="fa-solid fa-calendar"></i> Schedule</a>
-        <a href="../../login/index.html"><i class="fa-solid fa-right-to-bracket"></i> Login</a>
         <a href="../../landing/index.html" class="header-logo"><i class="fa-solid fa-capsules"></i> ESPill</a>
+        <div class="header-links">
+            <a href="../../dashboard/index.html"><i class="fa-solid fa-gauge"></i> Dashboard</a>
+            <a href="../../about/index.html"><i class="fa-solid fa-circle-info"></i> About</a>
+            <a href="../../schedule/index.html"><i class="fa-solid fa-calendar"></i> Schedule</a>
+        </div>
+        <div class="header-account">
+            <a href="../../login/index.html" id="header-account-link"><i class="fa-solid fa-user"></i> Account</a>
+        </div>
+        <button class="header-toggle" id="header-toggle"><i class="fa-solid fa-bars"></i></button>
     </div>
 
     <div class="schedule-container">
@@ -33,14 +38,32 @@
             </div>
 
             <div class="input-group">
-                <label>Pick Boxes</label>
-                <div class="box-selector">
-                    <button class="box-btn" data-box="1">1</button>
-                    <button class="box-btn" data-box="2">2</button>
-                    <button class="box-btn" data-box="3">3</button>
-                    <button class="box-btn" data-box="4">4</button>
-                    <button class="box-btn" data-box="5">5</button>
-                    <button class="box-btn" data-box="6">6</button>
+                <label>Pills per Box</label>
+                <div class="pill-count-selector">
+                    <div class="pill-input-group">
+                        <label>1</label>
+                        <input type="number" id="pill-input-1" min="0" max="99" placeholder="0" class="pill-input">
+                    </div>
+                    <div class="pill-input-group">
+                        <label>2</label>
+                        <input type="number" id="pill-input-2" min="0" max="99" placeholder="0" class="pill-input">
+                    </div>
+                    <div class="pill-input-group">
+                        <label>3</label>
+                        <input type="number" id="pill-input-3" min="0" max="99" placeholder="0" class="pill-input">
+                    </div>
+                    <div class="pill-input-group">
+                        <label>4</label>
+                        <input type="number" id="pill-input-4" min="0" max="99" placeholder="0" class="pill-input">
+                    </div>
+                    <div class="pill-input-group">
+                        <label>5</label>
+                        <input type="number" id="pill-input-5" min="0" max="99" placeholder="0" class="pill-input">
+                    </div>
+                    <div class="pill-input-group">
+                        <label>6</label>
+                        <input type="number" id="pill-input-6" min="0" max="99" placeholder="0" class="pill-input">
+                    </div>
                 </div>
             </div>
 

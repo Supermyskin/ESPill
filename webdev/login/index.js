@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     localStorage.setItem('userID', data.userId);
                     localStorage.setItem('userName', data.name);
                     alert('Login successful!');
-                    window.location.href = '../main/index.html';
+                    window.location.href = '../account/index.html';
                 } else {
                     alert(data.message || 'Login failed');
                 }

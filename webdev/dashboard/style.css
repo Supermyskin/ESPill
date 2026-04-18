@@ -3,20 +3,21 @@ body {
     min-height: 100vh;
     display: flex;
     background-color: black;
-    background-image: radial-gradient(ellipse at bottom, rgba(254, 177, 255, 0.4) 0%, transparent 50%);
+    background-image: radial-gradient(ellipse at bottom, rgba(254, 177, 255, 0.2) 0%, transparent 50%),
+                      radial-gradient(ellipse at top left, rgba(145, 92, 182, 0.15) 0%, transparent 40%);
     background-repeat: no-repeat;
     background-attachment: fixed;
     justify-content: center;
     align-items: center;
-    font-family: sans-serif;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     color: white;
     flex-direction: column;
     gap: 1.875rem;
-    transition: background-image 0.5s ease-in-out;
+    transition: all 0.5s ease-in-out;
 }
 
 body.warning {
-    background-image: radial-gradient(ellipse at bottom, rgba(255, 255, 0, 0.4) 0%, transparent 50%);
+    background-image: radial-gradient(ellipse at bottom, rgba(255, 255, 0, 0.3) 0%, transparent 50%);
 }
 
 body.alert {
@@ -25,116 +26,218 @@ body.alert {
 
 @keyframes flash-red {
     0% {
-        background-image: radial-gradient(ellipse at bottom, rgba(255, 0, 0, 0.4) 0%, transparent 50%);
+        background-image: radial-gradient(ellipse at bottom, rgba(255, 0, 0, 0.3) 0%, transparent 50%);
         background-color: black;
     }
     100% {
-        background-image: radial-gradient(ellipse at bottom, rgba(255, 0, 0, 1) 0%, transparent 70%);
-        background-color: rgba(255, 0, 0, 0.1);
+        background-image: radial-gradient(ellipse at bottom, rgba(255, 0, 0, 0.8) 0%, transparent 70%);
+        background-color: rgba(50, 0, 0, 0.2);
     }
 }
 
 .header {
-    border-bottom: 0.125rem solid rgba(254, 177, 255, 0.8);
-    box-shadow: 0 0.25rem 0.9375rem rgba(254, 177, 255, 0.5);
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    overflow: hidden;
-    background-color: #ffffff00;
+    border: 1px solid rgba(254, 177, 255, 0.2);
+    backdrop-filter: blur(15px);
+    position: fixed;
+    top: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 75rem;
+    z-index: 1000;
+    background-color: rgba(255, 255, 255, 0.03);
+    border-radius: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 1.5rem;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    box-sizing: border-box;
     transition: all 0.5s ease;
 }
 
 body.alert .header {
-    border-bottom-color: red;
-    box-shadow: 0 0.25rem 1.5625rem rgba(255, 0, 0, 0.8);
+    border-color: rgba(255, 0, 0, 0.5);
+    box-shadow: 0 8px 32px 0 rgba(255, 0, 0, 0.37);
+}
+
+.header-links {
+    display: flex;
+    gap: 0.5rem;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.header-account {
+    display: flex;
+    gap: 0.5rem;
 }
 
 .header a {
-    float: right;
     color: #f2f2f2;
     text-align: center;
-    padding: 0.875rem 1rem;
+    padding: 0.75rem 1.25rem;
     text-decoration: none;
-    font-size: 1.0625rem;
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border-radius: 0.75rem;
 }
 
 .header .header-logo {
-    float: left;
+    font-weight: 700;
+    font-size: 1.3rem;
+    color: rgb(254, 177, 255);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+body.alert .header .header-logo {
+    color: red;
 }
 
 .header a:hover {
-    background-color: rgba(254, 177, 255, 0.8);
-    color: black;
-    box-shadow: 0 0.9375rem 1.5625rem rgba(145, 92, 182, .4);
+    background-color: rgba(254, 177, 255, 0.1);
+    color: rgb(254, 177, 255);
+}
+
+.header-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0.5rem;
+}
+
+@media (max-width: 900px) {
+    .header {
+        flex-wrap: wrap;
+        padding: 1rem 1.5rem;
+    }
+
+    .header-toggle {
+        display: block;
+    }
+
+    .header-links,
+    .header-account {
+        display: none;
+        width: 100%;
+        flex-direction: column;
+        gap: 0.5rem;
+        padding-top: 1rem;
+        text-align: left;
+    }
+
+    .header-links {
+        position: static;
+        transform: none;
+        order: 3;
+    }
+
+    .header-account {
+        order: 4;
+        border-top: 1px solid rgba(254, 177, 255, 0.1);
+        padding-top: 0.5rem;
+    }
+
+    .header.active .header-links,
+    .header.active .header-account {
+        display: flex;
+    }
+
+    .header a {
+        text-align: left;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    #status-title {
+        font-size: 2.5rem !important;
+    }
+}
+
+body.alert .header a:hover {
+    background-color: rgba(255, 0, 0, 0.1);
+    color: red;
 }
 
 .container {
     text-align: center;
     z-index: 1;
+    width: 90%;
+    max-width: 60rem;
+    margin-top: 5rem;
 }
 
 #status-title {
-    font-size: 3rem;
-    margin-bottom: 0.625rem;
+    font-size: 3.5rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
 }
 
 #status-text {
-    font-size: 1.5rem;
-    color: rgba(255, 255, 255, 0.7);
-    margin-bottom: 1.875rem;
+    font-size: 1.2rem;
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 2.5rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
 }
 
 .glass-card {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(0.625rem);
-    -webkit-backdrop-filter: blur(0.625rem);
-    border: 0.0625rem solid rgba(255, 255, 255, 0.1);
-    border-radius: 1.25rem;
-    padding: 1.25rem 2.5rem;
-    margin: 1.25rem auto;
-    max-width: 25rem;
-    box-shadow: 0 0.5rem 2rem 0 rgba(0, 0, 0, 0.37);
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(254, 177, 255, 0.15);
+    border-radius: 2rem;
+    padding: 2.5rem;
+    margin: 1.5rem auto;
+    max-width: 28rem;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
     transition: all 0.3s ease;
 }
 
 .glass-card h3 {
     margin-top: 0;
-    font-weight: 300;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.125rem;
+    letter-spacing: 0.15rem;
     color: rgba(254, 177, 255, 0.9);
+    font-size: 0.9rem;
 }
 
 #next-pill-time {
-    font-size: 2rem;
-    font-weight: 600;
-    margin: 0.625rem 0;
+    font-size: 3rem;
+    font-weight: 800;
+    margin: 1rem 0;
 }
 
 #next-pill-info {
-    font-size: 1.125rem;
+    font-size: 1.1rem;
     color: rgba(255, 255, 255, 0.6);
 }
 
 #alert-message {
-    margin-top: 1.875rem;
-    font-size: 2.625rem;
+    margin-top: 2rem;
+    font-size: 2.5rem;
     font-weight: 900;
-    color: yellow;
-    text-shadow: 0 0 0.625rem rgba(255, 255, 0, 0.5);
+    color: #ffff00;
+    text-shadow: 0 0 20px rgba(255, 255, 0, 0.5);
+    text-transform: uppercase;
 }
 
 body.alert #alert-message {
-    color: red;
-    text-shadow: 0 0 1.25rem rgba(255, 0, 0, 1);
-    animation: text-flash 0.2s infinite alternate;
+    color: #ff3333;
+    text-shadow: 0 0 30px rgba(255, 0, 0, 0.8);
+    animation: text-pulse 0.5s infinite alternate;
 }
 
-@keyframes text-flash {
-    from { opacity: 1; transform: scale(1); }
-    to { opacity: 0.5; transform: scale(1.3); }
+@keyframes text-pulse {
+    from { transform: scale(1); opacity: 1; }
+    to { transform: scale(1.1); opacity: 0.8; }
 }
 
 .hidden {
@@ -142,6 +245,8 @@ body.alert #alert-message {
 }
 
 #timer-container {
-    margin-top: 1.25rem;
-    font-size: 1.25rem;
+    margin-top: 1.5rem;
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: rgba(254, 177, 255, 0.8);
 }

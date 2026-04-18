@@ -1,11 +1,5 @@
 const API_URL = 'https://appeals-ar44.onrender.com';
 
-document.querySelectorAll('.box-btn').forEach(button => {
-    button.addEventListener('click', function () {
-        this.classList.toggle('selected');
-    });
-});
-
 const daysWeek = ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 
 function addToJSON(i) {
@@ -16,26 +10,16 @@ function addToJSON(i) {
     let hourNumber = parseInt(hourText, 10);
     let minuteNumber = parseInt(minuteText, 10);
 
-    let boxBitmask = 0;
-    let allBoxes = document.querySelectorAll('.box-btn');
-
-    for (let i = 0; i < allBoxes.length; i++) {
-        let currentBox = allBoxes[i];
-
-        if (currentBox.classList.contains('selected')) {
-            let boxNumber = parseInt(currentBox.getAttribute('data-box'), 10);
-
-            if (boxNumber === 1) boxBitmask = boxBitmask + 1;
-            if (boxNumber === 2) boxBitmask = boxBitmask + 2;
-            if (boxNumber === 3) boxBitmask = boxBitmask + 4;
-            if (boxNumber === 4) boxBitmask = boxBitmask + 8;
-            if (boxNumber === 5) boxBitmask = boxBitmask + 16;
-            if (boxNumber === 6) boxBitmask = boxBitmask + 32;
-        }
+    let amounts = [];
+    let hasPills = false;
+    for (let b = 1; b <= 6; b++) {
+        let val = parseInt(document.getElementById(`pill-input-${b}`).value, 10) || 0;
+        amounts.push(val);
+        if (val > 0) hasPills = true;
     }
 
-    if (isNaN(hourNumber) || isNaN(minuteNumber) || boxBitmask === 0) {
-        alert("Please enter a time and pick at least one box.");
+    if (isNaN(hourNumber) || isNaN(minuteNumber) || !hasPills) {
+        alert("Please enter a time and at least one pill in any box.");
         return;
     }
 
@@ -50,7 +34,7 @@ function addToJSON(i) {
         "d": i,
         "h": hourNumber,
         "m": minuteNumber,
-        "b": boxBitmask
+        "amounts": amounts
     };
 
     fetch(`${API_URL}/dobavi-schedule`, {
@@ -95,14 +79,18 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (item.d === parseInt(pageWeekday.getAttribute('weekday-num'), 10)) {
 
                     let boxesHtml = "";
-                    let b = item.b;
-
-                    if ((b & 1) > 0) boxesHtml += `<span class="box-badge">1</span>`;
-                    if ((b & 2) > 0) boxesHtml += `<span class="box-badge">2</span>`;
-                    if ((b & 4) > 0) boxesHtml += `<span class="box-badge">3</span>`;
-                    if ((b & 8) > 0) boxesHtml += `<span class="box-badge">4</span>`;
-                    if ((b & 16) > 0) boxesHtml += `<span class="box-badge">5</span>`;
-                    if ((b & 32) > 0) boxesHtml += `<span class="box-badge">6</span>`;
+                    if (item.amounts && Array.isArray(item.amounts)) {
+                        item.amounts.forEach((amt, index) => {
+                            if (amt > 0) {
+                                boxesHtml += `
+                                    <span class="box-badge">
+                                        <i class="fa-solid fa-box-archive"></i>
+                                        <span>Box ${index + 1}</span>
+                                        <span class="pill-count">${amt} <i class="fa-solid fa-pills" style="font-size: 0.6rem; color: white;"></i></span>
+                                    </span>`;
+                            }
+                        });
+                    }
 
                     let hourString = item.h.toString().padStart(2, '0');
                     let minuteString = item.m.toString().padStart(2, '0');
@@ -118,7 +106,11 @@ document.addEventListener('DOMContentLoaded', function () {
                             <div class="selected-boxes">
                                 ${boxesHtml}
                             </div>
-                            <button class="delete-btn" data-day="${item.d}" data-hour="${item.h}" data-minute="${item.m}" data-boxes="${item.b}">
+                            <button class="delete-btn" 
+                                data-day="${item.d}" 
+                                data-hour="${item.h}" 
+                                data-minute="${item.m}" 
+                                data-amounts='${JSON.stringify(item.amounts)}'>
                                 <i class="fa-solid fa-trash"></i>
                             </button>
                         </div>
@@ -133,8 +125,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     const day = this.getAttribute('data-day');
                     const hour = this.getAttribute('data-hour');
                     const minute = this.getAttribute('data-minute');
-                    const boxes = this.getAttribute('data-boxes');
-                    deleteScheduleItem(day, hour, minute, boxes);
+                    const amounts = JSON.parse(this.getAttribute('data-amounts'));
+                    deleteScheduleItem(day, hour, minute, amounts);
                 });
             });
         })
@@ -143,14 +135,14 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 });
 
-function deleteScheduleItem(day, hour, minute, boxes) {
+function deleteScheduleItem(day, hour, minute, amounts) {
     const userID = localStorage.getItem('userID');
     const itemToDelete = {
         userID: userID,
         d: parseInt(day, 10),
         h: parseInt(hour, 10),
         m: parseInt(minute, 10),
-        b: parseInt(boxes, 10)
+        amounts: amounts
     };
 
     fetch(`${API_URL}/izbrishi-schedule`, {
@@ -168,7 +160,6 @@ function deleteScheduleItem(day, hour, minute, boxes) {
         })
         .then(data => {
             console.log('Item deleted:', data);
-            // Reload the schedule list after successful deletion
             location.reload();
         })
         .catch(error => {

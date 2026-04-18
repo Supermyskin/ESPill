@@ -176,65 +176,6 @@ h1 {
 }
 
 @media (max-width: 768px), (orientation: portrait) {
-    .header {
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 0.75rem 1.5rem;
-        max-height: 3.5rem;
-        overflow: hidden;
-    }
-
-    .header.active {
-        max-height: 40rem;
-        background-color: rgba(15, 15, 15, 0.98);
-    }
-
-    .header-toggle {
-        display: block;
-        position: absolute;
-        top: 0.75rem;
-        right: 1.5rem;
-    }
-
-    .header-links,
-    .header-account {
-        display: none;
-        width: 100%;
-        flex-direction: column;
-        gap: 0.5rem;
-        padding-top: 1rem;
-        text-align: left;
-    }
-
-    .header-links {
-        position: static;
-        transform: none;
-        order: 3;
-        margin-top: 1rem;
-    }
-
-    .header-account {
-        order: 4;
-        border-top: 1px solid rgba(254, 177, 255, 0.1);
-        padding-top: 0.5rem;
-        margin-bottom: 1rem;
-    }
-
-    .header.active .header-links,
-    .header.active .header-account {
-        display: flex;
-    }
-
-    .header a {
-        text-align: left;
-        width: 100%;
-        box-sizing: border-box;
-    }
-
-    h1 {
-        font-size: 2.5rem !important;
-    }
-
     .container {
         flex-direction: column;
         height: auto;

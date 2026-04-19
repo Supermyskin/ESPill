@@ -85,22 +85,12 @@ function uploadToESP() {
                 if (a.h !== b.h) return a.h - b.h;
                 return a.m - b.m;
             }).map(item => {
-                // Keep the original box amounts and also send the bitmask for compatibility.
-                let bitmask = 0;
                 const amounts = Array.isArray(item.a) ? item.a.map(value => Math.max(0, Number(value) || 0)) : [0, 0, 0, 0, 0, 0];
-                if (item.a && Array.isArray(item.a)) {
-                    item.a.forEach((amt, index) => {
-                        if (amt > 0) {
-                            bitmask |= (1 << index);
-                        }
-                    });
-                }
                 return {
                     d: item.d,
                     h: item.h,
                     m: item.m,
-                    a: amounts,
-                    b: bitmask
+                    a: amounts
                 };
             });
 

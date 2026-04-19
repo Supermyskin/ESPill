@@ -4,19 +4,21 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const { v4: uuidv4 } = require('uuid');
-const webpush = require('web-push');
+const admin = require('firebase-admin');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-const publicVapidKey = process.env.PUBLIC_VAPID_KEY;
-const privateVapidKey = process.env.PRIVATE_VAPID_KEY;
-
-webpush.setVapidDetails(
-    process.env.VAPID_EMAIL,
-    publicVapidKey,
-    privateVapidKey
-);
+// Initialize Firebase Admin
+try {
+    const serviceAccount = require('./firebase-service-account.json');
+    admin.initializeApp({
+        credential: admin.credential.cert(serviceAccount)
+    });
+    console.log('Firebase Admin initialized');
+} catch (err) {
+    console.warn('Warning: firebase-service-account.json not found. Push notifications will not work.');
+}
 
 const MONGODB_URI = process.env.MONGODB_URI;
 
@@ -52,7 +54,7 @@ const statSchema = new mongoose.Schema({
 
 const subscriptionSchema = new mongoose.Schema({
     userId: { type: String, required: true },
-    subscription: { type: Object, required: true }
+    token: { type: String, required: true }
 });
 
 const User = mongoose.model('User', userSchema);
@@ -66,15 +68,15 @@ app.use(express.json());
 // Push Notification Routes
 app.post('/subscribe', async (req, res) => {
     try {
-        const { userId, subscription } = req.body;
-        if (!userId || !subscription) {
-            return res.status(400).json({ message: "userId and subscription are required" });
+        const { userId, token } = req.body;
+        if (!userId || !token) {
+            return res.status(400).json({ message: "userId and token are required" });
         }
 
-        // Save subscription, update if exists
+        // Save token, update if exists
         await Subscription.findOneAndUpdate(
-            { userId, 'subscription.endpoint': subscription.endpoint },
-            { userId, subscription },
+            { userId, token },
+            { userId, token },
             { upsert: true }
         );
 
@@ -94,16 +96,19 @@ app.post('/send-push', async (req, res) => {
             return res.status(404).json({ message: "No subscriptions found for user" });
         }
 
-        const payload = JSON.stringify({ title, body });
+        const messages = subscriptions.map(sub => ({
+            notification: { title, body },
+            token: sub.token
+        }));
 
-        const sendPromises = subscriptions.map(sub =>
-            webpush.sendNotification(sub.subscription, payload)
+        const sendPromises = messages.map(message =>
+            admin.messaging().send(message)
                 .catch(err => {
-                    if (err.statusCode === 410 || err.statusCode === 404) {
-                        // Remove expired subscriptions
-                        return Subscription.deleteOne({ _id: sub._id });
+                    if (err.code === 'messaging/registration-token-not-registered') {
+                        // Remove expired tokens
+                        return Subscription.deleteOne({ token: message.token });
                     }
-                    console.error("Error sending push:", err);
+                    console.error("Error sending FCM push:", err);
                 })
         );
 

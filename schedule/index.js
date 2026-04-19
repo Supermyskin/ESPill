@@ -9,12 +9,67 @@ const client = mqtt.connect('wss://507f68c94c1b48c6b9a345e8a073e5cd.s1.eu.hivemq
     password: '1Qazxsw23edcvfr4'
 });
 
+const userID = localStorage.getItem('userID');
+const dayCards = [...document.querySelectorAll('.day-card')];
+
 client.on('connect', () => {
     console.log('Connected to MQTT broker!');
 });
 
+function formatTime(hour, minute) {
+    return `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+}
+
+function buildDaySummary(entries) {
+    if (!entries.length) {
+        return 'No pills set';
+    }
+
+    const times = entries
+        .sort((a, b) => {
+            if (a.h !== b.h) return a.h - b.h;
+            return a.m - b.m;
+        })
+        .slice(0, 3)
+        .map(item => formatTime(item.h, item.m));
+
+    const suffix = entries.length > 3 ? ` +${entries.length - 3} more` : '';
+    return `${times.join(' • ')}${suffix}`;
+}
+
+function renderDaySummaries(schedule) {
+    dayCards.forEach(card => {
+        const day = Number(card.dataset.day);
+        const summary = card.querySelector('.day-summary');
+        const dayEntries = schedule.filter(item => item.d === day);
+        summary.textContent = buildDaySummary(dayEntries);
+        card.classList.toggle('has-pills', dayEntries.length > 0);
+    });
+}
+
+async function loadSchedulePreview() {
+    if (!userID) {
+        dayCards.forEach(card => {
+            card.querySelector('.day-summary').textContent = 'Login required';
+        });
+        return;
+    }
+
+    try {
+        const response = await fetch(`${API_URL}/vzemi-schedule?userID=${userID}`);
+        const schedule = await response.json();
+        renderDaySummaries(Array.isArray(schedule) ? schedule : []);
+    } catch (error) {
+        console.error("Error loading schedule preview:", error);
+        dayCards.forEach(card => {
+            card.querySelector('.day-summary').textContent = 'Unable to load';
+        });
+    }
+}
+
+loadSchedulePreview();
+
 function uploadToESP() {
-    const userID = localStorage.getItem('userID');
     if (!userID) {
         alert("Please login first.");
         window.location.href = "../login/index.html";
@@ -62,7 +117,6 @@ function uploadToESP() {
 }
 
 function clearSchedule() {
-    const userID = localStorage.getItem('userID');
     if (!userID) {
         alert("Please login first.");
         window.location.href = "../login/index.html";
@@ -79,6 +133,7 @@ function clearSchedule() {
         .then(response => response.json())
         .then(data => {
             alert("Schedule cleared successfully.");
+            renderDaySummaries([]);
         })
         .catch(error => {
             console.error("Error clearing schedule:", error);

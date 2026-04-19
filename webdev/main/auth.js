@@ -1,6 +1,3 @@
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-
 document.addEventListener('DOMContentLoaded', function () {
     updateHeader();
     setupMobileMenu();
@@ -25,16 +22,18 @@ function setupMobileMenu() {
 
 function updateHeader() {
     const userName = localStorage.getItem('userName');
+    const userID = localStorage.getItem('userID');
     const accountLink = document.getElementById('header-account-link');
 
     if (!accountLink) return;
 
-    if (userName) {
-        accountLink.innerHTML = `<i class="fa-solid fa-user"></i> ${userName}`;
-        accountLink.href = (window.location.pathname.includes('/schedule/weekdays/')) ? "../../account/index.html" : "../account/index.html";
-
-        // Handle paths correctly based on directory depth
+    if (userID) {
+        const displayName = userName || 'Account';
+        accountLink.innerHTML = `<i class="fa-solid fa-user"></i> ${displayName}`;
+        
         const isDeep = window.location.pathname.includes('/schedule/weekdays/');
+        accountLink.href = isDeep ? "../../account/index.html" : "../account/index.html";
+
         const landingPath = isDeep ? "../../landing/index.html" : "../landing/index.html";
 
         if (!document.getElementById('logout-btn')) {
@@ -53,7 +52,6 @@ function updateHeader() {
         }
     } else {
         accountLink.innerHTML = `<i class="fa-solid fa-right-to-bracket"></i> Login`;
-        // Handle paths correctly
         const isDeep = window.location.pathname.includes('/schedule/weekdays/');
         accountLink.href = isDeep ? "../../../login/index.html" : "../login/index.html";
 
@@ -90,12 +88,6 @@ const firebaseConfig = {
   appId: "1:214168500400:web:25c8019640837761ed6375",
   measurementId: "G-GYNR6GQ7ZC"
 };
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
-
-//
 
 // Initialize Firebase if the SDK is loaded
 if (typeof firebase !== 'undefined') {

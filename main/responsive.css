@@ -37,37 +37,57 @@
 /* Header Dropdown Menu */
 @media (max-width: 768px) {
     .header {
-        flex-direction: column !important;
-        align-items: flex-start !important;
-        padding: 0.75rem 1.5rem !important;
-        max-height: 3.5rem !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        flex-wrap: wrap !important;
+        padding: 0.75rem 1.25rem !important;
+        /* FIXED: removed max-height clipping — let it size naturally when closed */
+        min-height: 3.5rem !important;
         overflow: hidden !important;
         width: 95% !important;
         top: 1rem !important;
-        transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s ease !important;
+        transition: background-color 0.3s ease !important;
     }
 
     .header.active {
-        max-height: 50rem !important;
         background-color: rgba(15, 15, 15, 0.98) !important;
         border-color: var(--accent-color) !important;
     }
 
-    .header-toggle {
-        display: block !important;
-        position: absolute !important;
-        top: 0.5rem !important;
-        right: 1.5rem !important;
-        z-index: 1001;
+    /* FIXED: logo stays in row 1, doesn't stretch */
+    .header .header-logo {
+        order: 1 !important;
+        flex: 1 !important;
+        /* takes up remaining space so toggle sits at far right */
+        width: auto !important;
+        padding: 0.25rem 0 !important;
+        margin-right: 0 !important;
+        align-self: center !important;
     }
 
+    /* FIXED: toggle sits cleanly at row 1 right edge */
+    .header-toggle {
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        order: 2 !important;
+        flex-shrink: 0 !important;
+        align-self: center !important;
+        margin-left: 0 !important;
+        z-index: 1001;
+        line-height: 1 !important;
+    }
+
+    /* FIXED: links and account hidden by default, take full row when shown */
     .header-links,
     .header-account {
         display: none !important;
         width: 100% !important;
         flex-direction: column !important;
+        align-items: stretch !important;
         gap: 0.5rem !important;
-        padding-top: 1rem !important;
+        padding-top: 0.5rem !important;
         text-align: left !important;
     }
 
@@ -75,14 +95,14 @@
         position: static !important;
         transform: none !important;
         order: 3 !important;
-        margin-top: 1.5rem !important;
+        margin-top: 0.5rem !important;
     }
 
     .header-account {
         order: 4 !important;
         border-top: 1px solid rgba(254, 177, 255, 0.1) !important;
         padding-top: 1rem !important;
-        margin-bottom: 1rem !important;
+        margin-bottom: 0.75rem !important;
     }
 
     .header.active .header-links,
@@ -91,21 +111,32 @@
     }
 
     .header a {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
+        gap: 0.65rem !important;
         text-align: left !important;
         width: 100% !important;
-        padding: 1rem 0.5rem !important;
-        font-size: 1.1rem !important;
+        padding: 0.85rem 0.5rem !important;
+        font-size: 1.05rem !important;
         border-radius: 0.5rem !important;
+        line-height: 1.2 !important;
+        box-sizing: border-box !important;
     }
 
-    .header .header-logo {
-        padding: 0.25rem 0 !important;
+    .header a i,
+    .header-toggle i {
+        line-height: 1 !important;
+        flex-shrink: 0 !important;
     }
 }
 
 /* Touch Target Improvements */
 @media (pointer: coarse) {
-    button, a, input {
+
+    button,
+    a,
+    input {
         min-height: 44px;
     }
 }

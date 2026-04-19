@@ -1,6 +1,59 @@
 const API_URL = 'https://appeals-ar44.onrender.com';
 
+const client = mqtt.connect('wss://507f68c94c1b48c6b9a345e8a073e5cd.s1.eu.hivemq.cloud:8884/mqtt', {
+    username: 'ESPill',
+    password: '1Qazxsw23edcvfr4'
+});
+
+client.on('connect', () => {
+    console.log('Connected to MQTT broker from weekday page!');
+});
+
 const daysWeek = ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+
+async function sendScheduleToESP() {
+    const userID = localStorage.getItem('userID');
+    if (!userID) {
+        console.error("UserID not found. Cannot send schedule to ESP.");
+        return;
+    }
+
+    try {
+        const response = await fetch(`${API_URL}/vzemi-schedule?userID=${userID}`);
+        const data = await response.json();
+
+        const processedData = data.sort((a, b) => {
+            if (a.d !== b.d) return a.d - b.d;
+            if (a.h !== b.h) return a.h - b.h;
+            return a.m - b.m;
+        }).map(item => {
+            let amounts = [0, 0, 0, 0, 0, 0];
+            if (Array.isArray(item.a)) {
+                for (let i = 0; i < 6; i++) {
+                    amounts[i] = Math.max(0, Number(item.a[i]) || 0);
+                }
+            }
+            return {
+                d: item.d,
+                h: item.h,
+                m: item.m,
+                a: amounts
+            };
+        });
+
+        console.log("Publishing schedule from weekday page:", processedData);
+        client.publish('esp32/receive', JSON.stringify(processedData), { qos: 0 }, (error) => {
+            if (error) {
+                console.error("Error sending schedule to ESP32 from weekday page:", error);
+            } else {
+                console.log("Schedule sent to ESP32 successfully from weekday page.");
+            }
+        });
+
+    } catch (error) {
+        console.error("Error fetching schedule for ESP32 update from weekday page:", error);
+    }
+}
 
 function addToJSON(i) {
 
@@ -60,6 +113,7 @@ function addToJSON(i) {
         .then(response => {
             if (response.ok) {
                 location.reload();
+                sendScheduleToESP();
             } else {
                 alert("Failed to add schedule item.");
             }
@@ -179,6 +233,7 @@ function deleteScheduleItem(day, hour, minute, a) {
         .then(data => {
             console.log('Item deleted:', data);
             location.reload();
+            sendScheduleToESP();
         })
         .catch(error => {
             console.error('Error deleting schedule item:', error);

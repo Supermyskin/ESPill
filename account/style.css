@@ -39,11 +39,25 @@ body {
 
 .header-links {
     display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.header-account {
+    display: flex;
+    align-items: center;
     gap: 0.5rem;
 }
 
 .header a {
     color: #f2f2f2;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
     text-align: center;
     padding: 0.75rem 1.25rem;
     text-decoration: none;
@@ -57,9 +71,6 @@ body {
     font-weight: 700;
     font-size: 1.3rem;
     color: rgb(254, 177, 255);
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
 }
 
 .header a:hover {
@@ -125,6 +136,17 @@ body {
 .streak-badge i {
     font-size: 1.2rem;
     filter: drop-shadow(0 0 5px rgba(255, 100, 0, 0.5));
+}
+
+.streak-badge.streak-broken {
+    background: linear-gradient(135deg, rgba(160, 160, 160, 0.2), rgba(95, 95, 95, 0.2));
+    border: 1px solid rgba(180, 180, 180, 0.25);
+    color: #c9c9c9;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+.streak-badge.streak-broken i {
+    filter: none;
 }
 
 #streak-count {
@@ -221,10 +243,13 @@ canvas {
     }
 
     .header-toggle {
-        display: block;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
         position: absolute;
         top: 0.75rem;
         right: 1.5rem;
+        line-height: 1;
     }
 
     .header-links,
@@ -232,6 +257,7 @@ canvas {
         display: none;
         width: 100%;
         flex-direction: column;
+        align-items: stretch;
         gap: 0.5rem;
         padding-top: 1rem;
         text-align: left;
@@ -257,9 +283,20 @@ canvas {
     }
 
     .header a {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 0.65rem;
         text-align: left;
         width: 100%;
         box-sizing: border-box;
+        line-height: 1.2;
+    }
+
+    .header a i,
+    .header-toggle i {
+        line-height: 1;
+        flex-shrink: 0;
     }
 
     #user-greeting {

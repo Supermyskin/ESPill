@@ -3,12 +3,15 @@ if (!userID) {
     window.location.href = "../login/index.html";
 }
 
-// Request notification permission
-if ("Notification" in window) {
-    Notification.requestPermission();
-}
-
 function sendNotification(title, body) {
+    if (typeof window.showAppNotification === 'function') {
+        window.showAppNotification(title, {
+            body,
+            tag: `${title}-${body}`.toLowerCase().replace(/[^a-z0-9-]+/g, '-')
+        });
+        return;
+    }
+
     if ("Notification" in window && Notification.permission === "granted") {
         new Notification(title, { body, icon: "./icon.png" });
     }
@@ -27,50 +30,68 @@ const body = document.body;
 const nextPillTime = document.getElementById('next-pill-time');
 const nextPillInfo = document.getElementById('next-pill-info');
 const streakCount = document.getElementById('streak-count');
+const streakCard = document.getElementById('streak-card');
 const doseLog = document.getElementById('dose-log');
 
 const daysOfWeek = ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 let lastTriggeredPill = null;
+let activeDoseId = null;
+let activeDoseResolved = true;
+let activeDoseCount = 1;
 
 const API_URL = 'https://appeals-ar44.onrender.com';
+
+function setStreakDisplay(value) {
+    const streakValue = Math.max(0, Number(value) || 0);
+    streakCount.textContent = streakValue;
+    streakCard.classList.toggle('streak-broken', streakValue === 0);
+}
 
 async function fetchUserStreak() {
     try {
         const response = await fetch(`${API_URL}/vzemi-user?userID=${userID}`);
         const user = await response.json();
         if (user && user.streak !== undefined) {
-            streakCount.textContent = user.streak;
+            setStreakDisplay(user.streak);
         }
     } catch (err) {
         console.error("Error fetching streak:", err);
     }
 }
 
+function getPillCount(amounts) {
+    if (!Array.isArray(amounts)) {
+        return 1;
+    }
+
+    const total = amounts.reduce((sum, amount) => sum + Math.max(0, Number(amount) || 0), 0);
+    return total > 0 ? total : 1;
+}
+
 async function fetchDoseLog() {
     try {
         const response = await fetch(`${API_URL}/vzemi-stats?userID=${userID}`);
         let stats = await response.json();
-        
+
         if (!stats || stats.length === 0) {
             doseLog.innerHTML = '<p style="text-align: center; color: rgba(255,255,255,0.4);">No activity yet.</p>';
             return;
         }
 
-        // Sort by date (newest first)
         stats.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
 
         doseLog.innerHTML = '';
-        stats.slice(0, 20).forEach(stat => { // Show last 20 entries
+        stats.slice(0, 20).forEach(stat => {
             const date = new Date(stat.timestamp);
             const timeStr = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
             const dateStr = date.toLocaleDateString([], { month: 'short', day: 'numeric', weekday: 'short' });
-            
+
             const item = document.createElement('div');
             item.className = `log-item ${stat.type}`;
-            
+
             let statusText = stat.type;
             if (stat.type === 'onTime') statusText = 'On Time';
-            
+
             item.innerHTML = `
                 <div class="log-info">
                     <span class="log-time">${timeStr}</span>
@@ -86,7 +107,6 @@ async function fetchDoseLog() {
     }
 }
 
-// Initial fetch
 fetchUserStreak();
 fetchDoseLog();
 
@@ -103,17 +123,17 @@ async function updateNextPill() {
 
         const now = new Date();
         let currentDay = (now.getDay() + 1) % 7;
-        
+
         const currentHour = now.getHours();
         const currentMinute = now.getMinutes();
 
-        // Check if any pill is scheduled for the current minute
         schedule.forEach(pill => {
             if (pill.d === currentDay && pill.h === currentHour && pill.m === currentMinute) {
                 const pillId = `${pill.d}-${pill.h}-${pill.m}-${JSON.stringify(pill.a)}`;
                 if (lastTriggeredPill !== pillId) {
                     console.log(`Time for pill! Triggering warning state for pill ID: ${pillId}`);
-                    enterWarningState();
+                    markActiveDoseAsMissed();
+                    enterWarningState(pillId, getPillCount(pill.a));
                     lastTriggeredPill = pillId;
                 }
             }
@@ -186,25 +206,52 @@ function updateTimerDisplay() {
     timerDisplay.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
 }
 
-function enterWarningState() {
+function resolveActiveDose(type) {
+    if (!activeDoseId || activeDoseResolved) {
+        return;
+    }
+
+    activeDoseResolved = true;
+    activeDoseId = null;
+    updateStats(type, activeDoseCount);
+    activeDoseCount = 1;
+}
+
+function markActiveDoseAsMissed() {
+    resolveActiveDose('missed');
+}
+
+function enterWarningState(pillId, pillCount = 1) {
+    activeDoseId = pillId;
+    activeDoseResolved = false;
+    activeDoseCount = pillCount;
     body.classList.remove('alert');
     body.classList.add('warning');
     alertMessage.classList.remove('hidden');
     timerContainer.classList.remove('hidden');
     statusText.textContent = 'Action Required: Take your pill';
-    
+
     sendNotification("ESPill Reminder", "It's time to take your pill!");
     startTimer();
 }
 
-async function updateStats(type) {
+async function updateStats(type, count = 1) {
     try {
-        await fetch(`${API_URL}/update-stats`, {
+        const response = await fetch(`${API_URL}/update-stats`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ userID, type })
+            body: JSON.stringify({ userID, type, count })
         });
-        // Refresh data after update
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.message || 'Failed to update stats');
+        }
+
+        if (type === 'late' || type === 'missed') {
+            setStreakDisplay(0);
+        }
+
         fetchUserStreak();
         fetchDoseLog();
     } catch (err) {
@@ -216,18 +263,15 @@ function enterAlertState() {
     body.classList.remove('warning');
     body.classList.add('alert');
     statusText.textContent = 'URGENT: PILL OVERDUE!';
-    
+
     sendNotification("ESPill URGENT", "Your pill is OVERDUE! Please take it now.");
-    
-    // Track missed pill in MongoDB
-    updateStats('missed');
 }
 
 function resetState() {
     if (body.classList.contains('warning')) {
-        updateStats('onTime');
+        resolveActiveDose('onTime');
     } else if (body.classList.contains('alert')) {
-        updateStats('late');
+        resolveActiveDose('late');
     }
 
     clearInterval(pillTimer);

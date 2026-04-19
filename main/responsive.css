@@ -62,6 +62,10 @@
         /* takes up remaining space so toggle sits at far right */
         width: auto !important;
         padding: 0.25rem 0 !important;
+<<<<<<< HEAD
+=======
+        margin-bottom: 0.25rem !important;
+>>>>>>> 91b514d202b5d4edd6619698604704b4f1283ba7
         margin-right: 0 !important;
         align-self: center !important;
     }

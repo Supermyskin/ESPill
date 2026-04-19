@@ -49,18 +49,20 @@ app.use(express.json());
 
 app.post('/update-stats', async (req, res) => {
     try {
-        const { userID, type } = req.body;
+        const { userID, type, count } = req.body;
         if (!userID || !type) {
             return res.status(400).json({ message: "UserID and type are required" });
         }
 
+        const pillCount = Math.max(1, Number(count) || 1);
+
         const newStat = new Stat({ userID, type });
         await newStat.save();
 
-        // Update streak
+        // Any non-on-time dose breaks the streak.
         if (type === 'onTime') {
-            await User.findOneAndUpdate({ userId: userID }, { $inc: { streak: 1 } });
-        } else if (type === 'missed') {
+            await User.findOneAndUpdate({ userId: userID }, { $inc: { streak: pillCount } });
+        } else if (type === 'late' || type === 'missed') {
             await User.findOneAndUpdate({ userId: userID }, { $set: { streak: 0 } });
         }
 
@@ -173,12 +175,21 @@ app.get('/vzemi-schedule', async (req, res) => {
 
         const userSchedule = await Schedule.find({ userID: userId }).sort({ d: 1, h: 1, m: 1 });
 
-        const formattedSchedule = userSchedule.map(item => ({
-            d: item.d,
-            h: item.h,
-            m: item.m,
-            a: item.a
-        }));
+        const formattedSchedule = userSchedule.map(item => {
+            // Ensure 'a' array has exactly 6 elements
+            let amounts = [0, 0, 0, 0, 0, 0];
+            if (Array.isArray(item.a)) {
+                for (let i = 0; i < 6; i++) {
+                    amounts[i] = Math.max(0, Number(item.a[i]) || 0);
+                }
+            }
+            return {
+                d: item.d,
+                h: item.h,
+                m: item.m,
+                a: amounts
+            };
+        });
 
         res.json(formattedSchedule);
     } catch (err) {

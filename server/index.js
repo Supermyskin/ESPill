@@ -175,12 +175,21 @@ app.get('/vzemi-schedule', async (req, res) => {
 
         const userSchedule = await Schedule.find({ userID: userId }).sort({ d: 1, h: 1, m: 1 });
 
-        const formattedSchedule = userSchedule.map(item => ({
-            d: item.d,
-            h: item.h,
-            m: item.m,
-            a: item.a
-        }));
+        const formattedSchedule = userSchedule.map(item => {
+            // Ensure 'a' array has exactly 6 elements
+            let amounts = [0, 0, 0, 0, 0, 0];
+            if (Array.isArray(item.a)) {
+                for (let i = 0; i < 6; i++) {
+                    amounts[i] = Math.max(0, Number(item.a[i]) || 0);
+                }
+            }
+            return {
+                d: item.d,
+                h: item.h,
+                m: item.m,
+                a: amounts
+            };
+        });
 
         res.json(formattedSchedule);
     } catch (err) {

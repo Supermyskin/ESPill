@@ -85,7 +85,13 @@ function uploadToESP() {
                 if (a.h !== b.h) return a.h - b.h;
                 return a.m - b.m;
             }).map(item => {
-                const amounts = Array.isArray(item.a) ? item.a.map(value => Math.max(0, Number(value) || 0)) : [0, 0, 0, 0, 0, 0];
+                // Ensure 'a' array has exactly 6 elements
+                let amounts = [0, 0, 0, 0, 0, 0];
+                if (Array.isArray(item.a)) {
+                    for (let i = 0; i < 6; i++) {
+                        amounts[i] = Math.max(0, Number(item.a[i]) || 0);
+                    }
+                }
                 return {
                     d: item.d,
                     h: item.h,

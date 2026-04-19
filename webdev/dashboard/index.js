@@ -3,11 +3,15 @@ if (!userID) {
     window.location.href = "../login/index.html";
 }
 
-if ("Notification" in window) {
-    Notification.requestPermission();
-}
-
 function sendNotification(title, body) {
+    if (typeof window.showAppNotification === 'function') {
+        window.showAppNotification(title, {
+            body,
+            tag: `${title}-${body}`.toLowerCase().replace(/[^a-z0-9-]+/g, '-')
+        });
+        return;
+    }
+
     if ("Notification" in window && Notification.permission === "granted") {
         new Notification(title, { body, icon: "./icon.png" });
     }
@@ -32,6 +36,7 @@ const daysOfWeek = ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thu
 let lastTriggeredPill = null;
 let activeDoseId = null;
 let activeDoseResolved = true;
+let activeDoseCount = 1;
 
 const API_URL = 'https://appeals-ar44.onrender.com';
 
@@ -45,6 +50,15 @@ async function fetchUserStreak() {
     } catch (err) {
         console.error("Error fetching streak:", err);
     }
+}
+
+function getPillCount(amounts) {
+    if (!Array.isArray(amounts)) {
+        return 1;
+    }
+
+    const total = amounts.reduce((sum, amount) => sum + Math.max(0, Number(amount) || 0), 0);
+    return total > 0 ? total : 1;
 }
 
 async function fetchDoseLog() {
@@ -112,7 +126,7 @@ async function updateNextPill() {
                 if (lastTriggeredPill !== pillId) {
                     console.log(`Time for pill! Triggering warning state for pill ID: ${pillId}`);
                     markActiveDoseAsMissed();
-                    enterWarningState(pillId);
+                    enterWarningState(pillId, getPillCount(pill.a));
                     lastTriggeredPill = pillId;
                 }
             }
@@ -192,16 +206,18 @@ function resolveActiveDose(type) {
 
     activeDoseResolved = true;
     activeDoseId = null;
-    updateStats(type);
+    updateStats(type, activeDoseCount);
+    activeDoseCount = 1;
 }
 
 function markActiveDoseAsMissed() {
     resolveActiveDose('missed');
 }
 
-function enterWarningState(pillId) {
+function enterWarningState(pillId, pillCount = 1) {
     activeDoseId = pillId;
     activeDoseResolved = false;
+    activeDoseCount = pillCount;
     body.classList.remove('alert');
     body.classList.add('warning');
     alertMessage.classList.remove('hidden');
@@ -212,12 +228,12 @@ function enterWarningState(pillId) {
     startTimer();
 }
 
-async function updateStats(type) {
+async function updateStats(type, count = 1) {
     try {
         await fetch(`${API_URL}/update-stats`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ userID, type })
+            body: JSON.stringify({ userID, type, count })
         });
         fetchUserStreak();
         fetchDoseLog();

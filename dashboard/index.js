@@ -3,7 +3,6 @@ if (!userID) {
     window.location.href = "../login/index.html";
 }
 
-// Request notification permission
 if ("Notification" in window) {
     Notification.requestPermission();
 }
@@ -52,27 +51,26 @@ async function fetchDoseLog() {
     try {
         const response = await fetch(`${API_URL}/vzemi-stats?userID=${userID}`);
         let stats = await response.json();
-        
+
         if (!stats || stats.length === 0) {
             doseLog.innerHTML = '<p style="text-align: center; color: rgba(255,255,255,0.4);">No activity yet.</p>';
             return;
         }
 
-        // Sort by date (newest first)
         stats.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
 
         doseLog.innerHTML = '';
-        stats.slice(0, 20).forEach(stat => { // Show last 20 entries
+        stats.slice(0, 20).forEach(stat => {
             const date = new Date(stat.timestamp);
             const timeStr = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
             const dateStr = date.toLocaleDateString([], { month: 'short', day: 'numeric', weekday: 'short' });
-            
+
             const item = document.createElement('div');
             item.className = `log-item ${stat.type}`;
-            
+
             let statusText = stat.type;
             if (stat.type === 'onTime') statusText = 'On Time';
-            
+
             item.innerHTML = `
                 <div class="log-info">
                     <span class="log-time">${timeStr}</span>
@@ -88,7 +86,6 @@ async function fetchDoseLog() {
     }
 }
 
-// Initial fetch
 fetchUserStreak();
 fetchDoseLog();
 
@@ -105,11 +102,10 @@ async function updateNextPill() {
 
         const now = new Date();
         let currentDay = (now.getDay() + 1) % 7;
-        
+
         const currentHour = now.getHours();
         const currentMinute = now.getMinutes();
 
-        // Check if any pill is scheduled for the current minute
         schedule.forEach(pill => {
             if (pill.d === currentDay && pill.h === currentHour && pill.m === currentMinute) {
                 const pillId = `${pill.d}-${pill.h}-${pill.m}-${JSON.stringify(pill.a)}`;
@@ -211,7 +207,7 @@ function enterWarningState(pillId) {
     alertMessage.classList.remove('hidden');
     timerContainer.classList.remove('hidden');
     statusText.textContent = 'Action Required: Take your pill';
-    
+
     sendNotification("ESPill Reminder", "It's time to take your pill!");
     startTimer();
 }
@@ -223,7 +219,6 @@ async function updateStats(type) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ userID, type })
         });
-        // Refresh data after update
         fetchUserStreak();
         fetchDoseLog();
     } catch (err) {
@@ -235,7 +230,7 @@ function enterAlertState() {
     body.classList.remove('warning');
     body.classList.add('alert');
     statusText.textContent = 'URGENT: PILL OVERDUE!';
-    
+
     sendNotification("ESPill URGENT", "Your pill is OVERDUE! Please take it now.");
 }
 

@@ -75,9 +75,48 @@ function checkLogin() {
 
 // Notification logic
 const NOTIF_API_URL = 'https://appeals-ar44.onrender.com';
+const PUBLIC_VAPID_KEY = 'YOUR_PUBLIC_VAPID_KEY_HERE'; // TODO: Replace with your generated public key
 const NOTIFICATION_STORAGE_KEY = 'espillLastNotificationKey';
 const NOTIFICATION_PERMISSION_KEY = 'espillNotificationPrompted';
 const NOTIFICATION_LOOKBACK_MINUTES = 2;
+
+function urlBase64ToUint8Array(base64String) {
+    const padding = '='.repeat((4 - base64String.length % 4) % 4);
+    const base64 = (base64String + padding)
+        .replace(/\-/g, '+')
+        .replace(/_/g, '/');
+
+    const rawData = window.atob(base64);
+    const outputArray = new Uint8Array(rawData.length);
+
+    for (let i = 0; i < rawData.length; ++i) {
+        outputArray[i] = rawData.charCodeAt(i);
+    }
+    return outputArray;
+}
+
+async function subscribeToPush(registration) {
+    try {
+        const subscription = await registration.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: urlBase64ToUint8Array(PUBLIC_VAPID_KEY)
+        });
+
+        const userID = getUserID();
+        if (!userID) return;
+
+        await fetch(`${NOTIF_API_URL}/subscribe`, {
+            method: 'POST',
+            body: JSON.stringify({ userId: userID, subscription }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        console.log("Push subscription successful");
+    } catch (error) {
+        console.error("Failed to subscribe to push notifications:", error);
+    }
+}
 
 let notificationServiceWorker = null;
 
@@ -129,6 +168,12 @@ async function requestNotificationPermission() {
     try {
         const permission = await Notification.requestPermission();
         localStorage.setItem(NOTIFICATION_PERMISSION_KEY, 'true');
+        
+        if (permission === 'granted') {
+            const registration = await navigator.serviceWorker.ready;
+            await subscribeToPush(registration);
+        }
+        
         return permission;
     } catch (error) {
         console.error("Failed to request notification permission:", error);

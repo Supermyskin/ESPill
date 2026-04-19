@@ -4,18 +4,23 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const { v4: uuidv4 } = require('uuid');
+const webpush = require('web-push');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const MONGODB_URI = process.env.MONGODB_URI;
 
-if (MONGODB_URI) {
-    mongoose.connect(MONGODB_URI)
-        .then(() => console.log('Connected to MongoDB Atlas'))
-        .catch(err => console.error('MongoDB connection error:', err));
-} else {
-    console.warn('Warning: MONGODB_URI not found in environment variables. Database features will not work.');
-}
+// VAPID keys should be in your .env
+const publicVapidKey = process.env.PUBLIC_VAPID_KEY;
+const privateVapidKey = process.env.PRIVATE_VAPID_KEY;
+
+webpush.setVapidDetails(
+    process.env.VAPID_EMAIL || 'mailto:example@yourdomain.com',
+    publicVapidKey,
+    privateVapidKey
+);
+
+const MONGODB_URI = process.env.MONGODB_URI;
+// ... (existing connection logic)
 
 // Schemas
 const userSchema = new mongoose.Schema({
@@ -26,26 +31,70 @@ const userSchema = new mongoose.Schema({
     streak: { type: Number, default: 0 }
 });
 
-const scheduleSchema = new mongoose.Schema({
-    userID: { type: String, required: true },
-    d: { type: Number, required: true },
-    h: { type: Number, required: true },
-    m: { type: Number, required: true },
-    a: { type: [Number], default: [0, 0, 0, 0, 0, 0] }
-});
-
-const statSchema = new mongoose.Schema({
-    userID: { type: String, required: true },
-    type: { type: String, enum: ['onTime', 'late', 'missed'], required: true },
-    timestamp: { type: Date, default: Date.now }
+const subscriptionSchema = new mongoose.Schema({
+    userId: { type: String, required: true },
+    subscription: { type: Object, required: true }
 });
 
 const User = mongoose.model('User', userSchema);
 const Schedule = mongoose.model('Schedule', scheduleSchema);
 const Stat = mongoose.model('Stat', statSchema);
+const Subscription = mongoose.model('Subscription', subscriptionSchema);
 
 app.use(cors());
 app.use(express.json());
+
+// Push Notification Routes
+app.post('/subscribe', async (req, res) => {
+    try {
+        const { userId, subscription } = req.body;
+        if (!userId || !subscription) {
+            return res.status(400).json({ message: "userId and subscription are required" });
+        }
+
+        // Save subscription, update if exists
+        await Subscription.findOneAndUpdate(
+            { userId, 'subscription.endpoint': subscription.endpoint },
+            { userId, subscription },
+            { upsert: true }
+        );
+
+        res.status(201).json({ message: "Subscribed successfully" });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Internal server error" });
+    }
+});
+
+app.post('/send-push', async (req, res) => {
+    try {
+        const { userId, title, body } = req.body;
+        const subscriptions = await Subscription.find({ userId });
+
+        if (subscriptions.length === 0) {
+            return res.status(404).json({ message: "No subscriptions found for user" });
+        }
+
+        const payload = JSON.stringify({ title, body });
+
+        const sendPromises = subscriptions.map(sub => 
+            webpush.sendNotification(sub.subscription, payload)
+                .catch(err => {
+                    if (err.statusCode === 410 || err.statusCode === 404) {
+                        // Remove expired subscriptions
+                        return Subscription.deleteOne({ _id: sub._id });
+                    }
+                    console.error("Error sending push:", err);
+                })
+        );
+
+        await Promise.all(sendPromises);
+        res.json({ message: "Notifications sent" });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Internal server error" });
+    }
+});
 
 app.post('/update-stats', async (req, res) => {
     try {
@@ -61,7 +110,7 @@ app.post('/update-stats', async (req, res) => {
 
         // Any non-on-time dose breaks the streak.
         if (type === 'onTime') {
-            await User.findOneAndUpdate({ userId: userID }, { $inc: { streak: pillCount } });
+            await User.findOneAndUpdate({ userId: userID }, { $inc: { streak: 1 } });
         } else if (type === 'late' || type === 'missed') {
             await User.findOneAndUpdate({ userId: userID }, { $set: { streak: 0 } });
         }

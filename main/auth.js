@@ -29,7 +29,7 @@ function updateHeader() {
     if (userName) {
         accountLink.innerHTML = `<i class="fa-solid fa-user"></i> ${userName}`;
         accountLink.href = (window.location.pathname.includes('/schedule/weekdays/')) ? "../../account/index.html" : "../account/index.html";
-        
+
         // Handle paths correctly based on directory depth
         const isDeep = window.location.pathname.includes('/schedule/weekdays/');
         const landingPath = isDeep ? "../../landing/index.html" : "../landing/index.html";
@@ -53,7 +53,7 @@ function updateHeader() {
         // Handle paths correctly
         const isDeep = window.location.pathname.includes('/schedule/weekdays/');
         accountLink.href = isDeep ? "../../../login/index.html" : "../login/index.html";
-        
+
         const existingLogout = document.getElementById('logout-btn');
         if (existingLogout) {
             existingLogout.remove();
@@ -73,9 +73,8 @@ function checkLogin() {
     }
 }
 
-// Notification logic
 const NOTIF_API_URL = 'https://appeals-ar44.onrender.com';
-const PUBLIC_VAPID_KEY = 'YOUR_PUBLIC_VAPID_KEY_HERE'; // TODO: Replace with your generated public key
+const PUBLIC_VAPID_KEY = 'BF39SEg7OoAlhnMl_KqaMzDzBwpIlM203PSgP9sp42KtnCJNW7_Uu9oCLYky8ZxqA4b-9FM_HXhUo8yJikTDDLo'
 const NOTIFICATION_STORAGE_KEY = 'espillLastNotificationKey';
 const NOTIFICATION_PERMISSION_KEY = 'espillNotificationPrompted';
 const NOTIFICATION_LOOKBACK_MINUTES = 2;
@@ -168,12 +167,12 @@ async function requestNotificationPermission() {
     try {
         const permission = await Notification.requestPermission();
         localStorage.setItem(NOTIFICATION_PERMISSION_KEY, 'true');
-        
+
         if (permission === 'granted') {
             const registration = await navigator.serviceWorker.ready;
             await subscribeToPush(registration);
         }
-        
+
         return permission;
     } catch (error) {
         console.error("Failed to request notification permission:", error);

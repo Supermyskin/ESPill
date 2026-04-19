@@ -59,10 +59,10 @@ app.post('/update-stats', async (req, res) => {
         const newStat = new Stat({ userID, type });
         await newStat.save();
 
-        // Update streak
+        // Any non-on-time dose breaks the streak.
         if (type === 'onTime') {
             await User.findOneAndUpdate({ userId: userID }, { $inc: { streak: pillCount } });
-        } else if (type === 'missed') {
+        } else if (type === 'late' || type === 'missed') {
             await User.findOneAndUpdate({ userId: userID }, { $set: { streak: 0 } });
         }
 

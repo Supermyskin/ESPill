@@ -30,6 +30,7 @@ const body = document.body;
 const nextPillTime = document.getElementById('next-pill-time');
 const nextPillInfo = document.getElementById('next-pill-info');
 const streakCount = document.getElementById('streak-count');
+const streakCard = document.getElementById('streak-card');
 const doseLog = document.getElementById('dose-log');
 
 const daysOfWeek = ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
@@ -40,12 +41,18 @@ let activeDoseCount = 1;
 
 const API_URL = 'https://appeals-ar44.onrender.com';
 
+function setStreakDisplay(value) {
+    const streakValue = Math.max(0, Number(value) || 0);
+    streakCount.textContent = streakValue;
+    streakCard.classList.toggle('streak-broken', streakValue === 0);
+}
+
 async function fetchUserStreak() {
     try {
         const response = await fetch(`${API_URL}/vzemi-user?userID=${userID}`);
         const user = await response.json();
         if (user && user.streak !== undefined) {
-            streakCount.textContent = user.streak;
+            setStreakDisplay(user.streak);
         }
     } catch (err) {
         console.error("Error fetching streak:", err);
@@ -230,11 +237,21 @@ function enterWarningState(pillId, pillCount = 1) {
 
 async function updateStats(type, count = 1) {
     try {
-        await fetch(`${API_URL}/update-stats`, {
+        const response = await fetch(`${API_URL}/update-stats`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ userID, type, count })
         });
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.message || 'Failed to update stats');
+        }
+
+        if (type === 'late' || type === 'missed') {
+            setStreakDisplay(0);
+        }
+
         fetchUserStreak();
         fetchDoseLog();
     } catch (err) {

@@ -14,6 +14,12 @@ document.addEventListener('DOMContentLoaded', () => {
     renderChart();
 });
 
+function setStreakDisplay(value) {
+    const streakValue = Math.max(0, Number(value) || 0);
+    document.getElementById('streak-count').textContent = streakValue;
+    document.getElementById('streak-badge').classList.toggle('streak-broken', streakValue === 0);
+}
+
 async function fetchUserData() {
     try {
         const response = await fetch(`${API_URL}/vzemi-user?userID=${userID}`);
@@ -21,7 +27,7 @@ async function fetchUserData() {
 
         if (user) {
             document.getElementById('user-greeting').textContent = `Hello, ${user.name || 'User'}!`;
-            document.getElementById('streak-count').textContent = user.streak || 0;
+            setStreakDisplay(user.streak);
         }
     } catch (err) {
         console.error("Error fetching user data:", err);

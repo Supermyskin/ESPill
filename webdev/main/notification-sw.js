@@ -1,13 +1,32 @@
-self.addEventListener('push', event => {
-    let data = { title: 'ESPill', body: 'Time for your medication!' };
-    try {
-        data = event.data.json();
-    } catch (e) {
-        data.body = event.data.text() || data.body;
-    }
+// main/notification-sw.js
+importScripts('https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js');
+importScripts('https://www.gstatic.com/firebasejs/9.23.0/firebase-messaging-compat.js');
 
-    const options = {
-        body: data.body,
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBTPE3WdzmEs78QYPDBfIeiFUWsld5s2Hg",
+  authDomain: "espill-bef28.firebaseapp.com",
+  projectId: "espill-bef28",
+  storageBucket: "espill-bef28.firebasestorage.app",
+  messagingSenderId: "214168500400",
+  appId: "1:214168500400:web:25c8019640837761ed6375",
+  measurementId: "G-GYNR6GQ7ZC"
+};
+
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+
+firebase.initializeApp(firebaseConfig);
+
+const messaging = firebase.messaging();
+
+messaging.onBackgroundMessage((payload) => {
+    console.log('[notification-sw.js] Received background message ', payload);
+    const notificationTitle = payload.notification.title || 'ESPill';
+    const notificationOptions = {
+        body: payload.notification.body || 'Time for your medication!',
         icon: '../main/icon.png',
         badge: '../main/icon.png',
         data: {
@@ -15,9 +34,7 @@ self.addEventListener('push', event => {
         }
     };
 
-    event.waitUntil(
-        self.registration.showNotification(data.title, options)
-    );
+    self.registration.showNotification(notificationTitle, notificationOptions);
 });
 
 self.addEventListener('notificationclick', event => {

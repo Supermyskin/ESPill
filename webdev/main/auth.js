@@ -1,3 +1,6 @@
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+
 document.addEventListener('DOMContentLoaded', function () {
     updateHeader();
     setupMobileMenu();
@@ -74,46 +77,61 @@ function checkLogin() {
 }
 
 const NOTIF_API_URL = 'https://appeals-ar44.onrender.com';
-const PUBLIC_VAPID_KEY = 'BF39SEg7OoAlhnMl_KqaMzDzBwpIlM203PSgP9sp42KtnCJNW7_Uu9oCLYky8ZxqA4b-9FM_HXhUo8yJikTDDLo'
 const NOTIFICATION_STORAGE_KEY = 'espillLastNotificationKey';
 const NOTIFICATION_PERMISSION_KEY = 'espillNotificationPrompted';
 const NOTIFICATION_LOOKBACK_MINUTES = 2;
 
-function urlBase64ToUint8Array(base64String) {
-    const padding = '='.repeat((4 - base64String.length % 4) % 4);
-    const base64 = (base64String + padding)
-        .replace(/\-/g, '+')
-        .replace(/_/g, '/');
+const firebaseConfig = {
+  apiKey: "AIzaSyBTPE3WdzmEs78QYPDBfIeiFUWsld5s2Hg",
+  authDomain: "espill-bef28.firebaseapp.com",
+  projectId: "espill-bef28",
+  storageBucket: "espill-bef28.firebasestorage.app",
+  messagingSenderId: "214168500400",
+  appId: "1:214168500400:web:25c8019640837761ed6375",
+  measurementId: "G-GYNR6GQ7ZC"
+};
 
-    const rawData = window.atob(base64);
-    const outputArray = new Uint8Array(rawData.length);
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
 
-    for (let i = 0; i < rawData.length; ++i) {
-        outputArray[i] = rawData.charCodeAt(i);
-    }
-    return outputArray;
+//
+
+// Initialize Firebase if the SDK is loaded
+if (typeof firebase !== 'undefined') {
+    firebase.initializeApp(firebaseConfig);
 }
 
 async function subscribeToPush(registration) {
+    if (typeof firebase === 'undefined') {
+        console.warn("Firebase SDK not loaded. Push notifications will not work.");
+        return;
+    }
+
     try {
-        const subscription = await registration.pushManager.subscribe({
-            userVisibleOnly: true,
-            applicationServerKey: urlBase64ToUint8Array(PUBLIC_VAPID_KEY)
+        const messaging = firebase.messaging();
+        const currentToken = await messaging.getToken({
+            vapidKey: 'BGtzX8MTC2a4HVTHoXnI3mqAB3Wrvd85YOK4cRegRACgfh_vJ1EYWAX8KtVyBDnGcbO4aC3qov_AbcAOUAdvm2w',
+            serviceWorkerRegistration: registration
         });
 
-        const userID = getUserID();
-        if (!userID) return;
+        if (currentToken) {
+            const userID = getUserID();
+            if (!userID) return;
 
-        await fetch(`${NOTIF_API_URL}/subscribe`, {
-            method: 'POST',
-            body: JSON.stringify({ userId: userID, subscription }),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
-        console.log("Push subscription successful");
+            await fetch(`${NOTIF_API_URL}/subscribe`, {
+                method: 'POST',
+                body: JSON.stringify({ userId: userID, token: currentToken }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            console.log("FCM subscription successful");
+        } else {
+            console.log('No registration token available. Request permission to generate one.');
+        }
     } catch (error) {
-        console.error("Failed to subscribe to push notifications:", error);
+        console.error("Failed to subscribe to FCM notifications:", error);
     }
 }
 

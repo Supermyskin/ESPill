@@ -58,9 +58,11 @@
     /* FIXED: logo stays in row 1, doesn't stretch */
     .header .header-logo {
         order: 1 !important;
-        flex: 1 !important;           /* takes up remaining space so toggle sits at far right */
+        flex: 1 !important;
+        /* takes up remaining space so toggle sits at far right */
         width: auto !important;
         padding: 0.25rem 0 !important;
+        margin-bottom: 0.25rem !important;
         margin-right: 0 !important;
         align-self: center !important;
     }
@@ -132,7 +134,10 @@
 
 /* Touch Target Improvements */
 @media (pointer: coarse) {
-    button, a, input {
+
+    button,
+    a,
+    input {
         min-height: 44px;
     }
 }

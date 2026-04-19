@@ -85,20 +85,12 @@ function uploadToESP() {
                 if (a.h !== b.h) return a.h - b.h;
                 return a.m - b.m;
             }).map(item => {
-                // Convert array 'a' to bitmask 'b' for the ESP32
-                let bitmask = 0;
-                if (item.a && Array.isArray(item.a)) {
-                    item.a.forEach((amt, index) => {
-                        if (amt > 0) {
-                            bitmask |= (1 << index);
-                        }
-                    });
-                }
+                const amounts = Array.isArray(item.a) ? item.a.map(value => Math.max(0, Number(value) || 0)) : [0, 0, 0, 0, 0, 0];
                 return {
                     d: item.d,
                     h: item.h,
                     m: item.m,
-                    b: bitmask
+                    a: amounts
                 };
             });
 

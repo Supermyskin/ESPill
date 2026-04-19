@@ -138,6 +138,17 @@ body {
     filter: drop-shadow(0 0 5px rgba(255, 100, 0, 0.5));
 }
 
+.streak-badge.streak-broken {
+    background: linear-gradient(135deg, rgba(160, 160, 160, 0.2), rgba(95, 95, 95, 0.2));
+    border: 1px solid rgba(180, 180, 180, 0.25);
+    color: #c9c9c9;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+.streak-badge.streak-broken i {
+    filter: none;
+}
+
 #streak-count {
     font-size: 1.4rem;
 }

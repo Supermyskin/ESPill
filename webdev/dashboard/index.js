@@ -31,6 +31,8 @@ const doseLog = document.getElementById('dose-log');
 
 const daysOfWeek = ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 let lastTriggeredPill = null;
+let activeDoseId = null;
+let activeDoseResolved = true;
 
 const API_URL = 'https://appeals-ar44.onrender.com';
 
@@ -113,7 +115,8 @@ async function updateNextPill() {
                 const pillId = `${pill.d}-${pill.h}-${pill.m}-${JSON.stringify(pill.a)}`;
                 if (lastTriggeredPill !== pillId) {
                     console.log(`Time for pill! Triggering warning state for pill ID: ${pillId}`);
-                    enterWarningState();
+                    markActiveDoseAsMissed();
+                    enterWarningState(pillId);
                     lastTriggeredPill = pillId;
                 }
             }
@@ -186,7 +189,23 @@ function updateTimerDisplay() {
     timerDisplay.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
 }
 
-function enterWarningState() {
+function resolveActiveDose(type) {
+    if (!activeDoseId || activeDoseResolved) {
+        return;
+    }
+
+    activeDoseResolved = true;
+    activeDoseId = null;
+    updateStats(type);
+}
+
+function markActiveDoseAsMissed() {
+    resolveActiveDose('missed');
+}
+
+function enterWarningState(pillId) {
+    activeDoseId = pillId;
+    activeDoseResolved = false;
     body.classList.remove('alert');
     body.classList.add('warning');
     alertMessage.classList.remove('hidden');
@@ -218,16 +237,13 @@ function enterAlertState() {
     statusText.textContent = 'URGENT: PILL OVERDUE!';
     
     sendNotification("ESPill URGENT", "Your pill is OVERDUE! Please take it now.");
-    
-    // Track missed pill in MongoDB
-    updateStats('missed');
 }
 
 function resetState() {
     if (body.classList.contains('warning')) {
-        updateStats('onTime');
+        resolveActiveDose('onTime');
     } else if (body.classList.contains('alert')) {
-        updateStats('late');
+        resolveActiveDose('late');
     }
 
     clearInterval(pillTimer);

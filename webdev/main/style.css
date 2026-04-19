@@ -48,6 +48,7 @@ body {
 
 .header-links {
     display: flex;
+    align-items: center;
     gap: 0.5rem;
     position: absolute;
     left: 50%;
@@ -56,11 +57,16 @@ body {
 
 .header-account {
     display: flex;
+    align-items: center;
     gap: 0.5rem;
 }
 
 .header a {
     color: #f2f2f2;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
     text-align: center;
     padding: 0.75rem 1.25rem;
     text-decoration: none;
@@ -74,9 +80,6 @@ body {
     font-weight: 700;
     font-size: 1.3rem;
     color: rgb(254, 177, 255);
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
 }
 
 .header a:hover {

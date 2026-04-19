@@ -311,9 +311,9 @@ body.alert .alert-banner {
     background: rgba(255, 255, 255, 0.05);
 }
 
-.log-item.onTime { border-left-color: #4CAF50; }
-.log-item.late { border-left-color: #FFC107; }
-.log-item.missed { border-left-color: #F44336; }
+.log-item.onTime { border-left-color: rgba(254, 177, 255, 1)}
+.log-item.late { border-left-color: rgba(255, 206, 86, 1)}
+.log-item.missed { border-left-color: rgba(255, 99, 132, 1)}
 
 .log-info {
     display: flex;

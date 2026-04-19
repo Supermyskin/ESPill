@@ -49,17 +49,19 @@ app.use(express.json());
 
 app.post('/update-stats', async (req, res) => {
     try {
-        const { userID, type } = req.body;
+        const { userID, type, count } = req.body;
         if (!userID || !type) {
             return res.status(400).json({ message: "UserID and type are required" });
         }
+
+        const pillCount = Math.max(1, Number(count) || 1);
 
         const newStat = new Stat({ userID, type });
         await newStat.save();
 
         // Update streak
         if (type === 'onTime') {
-            await User.findOneAndUpdate({ userId: userID }, { $inc: { streak: 1 } });
+            await User.findOneAndUpdate({ userId: userID }, { $inc: { streak: pillCount } });
         } else if (type === 'missed') {
             await User.findOneAndUpdate({ userId: userID }, { $set: { streak: 0 } });
         }

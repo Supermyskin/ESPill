@@ -37,10 +37,13 @@
 /* Header Dropdown Menu */
 @media (max-width: 768px) {
     .header {
-        flex-direction: column !important;
-        align-items: flex-start !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        flex-wrap: wrap !important;
         padding: 0.75rem 1.5rem !important;
-        max-height: 3.5rem !important;
+        min-height: 4rem !important;
+        max-height: 4.5rem !important;
         overflow: hidden !important;
         width: 95% !important;
         top: 1rem !important;
@@ -51,15 +54,16 @@
         max-height: 50rem !important;
         background-color: rgba(15, 15, 15, 0.98) !important;
         border-color: var(--accent-color) !important;
+        align-items: stretch !important;
     }
 
     .header-toggle {
         display: inline-flex !important;
         align-items: center !important;
         justify-content: center !important;
-        position: absolute !important;
-        top: 0.5rem !important;
-        right: 1.5rem !important;
+        position: static !important;
+        margin-left: auto !important;
+        order: 2 !important;
         z-index: 1001;
         line-height: 1 !important;
     }
@@ -79,7 +83,7 @@
         position: static !important;
         transform: none !important;
         order: 3 !important;
-        margin-top: 1.5rem !important;
+        margin-top: 0.75rem !important;
     }
 
     .header-account {
@@ -108,7 +112,10 @@
     }
 
     .header .header-logo {
+        order: 1 !important;
+        width: auto !important;
         padding: 0.25rem 0 !important;
+        margin-right: 1rem !important;
     }
 
     .header a i,

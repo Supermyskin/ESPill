@@ -9,26 +9,37 @@ const webpush = require('web-push');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// VAPID keys should be in your .env
 const publicVapidKey = process.env.PUBLIC_VAPID_KEY;
 const privateVapidKey = process.env.PRIVATE_VAPID_KEY;
 
 webpush.setVapidDetails(
-    process.env.VAPID_EMAIL || 'mailto:example@yourdomain.com',
+    process.env.VAPID_EMAIL,
     publicVapidKey,
     privateVapidKey
 );
 
 const MONGODB_URI = process.env.MONGODB_URI;
-// ... (existing connection logic)
 
-// Schemas
 const userSchema = new mongoose.Schema({
     userId: { type: String, unique: true, required: true },
     name: { type: String, required: true },
     email: { type: String, unique: true, required: true },
     password: { type: String, required: true },
     streak: { type: Number, default: 0 }
+});
+
+const scheduleSchema = new mongoose.Schema({
+    userID: { type: String, required: true },
+    d: { type: Number, required: true },
+    h: { type: Number, required: true },
+    m: { type: Number, required: true },
+    a: { type: [Number], default: [0, 0, 0, 0, 0, 0] }
+});
+
+const statSchema = new mongoose.Schema({
+    userID: { type: String, required: true },
+    type: { type: String, enum: ['onTime', 'late', 'missed'], required: true },
+    timestamp: { type: Date, default: Date.now }
 });
 
 const subscriptionSchema = new mongoose.Schema({
@@ -77,7 +88,7 @@ app.post('/send-push', async (req, res) => {
 
         const payload = JSON.stringify({ title, body });
 
-        const sendPromises = subscriptions.map(sub => 
+        const sendPromises = subscriptions.map(sub =>
             webpush.sendNotification(sub.subscription, payload)
                 .catch(err => {
                     if (err.statusCode === 410 || err.statusCode === 404) {

@@ -1,11 +1,17 @@
 const API_URL = 'https://appeals-ar44.onrender.com';
 
 document.addEventListener('DOMContentLoaded', function () {
+    // Redirect if already logged in
+    if (localStorage.getItem('userID')) {
+        window.location.href = '../account/index.html';
+        return;
+    }
+
     const registerForm = document.getElementById('registerForm');
 
     if (registerForm) {
         registerForm.addEventListener('submit', function (e) {
-            e.preventDefault();
+...
 
             const name = document.getElementById('name_input').value;
             const email = document.getElementById('email_input').value;

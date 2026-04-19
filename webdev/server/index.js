@@ -20,6 +20,14 @@ webpush.setVapidDetails(
 
 const MONGODB_URI = process.env.MONGODB_URI;
 
+if (MONGODB_URI) {
+    mongoose.connect(MONGODB_URI)
+        .then(() => console.log('Connected to MongoDB Atlas'))
+        .catch(err => console.error('MongoDB connection error:', err));
+} else {
+    console.warn('Warning: MONGODB_URI not found in environment variables. Database features will not work.');
+}
+
 const userSchema = new mongoose.Schema({
     userId: { type: String, unique: true, required: true },
     name: { type: String, required: true },

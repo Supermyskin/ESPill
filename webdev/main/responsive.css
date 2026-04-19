@@ -130,14 +130,15 @@
         line-height: 1 !important;
         flex-shrink: 0 !important;
     }
+
 }
 
 /* Touch Target Improvements */
 @media (pointer: coarse) {
 
     button,
-    a,
     input {
         min-height: 44px;
     }
+
 }

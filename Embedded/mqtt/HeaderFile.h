@@ -1,6 +1,5 @@
-#define IR_R 34
-#define IR_T2 16
-#define IR_T1 13
+#define ECHO 35
+#define TRIG 13
 
 #define BUZZ 17
 

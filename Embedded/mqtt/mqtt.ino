@@ -58,25 +58,25 @@ void lcd_print_nextPill(){
     lcd.setCursor(0,1);
     char day[16];
     switch(pill_schedule[curr_eatTime].day){
-      case 2:
+      case 1:
       strcpy(day, "Monday");
       break;
-      case 3:
+      case 2:
       strcpy(day, "Tuesday");
       break;
-      case 4:
+      case 3:
       strcpy(day, "Wendsday");
       break;
-      case 5:
+      case 4:
       strcpy(day, "Thursday");
       break;
-      case 6:
+      case 5:
       strcpy(day, "Friday");
       break;
-      case 0:
+      case 6:
       strcpy(day, "Saturday");
       break;
-      case 1:
+      case 0:
       strcpy(day, "Sunday");
       break;
       default:
@@ -105,29 +105,38 @@ void callback(char* topic, byte* payload, unsigned int length) {
   fillSchedule(pill_schedule, schedule_maxSize, schedule_len, payload, length);
 
   DateTime now = rtc.now();
+
   uint8_t dow = dayOfWeek(now.year(), now.month(), now.day());
-  dow += 5;
-  dow %= 7;
+
+  int bestIndex = -1;
+  int bestDiff = 8;
   int i;
   for (i = 0; i < schedule_len; i++) {
-    uint8_t curr_dow = (pill_schedule[i].day + 5) % 7;
-    if (curr_dow > dow) {
-      curr_eatTime = i;
-      break;
-    } else if (curr_dow == dow) {
-      if (pill_schedule[i].hour > now.hour()) {
-        curr_eatTime = i;
-        break;
-      } else if (pill_schedule[i].hour == now.hour()) {
-        if (pill_schedule[i].minute > now.minute()) {
-          curr_eatTime = i;
-          break;
-        }
-      }
+
+    uint8_t curr_dow = pill_schedule[i].day;
+    int diff = (curr_dow - dow + 7) % 7;
+
+    if (diff == 0) {
+      if (pill_schedule[i].hour < now.hour()) continue;
+
+      if (pill_schedule[i].hour == now.hour() &&
+          pill_schedule[i].minute <= now.minute()) continue;
+    }
+
+    if (diff < bestDiff) {
+      bestDiff = diff;
+      bestIndex = i;
     }
   }
-  if (i == schedule_len) curr_eatTime = 0;
+
+  if (bestIndex != -1) {
+    curr_eatTime = bestIndex;
+  } else {
+    curr_eatTime = 0;
+  }
+
   lcd_print_nextPill();
+
   Serial.print("[DEBUG MQTT] schedule_len = ");
   Serial.println(schedule_len);
 }
@@ -159,9 +168,9 @@ void reconnect() {
 void setup() {
 
   Serial.begin(115200);
-
+  delay(2000);
   rtc.begin();
-
+  mqttClient.setBufferSize(1024);
   pinMode(ECHO, INPUT);
   pinMode(TRIG, OUTPUT);
   pinMode(BUZZ, OUTPUT);
@@ -231,6 +240,7 @@ void loop() {
 
   if (!mqttClient.connected()) {
     reconnect();
+    Serial.println(mqttClient.state());
   }
 
   mqttClient.loop();

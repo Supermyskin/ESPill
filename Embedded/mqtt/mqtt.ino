@@ -2,7 +2,6 @@
 #include <WiFi.h>
 #include <WiFiClientSecure.h>
 #include <PubSubClient.h>
-#include <ArduinoJson.h>
 #include <time.h>
 #include <LiquidCrystal_I2C.h>
 #include <Wire.h>
@@ -14,7 +13,7 @@
 uint8_t lastMinute = 255;
 uint8_t lastPrintedMinute = 255;
 
-const int schedule_maxSize = 500;
+const int schedule_maxSize = 350;
 
 const char* ssid = "donottouchthis";
 const char* password = "1735fc12";
@@ -58,29 +57,14 @@ void lcd_print_nextPill(){
     lcd.setCursor(0,1);
     char day[16];
     switch(pill_schedule[curr_eatTime].day){
-      case 1:
-      strcpy(day, "Monday");
-      break;
-      case 2:
-      strcpy(day, "Tuesday");
-      break;
-      case 3:
-      strcpy(day, "Wendsday");
-      break;
-      case 4:
-      strcpy(day, "Thursday");
-      break;
-      case 5:
-      strcpy(day, "Friday");
-      break;
-      case 6:
-      strcpy(day, "Saturday");
-      break;
-      case 0:
-      strcpy(day, "Sunday");
-      break;
-      default:
-      strcpy(day, "Not set");
+      case 0: strcpy(day, "Saturday"); break;
+      case 1: strcpy(day, "Sunday"); break;
+      case 2: strcpy(day, "Monday"); break;
+      case 3: strcpy(day, "Tuesday"); break;
+      case 4: strcpy(day, "Wednesday"); break;
+      case 5: strcpy(day, "Thursday"); break;
+      case 6: strcpy(day, "Friday"); break;
+      default: strcpy(day, "Not set");
     }
     lcd.print(day);
     lcd.print(" ");
@@ -166,11 +150,10 @@ void reconnect() {
 }
 
 void setup() {
-
+  mqttClient.setBufferSize(24000);
   Serial.begin(115200);
   delay(2000);
   rtc.begin();
-  mqttClient.setBufferSize(1024);
   pinMode(ECHO, INPUT);
   pinMode(TRIG, OUTPUT);
   pinMode(BUZZ, OUTPUT);
@@ -244,7 +227,6 @@ void loop() {
   }
 
   mqttClient.loop();
-
   DateTime now = rtc.now();
   uint8_t dow = dayOfWeek(now.year(), now.month(), now.day());
 
@@ -293,12 +275,7 @@ void loop() {
     }
 
     mqttClient.publish(topic_has_taken_pill, code);
-
     curr_eatTime++;
-
-    if (curr_eatTime >= schedule_len) {
-      curr_eatTime = 0;
-    }
   }
 
   delay(10);

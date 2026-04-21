@@ -8,12 +8,13 @@ uint8_t dayOfWeek(int year, uint8_t month, uint8_t day) {
         year--;
     }
 
-    uint8_t K = year % 100;
-    uint8_t J = year / 100;
+    int K = year % 100;
+    int J = year / 100;
 
-    return (day + 13 * (month + 1) / 5 + K + K / 4 + J / 4 + 5 * J) % 7;
+    int h = (day + 13 * (month + 1) / 5 + K + K / 4 + J / 4 + 5 * J) % 7;
+
+    return h;
 }
-
 void waitTakePills() {
     const int threshold = 6;
     const int confirmTime = 200;

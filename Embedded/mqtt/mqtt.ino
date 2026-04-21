@@ -26,7 +26,7 @@ const char* mqtt_password = "1Qazxsw23edcvfr4";
 
 const char* clientId = "ESP32Pill";
 
-const char* topic_hasnt_taken_pill = "esp32/hasnt_taken_pill";
+const char* topic_has_taken_pill = "esp32/has_taken_pill";
 const char* topic_esp32 = "esp32/receive";
 
 const char* code = "!qaz@wsx#$%^Y&U*";
@@ -34,7 +34,8 @@ const char* code = "!qaz@wsx#$%^Y&U*";
 WiFiClientSecure wifiClient;
 PubSubClient mqttClient(wifiClient);
 
-EatTime* pill_schedule = new EatTime[schedule_maxSize]{};
+EatTime* pill_schedule = new EatTime[schedule_maxSize];
+
 unsigned int schedule_len = 0;
 unsigned int curr_eatTime = 0;
 
@@ -47,8 +48,46 @@ Box BoxArray[] = {
   Box(S6_PIN)
 };
 
+
 DS1302 rtc(CLOCK_RST, CLOCK_CLK, CLOCK_DATA);
 LiquidCrystal_I2C lcd(0x27, 16, 2);
+
+void lcd_print_nextPill(){
+  lcd.clear();
+    lcd.print("Next pill:");
+    lcd.setCursor(0,1);
+    char day[16];
+    switch(pill_schedule[curr_eatTime].day){
+      case 1:
+      strcpy(day, "Monday");
+      break;
+      case 2:
+      strcpy(day, "Tuesday");
+      break;
+      case 3:
+      strcpy(day, "Wendsday");
+      break;
+      case 4:
+      strcpy(day, "Thursday");
+      break;
+      case 5:
+      strcpy(day, "Friday");
+      break;
+      case 6:
+      strcpy(day, "Saturday");
+      break;
+      case 0:
+      strcpy(day, "Sunday");
+      break;
+      default:
+      strcpy(day, "Not set");
+    }
+    lcd.print(day);
+    lcd.print(" ");
+    lcd.print(pill_schedule[curr_eatTime].hour);
+    lcd.print(":");
+    lcd.print(pill_schedule[curr_eatTime].minute);
+}
 
 void callback(char* topic, byte* payload, unsigned int length) {
 
@@ -66,28 +105,37 @@ void callback(char* topic, byte* payload, unsigned int length) {
   fillSchedule(pill_schedule, schedule_maxSize, schedule_len, payload, length);
 
   DateTime now = rtc.now();
+
   uint8_t dow = dayOfWeek(now.year(), now.month(), now.day());
-  dow += 5;
-  dow %= 7;
+
+  int bestIndex = -1;
+  int bestDiff = 8;
   int i;
   for (i = 0; i < schedule_len; i++) {
-    uint8_t curr_dow = (pill_schedule[i].day + 5) % 7;
-    if (curr_dow > dow) {
-      curr_eatTime = i;
-      break;
-    } else if (curr_dow == dow) {
-      if (pill_schedule[i].hour > now.hour()) {
-        curr_eatTime = i;
-        break;
-      } else if (pill_schedule[i].hour == now.hour()) {
-        if (pill_schedule[i].minute > now.minute()) {
-          curr_eatTime = i;
-          break;
-        }
-      }
+
+    uint8_t curr_dow = pill_schedule[i].day;
+    int diff = (curr_dow - dow + 7) % 7;
+
+    if (diff == 0) {
+      if (pill_schedule[i].hour < now.hour()) continue;
+
+      if (pill_schedule[i].hour == now.hour() &&
+          pill_schedule[i].minute <= now.minute()) continue;
+    }
+
+    if (diff < bestDiff) {
+      bestDiff = diff;
+      bestIndex = i;
     }
   }
-  if (i == schedule_len) curr_eatTime = 0;
+
+  if (bestIndex != -1) {
+    curr_eatTime = bestIndex;
+  } else {
+    curr_eatTime = 0;
+  }
+
+  lcd_print_nextPill();
 
   Serial.print("[DEBUG MQTT] schedule_len = ");
   Serial.println(schedule_len);
@@ -121,19 +169,19 @@ void setup() {
 
   Serial.begin(115200);
   delay(2000);
-
   rtc.begin();
-
-  pinMode(IR_R, INPUT);
-  pinMode(IR_T1, OUTPUT);
-  pinMode(IR_T2, OUTPUT);
+  mqttClient.setBufferSize(1024);
+  pinMode(ECHO, INPUT);
+  pinMode(TRIG, OUTPUT);
   pinMode(BUZZ, OUTPUT);
 
   for (int i = 0; i < BOX_COUNT; i++) {
     BoxArray[i].init();
     delay(100);
   }
-
+  for (int i = 0; i < schedule_maxSize; i++) {
+      pill_schedule[i] = {255, 255, 255, {255, 255, 255, 255, 255, 255}};
+  }
   Serial.println("[DEBUG] Booting ESP32...");
   Wire.begin(32, 33);
   lcd.init();
@@ -192,6 +240,7 @@ void loop() {
 
   if (!mqttClient.connected()) {
     reconnect();
+    Serial.println(mqttClient.state());
   }
 
   mqttClient.loop();
@@ -207,9 +256,9 @@ void loop() {
                   pill_schedule[curr_eatTime].day,
                   pill_schedule[curr_eatTime].hour,
                   pill_schedule[curr_eatTime].minute);
-    Serial.printf("BOXES TO OPEN: %d\n",
-                  pill_schedule[curr_eatTime].boxes);
-
+    Serial.println("BOXES TO OPEN: ");
+    for(int i = 0;i < BOX_COUNT;i++) Serial.println(pill_schedule[curr_eatTime].pills[i]);
+    lcd_print_nextPill();
     lastPrintedMinute = now.minute();
   }
 
@@ -220,30 +269,30 @@ void loop() {
     lastMinute = now.minute();
 
     for (int i = 0; i < BOX_COUNT; i++) {
-      if (pill_schedule[curr_eatTime].boxes & (1 << i)) {
+      if (pill_schedule[curr_eatTime].pills[i] > 0){
 
         Serial.print("[BOX] OPEN ");
         Serial.println(i);
 
-        BoxArray[i].open();
-        delay(20);
+        lcd.clear();
 
         lcd.print("Take your pills:");
         lcd.setCursor(0,1);      
         lcd.print(pill_schedule[curr_eatTime].pills[i]);
         
+        Serial.println("Take your pills:");
+        Serial.println(pill_schedule[curr_eatTime].pills[i]);
+        BoxArray[i].open();
         waitTakePills();
-
-        lcd.clear();
-
         BoxArray[i].close();
-
+        lcd.clear();
+                
         Serial.print("[BOX] CLOSE ");
         Serial.println(i);
       }
     }
 
-    mqttClient.publish(topic_hasnt_taken_pill, code);
+    mqttClient.publish(topic_has_taken_pill, code);
 
     curr_eatTime++;
 

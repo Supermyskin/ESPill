@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MQTT Test</title>
+    <!-- Assuming MQTT.js is loaded globally or via CDN elsewhere, using a placeholder for now -->
+    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+</head>
+<body>
+    <h1>MQTT Schedule Sender</h1>
+    <label for="count">Number of JSON schedules:</label>
+    <input type="number" id="count" min="1" value="1">
+    <button id="sendBtn">Send Schedules</button>
+
+    <script>
+        const client = mqtt.connect('wss://507f68c94c1b48c6b9a345e8a073e5cd.s1.eu.hivemq.cloud:8884/mqtt', {
+            username: 'ESPill',
+            password: '1Qazxsw23edcvfr4'
+        });
+
+        client.on('connect', () => {
+            console.log('Connected to MQTT broker!');
+        });
+
+        document.getElementById('sendBtn').addEventListener('click', () => {
+            const count = parseInt(document.getElementById('count').value);
+            const dummyData = Array.from({ length: count }, (_, i) => ({
+                d: i % 7,
+                h: 8 + i,
+                m: 0,
+                a: [1, 0, 0, 0, 0, 0]
+            }));
+
+            console.log(`Sending ${count} schedules via MQTT:`, dummyData);
+            
+            client.publish('esp32/receive', JSON.stringify(dummyData), { qos: 0 }, (error) => {
+                if (error) {
+                    alert("Error sending schedule.");
+                } else {
+                    alert(`Successfully sent ${count} schedules.`);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

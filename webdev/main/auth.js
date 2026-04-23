@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 document.addEventListener('DOMContentLoaded', function () {
     updateHeader();
     setupMobileMenu();
@@ -30,7 +32,7 @@ function updateHeader() {
     if (userID) {
         const displayName = userName || 'Account';
         accountLink.innerHTML = `<i class="fa-solid fa-user"></i> ${displayName}`;
-        
+
         const isDeep = window.location.pathname.includes('/schedule/weekdays/');
         accountLink.href = isDeep ? "../../account/index.html" : "../account/index.html";
 
@@ -79,14 +81,16 @@ const NOTIFICATION_STORAGE_KEY = 'espillLastNotificationKey';
 const NOTIFICATION_PERMISSION_KEY = 'espillNotificationPrompted';
 const NOTIFICATION_LOOKBACK_MINUTES = 2;
 
+const apiKey = process.env.API_FIREBASE;
+
 const firebaseConfig = {
-  apiKey: "AIzaSyBTPE3WdzmEs78QYPDBfIeiFUWsld5s2Hg",
-  authDomain: "espill-bef28.firebaseapp.com",
-  projectId: "espill-bef28",
-  storageBucket: "espill-bef28.firebasestorage.app",
-  messagingSenderId: "214168500400",
-  appId: "1:214168500400:web:25c8019640837761ed6375",
-  measurementId: "G-GYNR6GQ7ZC"
+    apiKey: process.env.API_FIREBASE,
+    authDomain: "espill-bef28.firebaseapp.com",
+    projectId: "espill-bef28",
+    storageBucket: "espill-bef28.firebasestorage.app",
+    messagingSenderId: "214168500400",
+    appId: "1:214168500400:web:25c8019640837761ed6375",
+    measurementId: "G-GYNR6GQ7ZC"
 };
 
 // Initialize Firebase if the SDK is loaded

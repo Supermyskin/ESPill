@@ -1,18 +1,21 @@
-// main/notification-sw.js
+require('dotenv').config();
 importScripts('https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js');
 importScripts('https://www.gstatic.com/firebasejs/9.23.0/firebase-messaging-compat.js');
 
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 
+
+const apiKey = process.env.API_FIREBASE;
+
 const firebaseConfig = {
-  apiKey: "AIzaSyBTPE3WdzmEs78QYPDBfIeiFUWsld5s2Hg",
-  authDomain: "espill-bef28.firebaseapp.com",
-  projectId: "espill-bef28",
-  storageBucket: "espill-bef28.firebasestorage.app",
-  messagingSenderId: "214168500400",
-  appId: "1:214168500400:web:25c8019640837761ed6375",
-  measurementId: "G-GYNR6GQ7ZC"
+    apiKey: process.env.API_FIREBASE,
+    authDomain: "espill-bef28.firebaseapp.com",
+    projectId: "espill-bef28",
+    storageBucket: "espill-bef28.firebasestorage.app",
+    messagingSenderId: "214168500400",
+    appId: "1:214168500400:web:25c8019640837761ed6375",
+    measurementId: "G-GYNR6GQ7ZC"
 };
 
 const app = initializeApp(firebaseConfig);

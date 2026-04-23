@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (registerForm) {
         registerForm.addEventListener('submit', function (e) {
+            e.preventDefault();
             const name = document.getElementById('name_input').value;
             const email = document.getElementById('email_input').value;
             const password = document.getElementById('password').value;

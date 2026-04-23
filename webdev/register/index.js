@@ -11,7 +11,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (registerForm) {
         registerForm.addEventListener('submit', function (e) {
-
             const name = document.getElementById('name_input').value;
             const email = document.getElementById('email_input').value;
             const password = document.getElementById('password').value;
@@ -29,19 +28,19 @@ document.addEventListener('DOMContentLoaded', function () {
                 },
                 body: JSON.stringify({ name, email, password }),
             })
-            .then(response => response.json())
-            .then(data => {
-                if (data.userId) {
-                    alert('Registration successful! Redirecting to login...');
-                    window.location.href = '../login/index.html';
-                } else {
-                    alert(data.message || 'Registration failed');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('An error occurred during registration.');
-            });
+                .then(response => response.json())
+                .then(data => {
+                    if (data.userId) {
+                        alert('Registration successful! Redirecting to login...');
+                        window.location.href = '../login/index.html';
+                    } else {
+                        alert(data.message || 'Registration failed');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred during registration.');
+                });
         });
     }
 });

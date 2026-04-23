@@ -79,10 +79,10 @@ const NOTIFICATION_STORAGE_KEY = 'espillLastNotificationKey';
 const NOTIFICATION_PERMISSION_KEY = 'espillNotificationPrompted';
 const NOTIFICATION_LOOKBACK_MINUTES = 2;
 
-const apiKey = "YOUR_FIREBASE_API_KEY";
+const apiKeys = "NotTellingYou";
 
 const firebaseConfig = {
-    apiKey: "YOUR_FIREBASE_API_KEY",
+    apiKey: apiKeys,
     authDomain: "espill-bef28.firebaseapp.com",
     projectId: "espill-bef28",
     storageBucket: "espill-bef28.firebasestorage.app",

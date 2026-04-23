@@ -1,5 +1,3 @@
-require('dotenv').config();
-
 document.addEventListener('DOMContentLoaded', function () {
     updateHeader();
     setupMobileMenu();
@@ -81,10 +79,10 @@ const NOTIFICATION_STORAGE_KEY = 'espillLastNotificationKey';
 const NOTIFICATION_PERMISSION_KEY = 'espillNotificationPrompted';
 const NOTIFICATION_LOOKBACK_MINUTES = 2;
 
-const apiKey = process.env.API_FIREBASE;
+const apiKey = "YOUR_FIREBASE_API_KEY";
 
 const firebaseConfig = {
-    apiKey: process.env.API_FIREBASE,
+    apiKey: "YOUR_FIREBASE_API_KEY",
     authDomain: "espill-bef28.firebaseapp.com",
     projectId: "espill-bef28",
     storageBucket: "espill-bef28.firebasestorage.app",

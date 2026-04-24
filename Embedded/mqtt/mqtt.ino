@@ -170,6 +170,7 @@ void setup() {
   lcd.init();
   lcd.backlight();
   lcd.setCursor(0, 0);
+  lcd.print("Booting...");
   Serial.println("[DEBUG] Connecting WiFi...");
 
   WiFi.begin(ssid, password);
@@ -276,7 +277,10 @@ void loop() {
 
     mqttClient.publish(topic_has_taken_pill, code);
     curr_eatTime++;
+    if(curr_eatTime >= schedule_len){
+      curr_eatTime = 0;
+    }
+    lcd_print_nextPill();
   }
-
   delay(10);
 }

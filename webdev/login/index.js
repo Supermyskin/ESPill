@@ -11,8 +11,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (loginForm) {
         loginForm.addEventListener('submit', function (e) {
-...
-
+            e.preventDefault();
             const email = document.getElementById('email_input').value;
             const password = document.getElementById('password').value;
 
@@ -23,21 +22,21 @@ document.addEventListener('DOMContentLoaded', function () {
                 },
                 body: JSON.stringify({ email, password }),
             })
-            .then(response => response.json())
-            .then(data => {
-                if (data.userId) {
-                    localStorage.setItem('userID', data.userId);
-                    localStorage.setItem('userName', data.name);
-                    alert('Login successful!');
-                    window.location.href = '../account/index.html';
-                } else {
-                    alert(data.message || 'Login failed');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('An error occurred during login.');
-            });
+                .then(response => response.json())
+                .then(data => {
+                    if (data.userId) {
+                        localStorage.setItem('userID', data.userId);
+                        localStorage.setItem('userName', data.name);
+                        alert('Login successful!');
+                        window.location.href = '../account/index.html';
+                    } else {
+                        alert(data.message || 'Login failed');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred during login.');
+                });
         });
     }
 });
